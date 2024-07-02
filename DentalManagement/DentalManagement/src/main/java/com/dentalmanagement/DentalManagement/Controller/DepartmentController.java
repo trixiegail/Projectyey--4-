@@ -49,4 +49,10 @@ public class DepartmentController {
 	public String deleteDepartment(@PathVariable long id) {
 		return deptserv.deleteDepartment(id);
 	}
+	
+	// Get the number of students in a department
+    @GetMapping("/studentCount/{departmentId}")
+    public long getStudentCount(@PathVariable Long departmentId) {
+        return deptserv.getStudentCountByDepartment(departmentId);
+    }
 }

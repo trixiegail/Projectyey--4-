@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -43,6 +45,10 @@ public class StudentEntity {
 	
 	@Column(name = "archived_accounts")
 	private boolean archived;
+	
+	@ManyToOne
+    @JoinColumn(name = "department_id")
+    private DepartmentEntity studentDepartment;
 
 	public StudentEntity() {
 		super();

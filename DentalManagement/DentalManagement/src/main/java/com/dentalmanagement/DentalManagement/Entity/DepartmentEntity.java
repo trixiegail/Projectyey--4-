@@ -1,10 +1,14 @@
 package com.dentalmanagement.DentalManagement.Entity;
 
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -21,6 +25,10 @@ public class DepartmentEntity {
 	@Column(name = "department_code")
 	private String deptCode;
 	
+	// One-to-Many relationship
+    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProgramEntity> programs;
+    
 	public DepartmentEntity() {
 		super();
 	}
@@ -46,7 +54,16 @@ public class DepartmentEntity {
 	public void setDeptCode(String deptCode) {
 		this.deptCode = deptCode;
 	}
-	public long getId() {
-        return id;
+	
+	public List<ProgramEntity> getPrograms() {
+        return programs;
     }
+
+    public void setPrograms(List<ProgramEntity> programs) {
+        this.programs = programs;
+    }
+
+	public Long getId() {
+		return null;
+	}
 }

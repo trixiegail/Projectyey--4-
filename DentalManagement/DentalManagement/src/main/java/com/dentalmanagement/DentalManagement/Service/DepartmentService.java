@@ -8,12 +8,16 @@ import org.springframework.stereotype.Service;
 
 import com.dentalmanagement.DentalManagement.Entity.DepartmentEntity;
 import com.dentalmanagement.DentalManagement.Repository.DepartmentRepository;
+import com.dentalmanagement.DentalManagement.Repository.StudentRepository;
 
 @Service
 public class DepartmentService {
 	
 	@Autowired
 	DepartmentRepository deptrepo;
+	
+	@Autowired
+    StudentRepository studentRepository;
 	
 	//add a department
 	public DepartmentEntity insertDepartment(DepartmentEntity dept) {
@@ -59,5 +63,10 @@ public class DepartmentService {
 		}
 		return msg;
 	}
+	
+	// Get number of students in a department
+    public long getStudentCountByDepartment(Long departmentId) {
+        return studentRepository.countByDepartmentId(departmentId);
+    }
 
 }
