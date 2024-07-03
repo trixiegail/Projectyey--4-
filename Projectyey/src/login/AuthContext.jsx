@@ -10,16 +10,18 @@ export const AuthProvider = ({ children }) => {
     setIsLoggedIn(true);
   
     if (userData) {
-      const { student_id, first_name, last_name, gender, phone_number, username } = userData;
+      const { id, first_name, last_name, department, program, yearLevel, birthdate, email } = userData;
   
       if (student_id && first_name && last_name) {
         setUser({
-          studentId: student_id,
+          studentId: id,
           firstName: first_name,
           lastName: last_name,
-          gender: gender || null,
-          phone_number: phone_number || null,
-          username: username || null,
+          department: department || null,
+          program: program || null,
+          yearLevel: yearLevel || null,
+          birthdate: birthdate || null,
+          email: email || null
         });
       } else {
         console.error('Invalid user data:', userData);
