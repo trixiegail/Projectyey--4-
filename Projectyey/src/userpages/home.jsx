@@ -1,232 +1,135 @@
-import { featuresData } from "@/data";
-import { FeatureCard } from "@/widgets/cards";
-import { Footer, Navbar } from "@/widgets/layout";
-import { FingerPrintIcon } from "@heroicons/react/24/solid";
-import {
-  Accordion,
-  AccordionBody,
-  AccordionHeader,
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Typography
-} from "@material-tailwind/react";
 import { default as React } from "react";
-
-const products = [
-  {
-    id: 1,
-    name: 'Salad',
-    href: '/order',
-    imageSrc: 'src/image/salad.png',
-    imageAlt: "Front of men's Basic Tee in black.",
-    price: '₱20',
-    color: 'Order Now',
-  },
-  {
-    id: 1,
-    name: 'Pizza',
-    href: '/order',
-    imageSrc: 'src/image/pizza.png',
-    price: '₱30',
-    color: 'Order Now',
-  },
-  {
-    id: 1,
-    name: 'Burger',
-    href: '/order',
-    imageSrc: 'src/image/burger.png',
-    price: '₱25',
-    color: 'Order Now',
-  },
-  {
-    id: 1,
-    name: 'Drinks',
-    href: '/order',
-    imageSrc: 'src/image/drinks.png',
-    price: '₱25',
-    color: 'Order Now',
-  },
-  // More products...
-]
-
+import Studfooter from "../components/Studfooter";
+import Studnav from "../components/Studnav";
+ 
 export function Home() {
   const [open, setOpen] = React.useState(1);
  
   const handleOpen = (value) => setOpen(open === value ? 0 : value);
+ 
+  const stats = [
+    { id: 1, name: 'Happy Patient', value: '780+' },
+    { id: 2, name: 'Online Appointment', value: '560+' },
+    { id: 3, name: 'Winning Award', value: '340+' },
+  ]
+ 
   return (
     <>
-      <div className="container absolute left-2/4 z-10 mx-auto -translate-x-2/4 p-4">
-          <Navbar />
-      </div>
-
-
-      <div className="relative flex h-screen content-center items-center justify-center pt-16 pb-32">
-        <div className="absolute top-0 h-full w-full bg-[url('/img/background-3.png')] bg-cover bg-center" />
-        <div className="absolute top-0 h-full w-full bg-[#F9E4C9] bg-cover bg-center" />
-        <div className="max-w-8xl container relative mx-auto">
-          <div className="flex flex-wrap items-center">
-            <div className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-              <Typography
-                variant="h1"
-                className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl"
-              >
-                Taste the Best
-              </Typography>
-              <Typography variant="lead" color="black" className="mt-4 text-xl text-black">
-              Enjoy the food with your friends in an affordable price.
-              </Typography>
-              <Button href="/checkout" variant="filled" className="bg-[#F97108]">Explore</Button>
+      <div>
+          <Studnav />
+          <img
+            className="h-90 w-full items-center"
+            src="src/image/Banner.png"
+            alt="Your Company"
+          />
+ 
+      <section className="py-16 bg-white">
+        <div className="container mx-auto flex flex-col md:flex-row items-center">
+          {/* Image Section */}
+          <div className="md:w-1/2 w-full px-4 mb-8 md:mb-0">
+            <img src="src/image/Aboutus.png" alt="Happy Dental" className="rounded-lg shadow-lg" />
+          </div>
+ 
+          {/* Text Section */}
+          <div className="md:w-1/2 w-full px-4">
+            <h2 className="text-lg font-semibold text-gray-600 uppercase mb-2">About Us</h2>
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">Your Trusted Partner For Dental Health</h1>
+            <p className="text-gray-700 mb-6">
+              Purus turpis vivamus sem est blandit. In at egestas id sollicitudin mattis integer aliquet ut tempor. Risus enim nisi ipsum imperdiet. Sed turpis tellus quisque tellus ipsum malesuada fringilla amet elit.
+            </p>
+            <div className="flex items-center mb-4">
+              <div>
+                <h3 className="text-xl font-semibold text-gray-900">Experienced Dentist</h3>
+                <p className="text-gray-600">Purus turpis vivamus sem est blandit in at egestas.</p>
+              </div>
+            </div>
+            <div className="flex items-center">
+              <div>
+                <h3 className="text-xl font-semibold text-gray-900">Affordable Pricing</h3>
+                <p className="text-gray-600">Purus turpis vivamus sem est blandit in at egestas.</p>
+              </div>
             </div>
           </div>
         </div>
-        {/* Decorative image grid */}
-        <div
-                aria-hidden="true"
-                className="pointer-events-none lg:absolute lg:inset-y-0 lg:mx-auto lg:w-full lg:max-w-7xl"
-              >
-                <div className="absolute transform sm:left-1/2 sm:top-0 sm:translate-x-8 lg:left-1/2 lg:top-1/2 lg:-translate-y-1/2 lg:translate-x-8">
-                  <div className="flex items-center space-x-6 lg:space-x-8">
-                    <div className="grid flex-shrink-0 grid-cols-1 gap-y-6 lg:gap-y-8">
-                      <div className="h-100 w-100 overflow-hidden rounded-lg sm:opacity-0 lg:opacity-100">
-                        <img
-                          src="src/image/logo.png"
-                          alt=""
-                          className="h-full w-full object-cover object-center"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-                {/*<!-- Component: Two columns even layout --> */}
-      </div>
-      <section className="-mt-32 bg-white px-4 pb-20 pt-4">
-        <div className="container mx-auto">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {featuresData.map(({ color, title, icon, description }) => (
-              <FeatureCard
-                key={title}
-                color={color}
-                title={title}
-                icon={React.createElement(icon, {
-                  className: "w-5 h-5 text-white",
-                })}
-                description={description}
-              />
-            ))}
+ 
+        <video className="h-50 w-50 rounded-lg container mx-auto flex flex-col items-center mt-20" controls autoPlay>
+          <source src="src/image/video.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </section>
+ 
+      <section className="py-16 bg-[#88343B] flex pt-20">
+      <div className="container mx-auto flex flex-col md:flex-row items-center">
+          {/* Text Section */}
+          <div className="w-full px-4 text-center">
+            <h1 className="text-4xl font-bold text-white mb-4">Happy dental Statistic</h1>
+            <p className="text-white mb-6 col-span-4 lg:col-span-6">
+              Purus turpis vivamus sem est blandit. In at egestas id sollicitudin mattis integer aliquet ut tempor. Risus enim nisi ipsum imperdiet. Sed turpis tellus quisque tellus ipsum malesuada fringilla amet elit.
+            </p>
           </div>
-          <div className="bg-white">
-      <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-        <h2 className="text-2xl font-bold tracking-tight text-gray-900 text-center">Menu Categories</h2>
-
-        <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-          {products.map((product) => (
-            <div key={product.id} className="group relative">
-              <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-white lg:aspect-none group-hover:opacity-75 lg:h-80">
-                <img
-                  src={product.imageSrc}
-                  alt={product.imageAlt}
-                  className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-                />
-              </div>
-              <div className="mt-4 flex justify-between">
-                <div>
-                  <h3 className="text-sm text-black">
-                    <a href={product.href}>
-                      <span aria-hidden="true" className="absolute inset-0" />
-                      {product.name}
-                    </a>
-                  </h3>
-                  <p className="mt-1 text-sm text-gray-500">{product.color}</p>
-                </div>
-                <p className="text-sm font-medium text-gray-900">{product.price}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-          <div className="mt-20 flex flex-wrap items-center">
-            <div className="mx-auto -mt-8 w-full px-4 md:w-5/12">
-              <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full bg-[#F97108] p-2 text-center shadow-lg">
-                <FingerPrintIcon className="h-8 w-8 text-white" />
-              </div>
-              <Typography
-                variant="h3"
-                className="mb-3 font-bold"
-                color="blue-gray"
-              >
-                Why Us
-              </Typography>
-              <Typography className="mb-8 font-normal text-blue-gray-500">
-              "Choose us for convenience, quality, and satisfaction guaranteed. With a diverse menu, fresh ingredients, 
-              and top-notch service, we're your go-to for delicious meals delivered straight
-               to your doorstep. Experience the difference with us today!"
-              </Typography>
-              <Button variant="filled" className="bg-[#F97108]">read more</Button>
-            </div>
-            <div className="mx-auto mt-24 flex w-full justify-center px-4 md:w-4/12 lg:mt-0">
-              <Card className="shadow-lg border shadow-gray-500/10 rounded-lg">
-                <CardHeader floated={false} className="relative h-56">
-                  <img
-                    alt="Card Image"
-                    src="src/image/food1.png"
-                    className="h-full w-full"
-                  />
-                </CardHeader>
-                <CardBody>
-                  <Typography variant="small" color="blue-gray" className="font-normal">Enterprise</Typography>
-                  <Typography
-                    variant="h5"
-                    color="blue-gray"
-                    className="mb-3 mt-2 font-bold"
-                  >
-                    Top Notch Services
-                  </Typography>
-                  <Typography className="font-normal text-blue-gray-500">
-                    Delicious food.
-                  </Typography>
-                </CardBody>
-              </Card>
-            </div>
-
-           
-          </div>
-          <h2 className="mt-20 text-2xl font-bold text-gray-900 text-center">FAQ</h2>
-            <div className="mt-5 flex flex-wrap items-center mx-auto w-full px-4 md:w-5/12">
-                <Accordion open={open === 1}>
-                <AccordionHeader onClick={() => handleOpen(1)}>How does your food delivery service work?</AccordionHeader>
-                <AccordionBody>
-                  AMBOT.
-                </AccordionBody>
-              </Accordion>
-              <Accordion open={open === 2}>
-                <AccordionHeader onClick={() => handleOpen(2)}>
-                Is there a minimum order requirement for delivery?
-                </AccordionHeader>
-                <AccordionBody>
-                  AMBOT.
-                </AccordionBody>
-              </Accordion>
-              <Accordion open={open === 3}>
-                <AccordionHeader onClick={() => handleOpen(3)}>
-                What safety measures do you have in place for food delivery?               
-                </AccordionHeader>
-                <AccordionBody>
-                  AMBOT.
-                </AccordionBody>
-              </Accordion>
-              </div>
         </div>
       </section>
-      
-      <div className="bg-white">
-        <Footer />
+ 
+      <div className="border-b border-black mx-20"></div>
+ 
+      <div className="bg-[#88343B] py-24 sm:py-32">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <dl className="grid grid-cols-1 gap-x-8 gap-y-16 text-center lg:grid-cols-3">
+            {stats.map((stat) => (
+              <div key={stat.id} className="mx-auto flex max-w-xs flex-col gap-y-4">
+                <dt className="text-base leading-7 text-white">{stat.name}</dt>
+                <dd className="order-first text-3xl font-semibold tracking-tight text-[#F7C301] sm:text-5xl">
+                  {stat.value}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
       </div>
+ 
+      <section className="py-16 bg-white">
+  <div className="container mx-auto text-center">
+    <h1 className="text-4xl font-bold text-gray-900 mt-2 mb-8">Your Journey to a Healthy Smile Starts Here</h1>
+    <div className="flex flex-col md:flex-row justify-center items-center gap-8">
+      <div className="max-w-xs text-center">
+        <div className="bg-[#88343B] p-4 mb-4 inline-block rounded">
+          <img src="/src/image/scedule.png" alt="Make Appointment Icon" className="h-16 w-16" />
+        </div>
+        <h3 className="text-xl font-semibold text-gray-900 mb-2">Make Appointment</h3>
+        <p className="text-gray-600">Etiam fusce arcu ac auctor nisl purus consectetur. Eu viverra ultricies sit.</p>
+      </div>
+      <div className="max-w-xs text-center">
+        <div className="bg-[#88343B] p-4 mb-4 inline-block rounded">
+          <img src="/src/image/dentist.png" alt="Expert Dental Care Icon" className="h-16 w-16" />
+        </div>
+        <h3 className="text-xl font-semibold text-gray-900 mb-2">Expert Dental Care</h3>
+        <p className="text-gray-600">Etiam fusce arcu ac auctor nisl purus consectetur. Eu viverra ultricies sit.</p>
+      </div>
+      <div className="max-w-xs text-center">
+        <div className="bg-[#88343B] p-4 mb-4 inline-block rounded">
+          <img src="/src/image/whitening.png" alt="Radiate Confidence Icon" className="h-16 w-16" />
+        </div>
+        <h3 className="text-xl font-semibold text-gray-900 mb-2">Radiate Confidence</h3>
+        <p className="text-gray-600">Etiam fusce arcu ac auctor nisl purus consectetur. Eu viverra ultricies sit.</p>
+      </div>
+    </div>
+    <div className="mt-10">
+    <a className=" bg-[#F7C301] text-white font-bold  rounded-lg shadow-lg hover:bg-yellow-600 transition duration-300 w-full px-6 py-3"
+    href="/student-calendar">
+      Make Appointment
+    </a>
+    </div>
+  </div>
+</section>
+ 
+ 
+ 
+          <Studfooter />
+      </div>
+ 
+ 
     </>
   );
 }
-
+ 
 export default Home;

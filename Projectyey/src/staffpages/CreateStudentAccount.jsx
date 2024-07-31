@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Nav from '../components/Nav';
+import { button } from "@material-tailwind/react";
 
 function CreateStudentAccount() {
   const [idnumber, setIdnumber] = useState("");
@@ -12,6 +13,7 @@ function CreateStudentAccount() {
   const [studentYearLevel, setYearLevel] = useState("");
   const [studentBirthdate, setStudentBirthdate] = useState("");
   const [studentEmail, setStudentEmail] = useState("");
+  const [studentGender, setStudentGender] = useState("");
   const [studentPassword, setStudentPassword] = useState("");
   const [modalMessage, setModalMessage] = useState("");
   const [modalTitle, setModalTitle] = useState("");
@@ -80,6 +82,7 @@ function CreateStudentAccount() {
       program: studentProgram,
       yearLevel: studentYearLevel,
       birthdate: studentBirthdate,
+      gender: studentGender,
       email: studentEmail,
       password: studentPassword
     }
@@ -101,6 +104,7 @@ function CreateStudentAccount() {
     setYearLevel("");
     setStudentBirthdate("");
     setStudentEmail("");
+    setStudentGender("");
     setStudentPassword("");
   };
 
@@ -132,6 +136,10 @@ function CreateStudentAccount() {
     setModalTitle(title);
     setModalMessage(message);
     document.getElementById('my_modal_1').showModal();
+  };
+
+  const handleGenderChange = (e) => {
+    setStudentGender(e.target.value);
   };
 
   return (
@@ -197,6 +205,7 @@ function CreateStudentAccount() {
             <option value="thirdyear">Third Year</option>
             <option value="fourthyear">Fourth Year</option>
           </select>
+          <div className="col-span-2 grid grid-cols-2 gap-4">
           <input
             type='date'
             placeholder='Select Birthdate'
@@ -204,22 +213,49 @@ function CreateStudentAccount() {
             value={studentBirthdate}
             onChange={(e) => setStudentBirthdate(e.target.value)}
           />
-          <input
-            type='text'
-            placeholder='Enter Email'
-            className='w-full px-3 py-2 border border-gray-300 rounded-lg'
-            value={studentEmail}
-            onChange={(e) => setStudentEmail(e.target.value)}
-          />
-          <input
-            type='password'
-            placeholder='Enter Password'
-            className='w-full px-3 py-2 border border-gray-300 rounded-lg'
-            value={studentPassword}
-            onChange={(e) => setStudentPassword(e.target.value)}
-            readOnly // Make the password field read-only
-          />
+          <div className="flex items-center space-x-4">
+            <label className="text-white">Gender:</label>
+            <label className="inline-flex items-center">
+              <input
+                type="radio"
+                className="form-radio"
+                name="gender"
+                value="male"
+                checked={studentGender === "male"}
+                onChange={handleGenderChange}
+              />
+              <span className="ml-2 text-white">Male</span>
+            </label>
+            <label className="inline-flex items-center">
+              <input
+                type="radio"
+                className="form-radio"
+                name="gender"
+                value="female"
+                checked={studentGender === "female"}
+                onChange={handleGenderChange}
+              />
+              <span className="ml-2 text-white">Female</span>
+            </label>
+          </div>
         </div>
+        
+        <input
+          type='text'
+          placeholder='Enter Email'
+          className='w-full px-3 py-2 border border-gray-300 rounded-lg'
+          value={studentEmail}
+          onChange={(e) => setStudentEmail(e.target.value)}
+        />       
+        <input
+          type='password'
+          placeholder='Enter Password'
+          className='w-full px-3 py-2 border border-gray-300 rounded-lg'
+          value={studentPassword}
+          onChange={(e) => setStudentPassword(e.target.value)}
+          readOnly // Make the password field read-only
+        />
+      </div>
         <div className="flex justify-center">
           <button
             className="px-4 py-2 bg-[#F7C301] text-white font-bold rounded-lg hover:bg-[#F7C301]"

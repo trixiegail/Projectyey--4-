@@ -19,7 +19,7 @@ const LoginAdmin = () => {
   
       if (response.data) {
         console.log('Admin Login successful:', response.data);
-        navigate('/dashboard');
+        navigate('/student-accounts');
       } else {
         setErrorMessage("Admin login failed: Invalid username or password");
         console.error('Admin Login failed: Response data is undefined');

@@ -1,48 +1,32 @@
 // src/Login.js
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const LoginStudent = () => {
-  const [username, setUsername] = useState('');
+  const [idNumber, setIdNumber] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
 
-  const [loginData, setLoginData] = useState({
-    username: '',
-    password: ''
-  });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setLoginData({
-      ...loginData,
-      [name]: value
-    });
-  };
+  const handleStudentLogin = async (event) => { 
+    event.preventDefault(); // Prevent the default form submission behavior
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
     try {
-      if (!loginData.username || !loginData.password) {
-        throw new Error('Username and password are required.');
-      }
+      const endpoint = 'http://localhost:8080/user/login';
+      const response = await axios.post(endpoint, { idNumber, password });
   
-      // Make an API call to verify the login credentials
-      const response = await axios.post('http://localhost:8080/user/authenticate', {
-        idNumber: loginData.username,
-        password: loginData.password
-      });
-
-      if (response.status === 200) {
-        // Successful login
-        // Redirect to the dashboard (Replace '/dashboard' with your actual dashboard route)
-        window.location.href = 'http://localhost:3000/';
+      if (response.data) {
+        console.log('Student Login successful:', response.data);
+        navigate('/home');
       } else {
-        throw new Error(response.data);
+        setErrorMessage("Student login failed: Invalid username or password");
+        console.error('Student Login failed: Response data is undefined');
       }
     } catch (error) {
-      // Error handling
-      alert(error.message);
+      setErrorMessage("Invalid username or password");
+      console.error('Student Login failed:', error.response?.data || error.message);
     }
   };
 
@@ -50,17 +34,18 @@ const LoginStudent = () => {
     <div className="flex items-center justify-center min-h-screen">
       <div className="w-full max-w-sm p-6 bg-[#88343B] border-gray-200 rounded shadow-md">
         <h2 className="mb-6 text-2xl font-bold text-center text-[#fff]">Student Access Module</h2>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleStudentLogin}>
           <div className="mb-4">
+            <p>{errorMessage}</p>
             <label htmlFor="username" className="block mb-2 text-sm font-medium text-[#fff]">
             Username (ID Number)
             </label>
             <input
               type="text"
-              id="username"
+              id="idNumber"
               className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-indigo-100"
-              value={loginData.username}
-              onChange={handleChange}
+              value={idNumber}
+              onChange={(e) => setIdNumber(e.target.value)}
               required
             />
           </div>
@@ -72,13 +57,13 @@ const LoginStudent = () => {
               type="password"
               id="password"
               className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-indigo-100"
-              value={loginData.password} 
-              onChange={handleChange}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
           <div className="mb-6">
-          <p className="text-sm font-medium text-[#fff]">Forgot your password? <a className="link link-hover text-sm font-medium text-[#fff]"><Link to="/change-password">Click here</Link></a></p>
+          <p className="text-sm font-medium text-[#fff]">Forgot your password? <Link to="/change-password">Click here</Link></p>
           </div>
           <button
             type="submit"

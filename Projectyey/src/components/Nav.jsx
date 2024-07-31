@@ -2,6 +2,7 @@ import React, { useState } from "react"
 
 export default function SideNavigationSearchBar() {
   const [isSideNavOpen, setIsSideNavOpen] = useState(false)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   return (
     <>
@@ -32,7 +33,7 @@ export default function SideNavigationSearchBar() {
         >
           <div>
             <ul className="flex flex-1 flex-col gap-1 py-3">
-              <li className="px-3">
+              {/* <li className="px-3">
                 <a
                   href="/dashboard"
                   className="flex items-center gap-3 rounded p-3 text-[#F7C301] transition-colors hover:bg-[#F7C301] hover:text-[#88343B] focus:bg-[#F7C301] aria-[current=page]:bg-[#F7C301] aria-[current=page]:text-[#88343B] "
@@ -59,7 +60,7 @@ export default function SideNavigationSearchBar() {
                     Dashboard
                   </div>
                 </a>
-              </li>
+              </li> */}
               <li className="px-3">
                 <a
                   href="/student-accounts"
@@ -172,6 +173,85 @@ export default function SideNavigationSearchBar() {
                   </div>
                 </a>
               </li>
+              {/* Archive Menu Item with Dropdown */}
+              <li className="relative px-3">
+                <button
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="flex items-center gap-3 rounded p-3 text-[#F7C301] transition-colors hover:bg-[#F7C301] hover:text-[#88343B] aria-[current=page]:bg-[#F7C301] aria-[current=page]:text-[#88343B] w-full text-left"
+                >
+                  <div className="flex items-center self-center">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      className="h-6 w-6"
+                      aria-label="Archive icon"
+                      role="graphics-symbol"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"
+                      />
+                    </svg>
+                  </div>
+                  <div className="flex w-full flex-1 flex-col items-start justify-center gap-0 overflow-hidden truncate text-sm">
+                    Archive
+                  </div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    className={`h-4 w-4 transition-transform ${isDropdownOpen ? "rotate-180" : "rotate-0"}`}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M19.5 9l-7.5 7.5L4.5 9"
+                    />
+                  </svg>
+                </button>
+                {isDropdownOpen && (
+                  <ul className="absolute left-0 mt-2 w-full bg-[#F7C301] rounded shadow-lg text-[#88343B]">
+                    <li>
+                      <a
+                        href="/archived-student-accounts"
+                        className="block px-4 py-2 text-sm hover:bg-[#E5B708]"
+                      >
+                        Students
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="/archived-nurse-accounts"
+                        className="block px-4 py-2 text-sm hover:bg-[#E5B708]"
+                      >
+                        Nurses
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="/archived-staff-accounts"
+                        className="block px-4 py-2 text-sm hover:bg-[#E5B708]"
+                      >
+                        Staff
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="/archived-doctor-accounts"
+                        className="block px-4 py-2 text-sm hover:bg-[#E5B708]"
+                      >
+                        Doctors
+                      </a>
+                    </li>
+                  </ul>
+                )}
+              </li>
             </ul>
           </div>
         </nav>
@@ -188,7 +268,7 @@ export default function SideNavigationSearchBar() {
                 strokeWidth="1.5"
                 stroke="currentColor"
                 className="h-6 w-6"
-                aria-label="Dashboard icon"
+                aria-label="Logout icon"
                 role="graphics-symbol"
               >
                 <path
@@ -227,5 +307,5 @@ export default function SideNavigationSearchBar() {
       ></div>
       {/*  <!-- End Side navigation menu with search bar and alert message --> */}
     </>
-  )
+  );
 }

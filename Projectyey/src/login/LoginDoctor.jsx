@@ -4,17 +4,19 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const LoginDoctor = () => {
-  const [username, setUsername] = useState('');
+  const [idNumber, setIdNumber] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
-  const handleDoctorLogin = async (event) => {
-    event.preventDefault();
-    try {
-      const endpoint = 'http://localhost:8080/dentalmanagement/doctor';
-      const response = await axios.post(endpoint, { username, password });
 
+  const handleDoctorLogin = async (event) => { 
+    event.preventDefault(); // Prevent the default form submission behavior
+
+    try {
+      const endpoint = 'http://localhost:8080/user/login-doctor';
+      const response = await axios.post(endpoint, { idNumber, password });
+  
       if (response.data) {
         console.log('Doctor Login successful:', response.data);
         navigate('/dashboard');
@@ -36,14 +38,14 @@ const LoginDoctor = () => {
           <div className="mb-4">
             <p>{errorMessage}</p>
             <label htmlFor="username" className="block mb-2 text-sm font-medium text-[#fff]">
-              Username (ID Number)
+            Username (ID Number)
             </label>
             <input
               type="text"
-              id="username"
+              id="idNumber"
               className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-indigo-100"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={idNumber}
+              onChange={(e) => setIdNumber(e.target.value)}
               required
             />
           </div>
@@ -61,7 +63,7 @@ const LoginDoctor = () => {
             />
           </div>
           <div className="mb-6">
-            <p className="text-sm font-medium text-[#fff]">Forgot your password? <Link to="/change-password" className="text-[#F7C301] underline">Click here</Link></p>
+          <p className="text-sm font-medium text-[#fff]">Forgot your password? <Link to="/change-password">Click here</Link></p>
           </div>
           <button
             type="submit"

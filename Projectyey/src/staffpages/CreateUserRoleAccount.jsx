@@ -7,6 +7,7 @@ function CreateUserRoleAccount() {
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [birthdate, setBirthdate] = useState("");
+  const [gender, setGender] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState("");
@@ -35,6 +36,7 @@ function CreateUserRoleAccount() {
       firstname: firstname,
       lastname: lastname,
       birthdate: birthdate,
+      gender: gender,
       email: email,
       password: password,
       role: user
@@ -54,6 +56,7 @@ function CreateUserRoleAccount() {
     setFirstname("");
     setLastname("");
     setBirthdate("");
+    setGender("");
     setEmail("");
     setPassword("");
     setUser("");
@@ -81,6 +84,10 @@ function CreateUserRoleAccount() {
     setModalTitle(title);
     setModalMessage(message);
     document.getElementById('my_modal_1').showModal();
+  };
+
+  const handleGenderChange = (e) => {
+    setGender(e.target.value);
   };
 
   return (
@@ -122,6 +129,7 @@ function CreateUserRoleAccount() {
             value={lastname}
             onChange={(e) => setLastname(e.target.value)}
           />
+          <div className="col-span-2 grid grid-cols-2 gap-4">
           <input
             type='date'
             placeholder='Select Birthdate'
@@ -129,22 +137,49 @@ function CreateUserRoleAccount() {
             value={birthdate}
             onChange={(e) => setBirthdate(e.target.value)}
           />
-          <input
-            type='text'
-            placeholder='Enter Email'
-            className='w-full px-3 py-2 border border-gray-300 rounded-lg'
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <input
-            type='password'
-            placeholder='Enter Password'
-            className='w-full px-3 py-2 border border-gray-300 rounded-lg'
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            readOnly // Make the password field read-only
-          />
+          <div className="flex items-center space-x-4">
+            <label className="text-white">Gender:</label>
+            <label className="inline-flex items-center">
+              <input
+                type="radio"
+                className="form-radio"
+                name="gender"
+                value="male"
+                checked={gender === "male"}
+                onChange={handleGenderChange}
+              />
+              <span className="ml-2 text-white">Male</span>
+            </label>
+            <label className="inline-flex items-center">
+              <input
+                type="radio"
+                className="form-radio"
+                name="gender"
+                value="female"
+                checked={gender === "female"}
+                onChange={handleGenderChange}
+              />
+              <span className="ml-2 text-white">Female</span>
+            </label>
+          </div>
         </div>
+        
+        <input
+          type='text'
+          placeholder='Enter Email'
+          className='w-full px-3 py-2 border border-gray-300 rounded-lg'
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />       
+        <input
+          type='password'
+          placeholder='Enter Password'
+          className='w-full px-3 py-2 border border-gray-300 rounded-lg'
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          readOnly // Make the password field read-only
+        />
+      </div>
         <div className="flex justify-center">
           <button
             className="px-4 py-2 bg-[#F7C301] text-white font-bold rounded-lg hover:bg-[#F7C301]"
