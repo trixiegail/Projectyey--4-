@@ -4,7 +4,6 @@ import {
   Box,
   Typography,
   Grid,
-  Avatar,
   TextField,
   Button,
   Collapse,
@@ -19,11 +18,12 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Tabs,
+  Tab,
 } from '@mui/material';
 import { MedicalHistoryContext } from './MedicalHistoryProvider';
 import NavNurseDentist from '../components/NavNurseDentist';
-import Nav from '../components/Nav';
-
+ 
 const CheckupForm = () => {
   const [showForm, setShowForm] = useState(false);
   const [formValues, setFormValues] = useState({
@@ -37,7 +37,7 @@ const CheckupForm = () => {
     generalHealth: '',
     healthConcerns: '',
   });
-  const [initialFormValues, setInitialFormValues] = useState({}); // Track initial form values
+  const [initialFormValues, setInitialFormValues] = useState({});
   const [isEditing, setIsEditing] = useState(true);
   const [medicalRecords, setMedicalRecords] = useState([]);
   const [showMedicalRecords, setShowMedicalRecords] = useState(false);
@@ -52,12 +52,16 @@ const CheckupForm = () => {
     phoneNumber: '',
   });
   const [showIncompleteFieldsDialog, setShowIncompleteFieldsDialog] = useState(false);
-
   const { addMedicalRecord } = useContext(MedicalHistoryContext);
   const location = useLocation();
   const navigate = useNavigate();
   const { applicant } = location.state || {};
-
+ 
+  // State for tabs and form data
+  const [activeTab, setActiveTab] = useState('checkup'); // 'checkup' or 'dental'
+  const [checkupFormData, setCheckupFormData] = useState({});
+  const [dentalFormData, setDentalFormData] = useState({});
+ 
   // Function to handle form field changes
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -66,9 +70,9 @@ const CheckupForm = () => {
       [name]: value,
     });
   };
-
+ 
   // Function to save the form values
-  const handleSave = () => {
+  const handleSaveCheckup = () => {
     if (isFormEmpty()) {
       setShowIncompleteFieldsDialog(true); // Show warning dialog if fields are not filled
     } else {
@@ -77,26 +81,38 @@ const CheckupForm = () => {
       const updatedRecords = [...medicalRecords, { ...formValues, date: new Date() }];
       setMedicalRecords(updatedRecords); // Add the form values to the medical records with the current date
       clearForm(); // Clear the form after saving
+      setCheckupFormData(formValues); // Save form values to checkup tab data
     }
   };
-
+ 
+  const handleSaveDental = () => {
+    if (isFormEmpty()) {
+      setShowIncompleteFieldsDialog(true); // Show warning dialog if fields are not filled
+    } else {
+      setIsEditing(false);
+      // Save dental form data similarly if needed
+      setDentalFormData(formValues); // Example placeholder
+      clearForm(); // Clear the form after saving
+    }
+  };
+ 
   // Function to open medical records drawer
   const handleMedicalRecords = () => {
     setShowMedicalRecords(true);
   };
-
+ 
   // Function to close medical records drawer
   const closeMedicalRecords = () => {
     setShowMedicalRecords(false);
   };
-
+ 
   // Function to handle click on a medical record item
   const handleRecordClick = (record) => {
     setSelectedRecord(record);
     setFormValues(record); // Populate the form fields with the selected record's data
     setIsEditing(false); // Disable editing mode when selecting a record
   };
-
+ 
   // Function to handle "Done" button click
   const handleDone = () => {
     clearForm(); // Clear the form fields
@@ -104,7 +120,7 @@ const CheckupForm = () => {
     setSelectedRecord(null); // Deselect the selected record
     setShowMedicalRecords(false); // Close the medical records drawer
   };
-
+ 
   // Function to clear the form fields
   const clearForm = () => {
     setFormValues({
@@ -120,7 +136,11 @@ const CheckupForm = () => {
     });
     setIsEditing(true); // Ensure editing mode is enabled after clearing the form
   };
-
+ 
+  const handlePrint = () => {
+    window.print();
+  };
+ 
   // Set default form values to the selected applicant's information
   useEffect(() => {
     if (applicant) {
@@ -131,27 +151,27 @@ const CheckupForm = () => {
       }));
     }
   }, [applicant]);
-
+ 
   // Track initial form values when component mounts
   useEffect(() => {
     setInitialFormValues(formValues);
   }, []);
-
+ 
   // Check if the form values have changed
   const isFormChanged = () => {
     return Object.keys(formValues).some((key) => formValues[key] !== initialFormValues[key]);
   };
-
+ 
   // Check if all the fields are empty to disable the Save button
   const isFormEmpty = () => {
     return Object.values(formValues).every((value) => value === '');
   };
-
+ 
   // Function to close incomplete fields warning dialog
   const handleCloseIncompleteFieldsDialog = () => {
     setShowIncompleteFieldsDialog(false);
   };
-
+ 
   return (
     <Box>
       <NavNurseDentist /> {/* Include NavNurseDentist navigation bar */}
@@ -236,19 +256,20 @@ const CheckupForm = () => {
             </Grid>
           </Grid>
           <Grid item xs={12} md={3}>
-           
+            {/* Placeholder for student image */}
             <img
-                className="h-40 w-auto"
-                src="src/image/student.png"
-                sx={{
-                  width: 120,
-                  height: 120,
-                  borderRadius: 2, // Adjust the value for rounded corners
-                  marginLeft: 'auto',
-                  marginRight: 'auto',
-                  display: 'block',
-                }}
-              />
+              className="h-40 w-auto"
+              src="src/image/student.png"
+              sx={{
+                width: 120,
+                height: 120,
+                borderRadius: 2,
+                marginLeft: 'auto',
+                marginRight: 'auto',
+                display: 'block',
+              }}
+              alt="Student"
+            />
           </Grid>
         </Grid>
         <Box sx={{ marginTop: 2, display: 'flex', gap: 2 }}>
@@ -325,7 +346,6 @@ const CheckupForm = () => {
                     variant="outlined"
                   />
                 </Grid>
-
                 <Grid item xs={12} md={6}>
                   <TextField
                     label="Oral Health Status"
@@ -405,7 +425,7 @@ const CheckupForm = () => {
                     backgroundColor: '#F7C301',
                   },
                 }}
-                onClick={handleSave}
+                onClick={handleSaveCheckup}
                 disabled={!isFormChanged() || isFormEmpty()}
               >
                 Save
@@ -422,13 +442,34 @@ const CheckupForm = () => {
             <Typography variant="h6" gutterBottom align="center">
               Medical Records
             </Typography>
-            <List>
-              {medicalRecords.map((record, index) => (
-                <ListItem key={index} button onClick={() => handleRecordClick(record)}>
-                  <ListItemText primary={`${new Date(record.date).toDateString()} - ${new Date(record.date).toLocaleTimeString()}`} />
+            <Tabs
+              value={activeTab}
+              onChange={(event, newValue) => setActiveTab(newValue)}
+              indicatorColor="primary"
+              textColor="primary"
+              variant="fullWidth"
+              aria-label="medical records tabs"
+            >
+              <Tab label="Checkup" value="checkup" />
+              <Tab label="Dental Treatment" value="dental" />
+            </Tabs>
+            {activeTab === 'checkup' && (
+              <List>
+                {medicalRecords.map((record, index) => (
+                  <ListItem key={index} button onClick={() => handleRecordClick(record)}>
+                    <ListItemText primary={`${new Date(record.date).toDateString()} - ${new Date(record.date).toLocaleTimeString()}`} />
+                  </ListItem>
+                ))}
+              </List>
+            )}
+            {activeTab === 'dental' && (
+              <List>
+                {/* Placeholder for dental treatment records */}
+                <ListItem>
+                  <ListItemText primary="Dental treatment records go here" />
                 </ListItem>
-              ))}
-            </List>
+              </List>
+            )}
             {selectedRecord && (
               <div>
                 <Typography variant="h6" gutterBottom>
@@ -465,6 +506,20 @@ const CheckupForm = () => {
                     </Typography>
                   </CardContent>
                 </Card>
+                <Button
+  variant="contained"
+  sx={{
+    backgroundColor: '#a52a2a',
+    '&:hover': {
+      backgroundColor: '#F7C301',
+    },
+    marginTop: 2,
+  }}
+  onClick={() => window.print()}
+>
+  Print View
+</Button>
+ 
               </div>
             )}
           </Box>
@@ -484,7 +539,6 @@ const CheckupForm = () => {
             Done
           </Button>
         )}
-
         {/* Incomplete Fields Dialog */}
         <Dialog open={showIncompleteFieldsDialog} onClose={handleCloseIncompleteFieldsDialog}>
           <DialogTitle>Incomplete Fields</DialogTitle>
@@ -512,5 +566,5 @@ const CheckupForm = () => {
     </Box>
   );
 };
-
+ 
 export default CheckupForm;

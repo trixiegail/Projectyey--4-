@@ -1,308 +1,258 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import moment from 'moment';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './CalendarSchedule.css';
-import { Modal, Switch, Button, Row, Col, InputNumber, message } from 'antd';
 import NavNurseDentist from '../components/NavNurseDentist';
-import { format, startOfMonth, endOfMonth, addMonths, eachDayOfInterval } from 'date-fns';
-
+import Modal from 'react-modal';
+import { Switch, TextField, Button, IconButton } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CloseIcon from '@mui/icons-material/Close';
+ 
+const localizer = momentLocalizer(moment);
+ 
+const modalStyles = {
+  overlay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Darker background with more opacity
+  },
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+    width: '400px',
+    zIndex: 1000, // Ensure the modal is on top of everything else
+  },
+};
+ 
 const CalendarSchedule = () => {
+  const [events, setEvents] = useState([
+    {
+      title: 'Morning Appointment',
+      start: new Date(2024, 8, 10, 9, 0),
+      end: new Date(2024, 8, 10, 10, 0),
+    },
+    {
+      title: 'Afternoon Appointment',
+      start: new Date(2024, 8, 10, 13, 0),
+      end: new Date(2024, 8, 10, 14, 0),
+    },
+  ]);
+  const [modalOpen, setModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
-  const [morningAvailable, setMorningAvailable] = useState(false);
-  const [afternoonAvailable, setAfternoonAvailable] = useState(false);
-  const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [timeModalVisible, setTimeModalVisible] = useState(false);
-  const [availabilityModalVisible, setAvailabilityModalVisible] = useState(false);
-  const [timeAvailability, setTimeAvailability] = useState({});
-  const [activities, setActivities] = useState({});
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [scheduleData, setScheduleData] = useState([]);
-  const [editModalVisible, setEditModalVisible] = useState(false);
-  const [currentEditSchedule, setCurrentEditSchedule] = useState(null);
-
-  useEffect(() => {
-    // Fetch schedule data when the component mounts
-    fetchScheduleData();
-    
-    const interval = setInterval(() => {
-      setCurrentDate(new Date());
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const fetchScheduleData = async () => {
-    try {
-      const response = await fetch('http://localhost:8080/api/schedule');
-      if (response.ok) {
-        const data = await response.json();
-        setScheduleData(data);
-      } else {
-        message.error('Failed to fetch schedule data.');
-      }
-    } catch (error) {
-      message.error('Error fetching schedule data: ' + error.message);
-    }
-  };
-
-  const handleDateClick = (date) => {
-    setSelectedDate(date);
-    setMorningAvailable(false);
-    setAfternoonAvailable(false);
-    setAvailabilityModalVisible(true);
-    setActivities({});
-    setTimeAvailability({});
-  };
-
-  const handleMorningToggle = (checked) => {
-    setMorningAvailable(checked);
-  };
-
-  const handleAfternoonToggle = (checked) => {
-    setAfternoonAvailable(checked);
-  };
-
-  const toggleTimeModal = () => {
-    setTimeModalVisible(!timeModalVisible);
-  };
-
-  const handleTimeToggle = (hour) => (checked) => {
-    setTimeAvailability(prevAvailability => ({
-      ...prevAvailability,
-      [hour]: checked
-    }));
-  };
-
-  const handleActivityChange = (hour) => (value) => {
-    setActivities(prevActivities => ({
-      ...prevActivities,
-      [hour]: value
-    }));
-  };
-
-  const handleSaveSchedule = async () => {
-    if (selectedDate) {
-      const formattedSelectedDate = format(selectedDate, 'yyyy-MM-dd');
-      const newScheduleData = Object.keys(timeAvailability)
-        .filter(hour => timeAvailability[hour]) // Filter out unchecked hours
-        .map(hour => ({
-          date: formattedSelectedDate,
-          time: `${hour % 12 || 12}:00 ${hour >= 12 ? 'PM' : 'AM'}`,
-          students: activities[hour] || 0,
-          slotsLeft: 10 - (activities[hour] || 0)  // Assuming 10 slots max per hour
-        }));
-      
-      setScheduleData([...scheduleData, ...newScheduleData]);
-
-      // Save to the database
-      await saveScheduleToDatabase(newScheduleData);
-    }
-    setTimeModalVisible(false);
-  };
-
-  const saveScheduleToDatabase = async (newScheduleData) => {
-    try {
-      const response = await fetch('http://localhost:8080/api/schedule', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(newScheduleData)
-      });
-
-      if (response.ok) {
-        message.success('Schedule saved successfully!');
-      } else {
-        message.error('Failed to save schedule.');
-      }
-    } catch (error) {
-      message.error('Error saving schedule: ' + error.message);
-    }
-  };
-
-  const goToPreviousMonth = () => {
-    setCurrentMonth(prevMonth => addMonths(prevMonth, -1));
-  };
-
-  const goToNextMonth = () => {
-    setCurrentMonth(prevMonth => addMonths(prevMonth, 1));
-  };
-
-  const startDate = startOfMonth(currentMonth);
-  const endDate = endOfMonth(currentMonth);
-  const datesInMonth = eachDayOfInterval({ start: startDate, end: endDate });
-
-  const formattedDate = (date) => format(date, 'yyyy-MM-dd');
-
-  const renderTimeSlots = () => {
-    const hours = Array.from({ length: 9 }, (_, index) => index + 8);
-    return (
-      <>
-        {hours.map(hour => (
-          <Row key={hour} style={{ marginBottom: 2 }}>
-            <Col span={12}>
-              <span>{hour === 12 ? 12 : hour % 12}:00 {(hour >= 12 ? 'PM' : 'AM')}</span>
-            </Col>
-            <Col span={12} style={{ textAlign: 'right' }}>
-              <Switch
-                checked={timeAvailability[hour]}
-                onChange={handleTimeToggle(hour)}
-              />
-              {timeAvailability[hour] && (
-                <InputNumber
-                  min={0}
-                  max={10}
-                  defaultValue={activities[hour] || 0}
-                  onChange={handleActivityChange(hour)}
-                  style={{ marginLeft: 5 }}
-                />
-              )}
-            </Col>
-          </Row>
-        ))}
-      </>
+  const [note, setNote] = useState('');
+  const [availability, setAvailability] = useState(true);
+  const [timeSlots, setTimeSlots] = useState([{ startTime: '', endTime: '' }]);
+  const [dayEvents, setDayEvents] = useState([]);
+  const [editEvent, setEditEvent] = useState(null);
+ 
+  const handleSelectSlot = ({ start, end }) => {
+    const filteredEvents = events.filter(
+      (event) => moment(event.start).isSame(start, 'day')
     );
+    const clickedEvent = filteredEvents.find(event =>
+      moment(start).isBetween(event.start, event.end, null, '[)')
+    );
+   
+    if (clickedEvent) {
+      // If an event exists at the clicked time slot, set it for editing
+      setEditEvent(clickedEvent);
+      setNote(clickedEvent.title);
+      setTimeSlots([{
+        startTime: moment(clickedEvent.start).format('h:mm a'),
+        endTime: moment(clickedEvent.end).format('h:mm a'),
+      }]);
+    } else {
+      // Otherwise, prepare to add a new event
+      setEditEvent(null);
+      setNote('');
+      setTimeSlots([{ startTime: '', endTime: '' }]);
+    }
+ 
+    setSelectedDate(start);
+    setDayEvents(filteredEvents);
+    setModalOpen(true);
   };
-
-  const handleEditClick = (schedule) => {
-    setCurrentEditSchedule(schedule);
-    setEditModalVisible(true);
-  };
-
-  const handleSaveEdit = async () => {
-    const updatedScheduleData = scheduleData.map(item => {
-      if (item.date === currentEditSchedule.date && item.time === currentEditSchedule.time) {
-        return currentEditSchedule;
+ 
+  const handleSave = () => {
+    if (note && timeSlots[0].startTime && timeSlots[0].endTime) {
+      const startTime = moment(timeSlots[0].startTime, 'h:mm a').toDate();
+      const endTime = moment(timeSlots[0].endTime, 'h:mm a').toDate();
+      const newEvent = {
+        title: note,
+        start: new Date(selectedDate.setHours(startTime.getHours(), startTime.getMinutes())),
+        end: new Date(selectedDate.setHours(endTime.getHours(), endTime.getMinutes())),
+      };
+      if (editEvent) {
+        // Update existing event
+        setEvents(events.map(e => e === editEvent ? newEvent : e));
+      } else {
+        // Add new event
+        setEvents([...events, newEvent]);
       }
-      return item;
-    });
-    setScheduleData(updatedScheduleData);
-    setEditModalVisible(false);
-
-    // Update the database
-    await saveScheduleToDatabase(updatedScheduleData);
+      setDayEvents([...dayEvents, newEvent]);
+      setEditEvent(null); // Clear edit event after saving
+    }
+    setModalOpen(false);
   };
-
-  const renderEditModal = () => (
-    <Modal
-      title="Edit Schedule"
-      open={editModalVisible}
-      onCancel={() => setEditModalVisible(false)}
-      footer={[
-        <Button key="cancel" onClick={() => setEditModalVisible(false)}>
-          Cancel
-        </Button>,
-        <Button key="save" type="primary" onClick={handleSaveEdit}>
-          Save
-        </Button>
-      ]}
-    >
-      <Row style={{ marginBottom: 2 }}>
-        <Col span={12}>
-          <span>Time: {currentEditSchedule ? currentEditSchedule.time : ''}</span>
-        </Col>
-        <Col span={12} style={{ textAlign: 'right' }}>
-          <InputNumber
-            min={0}
-            max={10}
-            value={currentEditSchedule ? currentEditSchedule.students : 0}
-            onChange={(value) => setCurrentEditSchedule({
-              ...currentEditSchedule,
-              students: value
-            })}
-            style={{ marginLeft: 5 }}
-          />
-        </Col>
-      </Row>
-    </Modal>
-  );
-
-  const renderScheduleDetails = () => {
-    const filteredScheduleData = scheduleData.filter(item => item.date === formattedDate(selectedDate));
-    return filteredScheduleData.map((item, index) => (
-      <div key={index} className="schedule-item">
-        <span>{item.time}</span>
-        <span>{item.students !== undefined ? `${item.students} students` : `${item.slotsLeft} slots left`}</span>
-        <Button onClick={() => handleEditClick(item)}>Add</Button>
-      </div>
-    ));
+ 
+  const handleCancel = () => {
+    setEditEvent(null); // Clear edit event when canceling
+    setModalOpen(false);
   };
-
+ 
+  const handleEditEvent = (event) => {
+    setEditEvent(event);
+    setNote(event.title);
+    setTimeSlots([{
+      startTime: moment(event.start).format('h:mm a'),
+      endTime: moment(event.end).format('h:mm a'),
+    }]);
+    setModalOpen(true);
+  };
+ 
+  const handleDeleteEvent = (event) => {
+    setEvents(events.filter(e => e !== event));
+    setDayEvents(dayEvents.filter(e => e !== event));
+    setModalOpen(false);
+  };
+ 
   return (
-    <div className="calendar-container">
+    <div>
       <NavNurseDentist />
-      <br/>
-      <div className="calendar">
-        <div className="calendar-header">
-          <Button onClick={goToPreviousMonth}>{'<'}</Button>
-          <h3>{format(currentMonth, 'MMMM yyyy')}</h3>
-          <Button onClick={goToNextMonth}>{'>'}</Button>
-        </div>
-        <div className="calendar-days-header">
-          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-            <div key={day} className="calendar-day-label">{day}</div>
-          ))}
-        </div>
-        <div className="calendar-grid">
-          {datesInMonth.map((date) => (
-            <div
-              key={date.toISOString()}
-              className={`calendar-day ${selectedDate && date.toISOString() === selectedDate.toISOString() ? 'selected' : ''}`}
-              onClick={() => handleDateClick(date)}
-            >
-              <div className="calendar-date">{format(date, 'dd')}</div>
+      <div className="calendar-container" style={{ padding: '20px' }}>
+        <h2>Calendar Schedule</h2>
+       
+        {/* Conditionally render Calendar only when modal is not open */}
+        {!modalOpen && (
+          <Calendar
+            localizer={localizer}
+            events={events}
+            startAccessor="start"
+            endAccessor="end"
+            style={{ height: 500 }}
+            selectable
+            onSelectSlot={handleSelectSlot}
+            views={['month', 'week', 'day']}
+            defaultView="month"
+            step={30}
+            timeslots={2}
+            min={new Date(2024, 8, 10, 8, 0)}
+            max={new Date(2024, 8, 10, 18, 0)}
+          />
+        )}
+       
+        {/* Conditionally render any other sections or components */}
+        {!modalOpen && (
+          <div className="set-agenda">
+            {/* Replace this with actual "Set Agenda" content if applicable */}
+            <p>Set Agenda content goes here.</p>
+          </div>
+        )}
+ 
+        <Modal
+          isOpen={modalOpen}
+          onRequestClose={handleCancel}
+          style={modalStyles}
+          contentLabel="Manage Schedule"
+        >
+          <IconButton
+            onClick={handleCancel}
+            aria-label="close"
+            style={{ position: 'absolute', top: '10px', right: '10px' }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <h3>Agenda for {moment(selectedDate).format('MMMM Do YYYY')}</h3>
+         
+          <div>
+            {dayEvents.length > 0 ? (
+              <ul>
+                {dayEvents.map((event, index) => (
+                  <li key={index}>
+                    <strong>{event.title}</strong> ({moment(event.start).format('h:mm a')} - {moment(event.end).format('h:mm a')})
+                    <IconButton onClick={() => handleEditEvent(event)} aria-label="edit" style={{ marginLeft: '10px' }}>
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton onClick={() => handleDeleteEvent(event)} aria-label="delete" color="error" style={{ marginLeft: '10px' }}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No events for this day.</p>
+            )}
+          </div>
+ 
+          <TextField
+            label="Add Note"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            fullWidth
+          />
+          <div style={{ margin: '20px 0' }}>
+            <Switch
+              checked={availability}
+              onChange={() => setAvailability(!availability)}
+              color="primary"
+            />
+            {availability ? 'Available' : 'Unavailable'}
+          </div>
+ 
+          <h4>Time Slots</h4>
+          <br></br>
+          {timeSlots.map((slot, index) => (
+            <div key={index} style={{ marginBottom: '15px' }}>
+              <TextField
+                label="Start Time"
+                type="time"
+                value={slot.startTime}
+                onChange={(e) =>
+                  setTimeSlots(
+                    timeSlots.map((s, i) =>
+                      i === index ? { ...s, startTime: e.target.value } : s
+                    )
+                  )
+                }
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                InputProps={{ inputProps: { step: 300 } }} // Adjust step for better time granularity
+              />
+              <TextField
+                label="End Time"
+                type="time"
+                value={slot.endTime}
+                onChange={(e) =>
+                  setTimeSlots(
+                    timeSlots.map((s, i) =>
+                      i === index ? { ...s, endTime: e.target.value } : s
+                    )
+                  )
+                }
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                style={{ marginLeft: '10px' }}
+                InputProps={{ inputProps: { step: 300 } }} // Adjust step for better time granularity
+              />
             </div>
           ))}
-        </div>
-        <Modal
-          title={`Availability for ${selectedDate ? formattedDate(selectedDate) : ''}`}
-          open={availabilityModalVisible}
-          onCancel={() => setAvailabilityModalVisible(false)}
-          footer={[
-            <Button key="cancel" onClick={() => setAvailabilityModalVisible(false)}>
-              Close
-            </Button>,
-            <Button key="save" type="primary" onClick={toggleTimeModal}>
-              Set Time
-            </Button>
-          ]}
-        >
-          <div>
-            <h4>Morning</h4>
-            <Switch
-              checked={morningAvailable}
-              onChange={handleMorningToggle}
-            />
-          </div>
-          <div>
-            <h4>Afternoon</h4>
-            <Switch
-              checked={afternoonAvailable}
-              onChange={handleAfternoonToggle}
-            />
-          </div>
+ 
+          <Button onClick={handleSave} color="primary" variant="contained" style={{ marginRight: '10px' }}>
+            {editEvent ? 'Update' : 'Save'}
+          </Button>
+          <Button onClick={handleCancel} color="secondary" variant="contained">
+            Cancel
+          </Button>
         </Modal>
-        <Modal
-          title="Set Availability by Time"
-          open={timeModalVisible}
-          onCancel={toggleTimeModal}
-          footer={[
-            <Button key="cancel" onClick={toggleTimeModal}>
-              Close
-            </Button>,
-            <Button key="save" type="primary" onClick={handleSaveSchedule}>
-              Save
-            </Button>
-          ]}
-        >
-          {renderTimeSlots()}
-        </Modal>
-        <div className="schedule-details">
-          <h4>Schedule Details</h4>
-          {selectedDate && renderScheduleDetails()}
-        </div>
       </div>
-      {renderEditModal()}
     </div>
   );
 };
-
+ 
 export default CalendarSchedule;

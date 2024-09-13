@@ -37,6 +37,8 @@ import CalendarSchedule from "./pages/CalendarSchedule";
 import StaffArchive from './staffpages/StaffArchive';
 import NurseArchive from './staffpages/NurseArchive';
 import Contact from './userpages/contact';
+import PrintView from './pages/printview';
+import CheckupForm from './pages/CheckupForm';
 
 export default function App() {
   return (
@@ -82,6 +84,8 @@ export default function App() {
         <Route path="/StudentMedicalRecords" exact element={<StudentMedicalRecords />} />
         <Route path="/NurseSchedule" exact element={<NurseSchedule />} />
         <Route path="/CalendarSchedule" exact element={<CalendarSchedule />} />
+        <Route path='/printview' exact element={< PrintView/>} />
+        <Route path='/checkupform' exact element={< CheckupForm/>} />
       </Routes>
       </MedicalHistoryProvider>
     </BrowserRouter>

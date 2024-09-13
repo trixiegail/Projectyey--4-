@@ -1,0 +1,22 @@
+@media print {
+    body * {
+      visibility: hidden;
+    }
+    #printView, #printView * {
+      visibility: visible;
+    }
+    #printView {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      padding: 30px;
+      font-family: 'Times New Roman', serif;
+      border: 2px solid black;
+      background: #f9f9f9;
+    }
+    .no-print {
+      display: none;
+    }
+  }

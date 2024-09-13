@@ -43,7 +43,23 @@ function Dashboard() {
       <div className="w-full max-w-4xl p-8 space-y-6 bg-[#88343B] rounded-lg shadow-md">
         <h1 className="text-2xl font-bold text-center text-white">Generate Slots for a Date</h1>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DateCalendar value={dayjs(selectedDate)} onChange={handleDateChange} />
+          <DateCalendar
+            value={dayjs(selectedDate)}
+            onChange={handleDateChange}
+            sx={{
+              color: 'white', // Ensures the calendar text color is white
+              '.MuiTypography-root': { color: 'white' }, // Change text for days, months, and year to white
+              '.MuiPickersDay-root': {
+                color: 'white', // Change day numbers color to white
+                '&.Mui-selected': {
+                  backgroundColor: '#F7C301', // Color for selected date background
+                  color: 'black', // Color for selected day text
+                },
+              },
+              '.MuiPickersCalendarHeader-label': { color: 'white' }, // Month and year label color
+              '.MuiSvgIcon-root': { color: 'white' }, // Arrow icons color
+            }}
+          />
         </LocalizationProvider>
 
         <div className="grid grid-cols-1 gap-4 mt-4">

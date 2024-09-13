@@ -102,9 +102,25 @@ function App() {
           </div>
 
           <div className="isolate bg-[#88343B] px-6 py-24 sm:py-32 lg:px-8 rounded-lg">
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DateCalendar value={dayjs(selectedDate)} onChange={handleDateChange} />
-            </LocalizationProvider>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DateCalendar
+            value={dayjs(selectedDate)}
+            onChange={handleDateChange}
+            sx={{
+              color: 'white', // Ensures the calendar text color is white
+              '.MuiTypography-root': { color: 'white' }, // Change text for days, months, and year to white
+              '.MuiPickersDay-root': {
+                color: 'white', // Change day numbers color to white
+                '&.Mui-selected': {
+                  backgroundColor: '#F7C301', // Color for selected date background
+                  color: 'black', // Color for selected day text
+                },
+              },
+              '.MuiPickersCalendarHeader-label': { color: 'white' }, // Month and year label color
+              '.MuiSvgIcon-root': { color: 'white' }, // Arrow icons color
+            }}
+          />
+        </LocalizationProvider>
             {selectedDate && Object.entries(slots).map(([time, count]) => (
               <div key={time} className="flex justify-between gap-x-6 py-5 rounded-md ">
                 <div className="flex min-w-0 gap-x-4">

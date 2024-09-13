@@ -1,75 +1,62 @@
-.calendar {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #A52A2A;
-  color: #fff;
+/* Soft pastel pink for appointments */
+.rbc-event {
+  background-color: #fde0e0 !important; /* Pastel pink for events */
+  color: #000 !important; /* Black text color for better readability */
 }
-
-.calendar-header {
+ 
+/* Soft pastel pink for today’s highlight */
+.rbc-today {
+  background-color: #fde0e0 !important; /* Pastel pink for today’s highlight */
+}
+ 
+/* Custom style for the selected slot (if needed) */
+.rbc-selected-slot {
+  background-color: #fde0e0 !important; /* Pastel pink for selected slots */
+}
+ 
+.custom-toolbar {
+  display: flex;
+  justify-content: center; /* Center the label and arrows */
+  align-items: center;
+}
+ 
+.toolbar-left {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 5px;
 }
-
-.calendar-days-header {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  margin-bottom: 5px;
-  text-align: center;
-}
-
-.calendar-day-label {
-  padding: 5px 0;
-  font-weight: bold;
-}
-
-.calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 1px;
-}
-
-.calendar-day {
-  position: relative;
-  padding: 5px;
-  background-color: transparent;
-  border: 1px solid #ccc;
+ 
+.toolbar-left button {
+  background: none;
+  border: none;
   cursor: pointer;
-  text-align: center;
-  color: #A52A2A;
-  transition: background-color 0.3s ease;
+  font-size: 16px;
+  margin: 0 10px;
+}
+ 
+.toolbar-left span {
+  font-size: 16px;
 }
 
-.calendar-day.selected {
-  background-color: #F7C301;
-  color: #A52A2A;
+/* Change calendar background to white */
+.calendar-container .rbc-calendar {
+  background-color: white;
 }
 
-.calendar-date {
-  font-size: 18px;
-  font-weight: bold;
-  color: #fff;
+/* Optional: Adjust the color of the event titles */
+.calendar-container .rbc-event {
+  color: black;
 }
 
-.schedule-details {
-  margin-top: 5px;
+/* Optional: Customize the date and time slot appearance */
+.calendar-container .rbc-time-view, 
+.calendar-container .rbc-month-view {
+  background-color: white;
+  color: black;
 }
 
-.schedule-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #fff;
-  color: #A52A2A;
-  padding: 3px 5px;
-  margin-bottom: 5px;
-  border-radius: 5px;
-}
-
-.schedule-item span {
-  flex: 1;
+/* Adjust the border and color of time slots for better visibility */
+.calendar-container .rbc-timeslot-group, 
+.calendar-container .rbc-day-slot, 
+.calendar-container .rbc-date-cell {
+  border: 1px solid #e0e0e0;
 }

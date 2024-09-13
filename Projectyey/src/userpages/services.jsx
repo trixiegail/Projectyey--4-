@@ -11,7 +11,8 @@ function Services() {
           <div className="mx-auto max-w-2xl py-10">
             <h1 className="text-4xl font-bold tracking-tight text-[#88343B] sm:text-5xl">Our Services</h1>
             <p className="mt-6 text-lg leading-8 text-black">
-              At our dental clinic, we offer a wide range of services to cater to all your dental needs. Our team of experienced professionals is dedicated to providing you with the highest quality care.
+            We're dedicated to providing CIT-University with convenient medical and dental consultations, ensuring your health needs are met safely.
+            Your well-being matters to us.
             </p>
           </div>
 
