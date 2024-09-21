@@ -39,6 +39,7 @@ import NurseArchive from './staffpages/NurseArchive';
 import Contact from './userpages/contact';
 import PrintView from './pages/printview';
 import CheckupForm from './pages/CheckupForm';
+import DentalChartForm from './doctor/DentalChart';
 
 export default function App() {
   return (
@@ -86,6 +87,9 @@ export default function App() {
         <Route path="/CalendarSchedule" exact element={<CalendarSchedule />} />
         <Route path='/printview' exact element={< PrintView/>} />
         <Route path='/checkupform' exact element={< CheckupForm/>} />
+
+        {/* Doctor */}
+        <Route path='/dentalchartform' exact element={< DentalChartForm />} />
       </Routes>
       </MedicalHistoryProvider>
     </BrowserRouter>
