@@ -1,0 +1,86 @@
+.dashboard {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+.section {
+  margin-bottom: 30px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-title {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.add-button {
+  background-color: #a162d0;
+  color: white;
+  font-size: 1.5em;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.card {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.card-item {
+  text-align: center;
+  padding: 10px;
+}
+
+.card-item h2 {
+  font-size: 2em;
+  color: #007bff;
+}
+
+.card-item p {
+  font-size: 0.9em;
+  margin: 5px 0;
+}
+
+.icon-view {
+  color: #a162d0;
+  font-size: 1.5em;
+}
+
+.icon-arrow {
+  color: #a162d0;
+  font-size: 1.5em;
+}
+
+.icon-birthday {
+  color: #a162d0;
+  font-size: 1.5em;
+}
+
+.calendar-button {
+  display: block;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  width: 100%;
+  text-align: center;
+  border-radius: 5px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.calendar-button:hover {
+  background-color: #0056b3;
+}
