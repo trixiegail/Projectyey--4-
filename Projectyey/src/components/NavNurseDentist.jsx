@@ -49,6 +49,14 @@ export default function NavbarBasicPreview() {
             </li>
             <li>
               <Link
+                to="/docdashboard"
+                className={location.pathname === "/docdashboard" ? "font-bold" : ""}
+              >
+                Dashboard
+              </Link>
+            </li>
+            <li>
+              <Link
                 to="/CalendarSchedule"
                 className={location.pathname === "/CalendarSchedule" ? "font-bold" : ""}
               >
@@ -61,6 +69,22 @@ export default function NavbarBasicPreview() {
                 className={location.pathname === "/CheckupApplicantList" ? "font-bold" : ""}
               >
                 Applicant List
+              </Link>
+              </li>
+              <li>
+              <Link
+                to="/dentalchartform"
+                className={location.pathname === "/dentalchartform" ? "font-bold" : ""}
+              >
+                Dental Form
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/intaoralexamination"
+                className={location.pathname === "/intaoralexamination" ? "font-bold" : ""}
+              >
+                Intraoral Examination
               </Link>
             </li>
           </ul>
