@@ -40,6 +40,7 @@ import Contact from './userpages/contact';
 import PrintView from './pages/printview';
 import CheckupForm from './pages/CheckupForm';
 import DentalChartForm from './doctor/DentalChart';
+import IntraoralExamination from './doctor/IntraoralExam';
 
 export default function App() {
   return (
@@ -90,6 +91,7 @@ export default function App() {
 
         {/* Doctor */}
         <Route path='/dentalchartform' exact element={< DentalChartForm />} />
+        <Route path='/intaoralexamination' exact element={< IntraoralExamination />} />
       </Routes>
       </MedicalHistoryProvider>
     </BrowserRouter>
