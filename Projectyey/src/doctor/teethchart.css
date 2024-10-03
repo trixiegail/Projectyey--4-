@@ -97,3 +97,31 @@
 .tooth-lower-46 { top: 558px; left: 278px; }
 .tooth-lower-47 { top: 506px; left: 265px; }
 .tooth-lower-48 { top: 460px; left: 260px; }
+
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  z-index: 1000;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  width: 300px;
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-content input {
+  margin-bottom: 10px;
+}
+
+.modal-content button {
+  margin-top: 10px;
+}
+
+
