@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './index.css';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import CreateDepartment from "./staffpages/CreateDepartment";
@@ -20,7 +20,7 @@ import Archive from './staffpages/Archive';
 import Home from './userpages/home';
 import AboutUs from './userpages/aboutus';
 import Services from './userpages/services';
-import StudentCalendar from './userpages/calendar'
+import StudentCalendar from './userpages/calendar';
 import Docinfo from "./pages/docinfo";
 import Nurseinfo from "./pages/nurseinfo";
 import Staffinfo from "./pages/staffinfo";
@@ -38,65 +38,83 @@ import StaffArchive from './staffpages/StaffArchive';
 import NurseArchive from './staffpages/NurseArchive';
 import Contact from './userpages/contact';
 import PrintView from './pages/printview';
-import CheckupForm from './pages/CheckupForm';
 import DentalChartForm from './doctor/DentalChart';
 import IntraoralExamination from './doctor/IntraoralExam';
 import DocDashboard from './doctor/Dashboard';
+import BookingPage from './pages/BookingPage';
+import Account from './studentprofile/Account'
+import Settings from './studentprofile/Settings'
 
 export default function App() {
-  return (
-   <div>
-    <BrowserRouter>
-      <MedicalHistoryProvider>
-      <Routes>
-        <Route path="/" exact element={<LoginAdmin />}></Route>
-        <Route path="/dashboard" exact element={<Dashboard />}></Route>
-        <Route path="/student-accounts" exact element={<StudentsAccounts />}></Route>
-        <Route path="/staff-accounts" exact element={<StaffAccounts />}></Route>
-        <Route path="/nurse-accounts" exact element={<NurseAccounts />}></Route>
-        <Route path="/doctor-accounts" exact element={<DoctorAccounts />}></Route>
-        <Route path="/archived-student-accounts" exact element={<Archive />}></Route>
-        <Route path="/archived-staff-accounts" exact element={<StaffArchive />}></Route>
-        <Route path="/archived-nurse-accounts" exact element={<NurseArchive />}></Route>
-        <Route path="/create-account" exact element={<CreateUserRoleAccount/>}></Route>
-        <Route path="/create-student-account" exact element={<CreateStudent />}></Route>
-        <Route path="/create-department" exact element={<CreateDepartment />}></Route>
-        <Route path="/create-program" exact element={<CreateProgram />}></Route>
-        <Route path="/login-staff" exact element={<LoginStaff />}></Route>
-        <Route path="/login-student" exact element={<LoginStudent />}></Route>
-        <Route path="/login-staff" exact element={<LoginStaff />}></Route>
-        <Route path="/login-nurse" exact element={<LoginNurse />}></Route>
-        <Route path="/login-admin" exact element={<LoginAdmin />}></Route>
-        <Route path="/login-doctor" exact element={<LoginDoctor />}></Route>
-        <Route path="/change-password" exact element={<ForgotPassword />}></Route>
-        <Route path="/home" exact element={<Home />}></Route>
-        <Route path="/aboutus" exact element={<AboutUs />}></Route>
-        <Route path="/services" exact element={<Services />}></Route>
-        <Route path="/contact" exact element={<Contact />}></Route>
-        <Route path="/student-calendar" exact element={<StudentCalendar />}></Route>
-        <Route path="/home-personnel" exact element={<AfterLogin />}></Route>
-        <Route path="/studinfo" exact element={<Studinfo />}></Route>
-        <Route path="/nurseinfo" exact element={<Nurseinfo />} />
-        <Route path="/docinfo" exact element={<Docinfo />} />
-        <Route path="/staffinfo" exact element={<Staffinfo />} />
-        <Route path="/RegisterForCheckup" exact element={<RgstrForCheckup />} />
-        <Route path="/CheckupForm/:id" exact element={<ChckupForm />} />
-        <Route path="/CheckupApplicantList" exact element={<CheckupApplicantList />} />
-        <Route path="/StudentMedicalHistory" exact element={<StudentMedicalHistory />} />
-        <Route path="/AfterLogin" exact element={<AfterLogin />} />
-        <Route path="/StudentMedicalRecords" exact element={<StudentMedicalRecords />} />
-        <Route path="/NurseSchedule" exact element={<NurseSchedule />} />
-        <Route path="/CalendarSchedule" exact element={<CalendarSchedule />} />
-        <Route path='/printview' exact element={< PrintView/>} />
-        <Route path='/checkupform' exact element={< CheckupForm/>} />
+  // State to manage events
+  const [events, setEvents] = useState([
+    // Add some initial dummy events if necessary
+  ]);
 
-        {/* Doctor */}
-        <Route path='/dentalchartform' exact element={< DentalChartForm />} />
-        <Route path='/intaoralexamination' exact element={< IntraoralExamination />} />
-        <Route path='/docdashboard' exact element={< DocDashboard />} />
-      </Routes>
-      </MedicalHistoryProvider>
-    </BrowserRouter>
-   </div>
-  )
-} 
+  // Handler for booking a slot
+  const handleBookSlot = (event) => {
+    alert(`You have booked: ${event.title}`);
+    // Logic for handling booking can be added here
+  };
+
+  return (
+    <div>
+      <BrowserRouter>
+        <MedicalHistoryProvider>
+          <Routes>
+            <Route path="/" exact element={<LoginAdmin />} />
+            <Route path="/dashboard" exact element={<Dashboard />} />
+            <Route path="/student-accounts" exact element={<StudentsAccounts />} />
+            <Route path="/staff-accounts" exact element={<StaffAccounts />} />
+            <Route path="/nurse-accounts" exact element={<NurseAccounts />} />
+            <Route path="/doctor-accounts" exact element={<DoctorAccounts />} />
+            <Route path="/archived-student-accounts" exact element={<Archive />} />
+            <Route path="/archived-staff-accounts" exact element={<StaffArchive />} />
+            <Route path="/archived-nurse-accounts" exact element={<NurseArchive />} />
+            <Route path="/create-account" exact element={<CreateUserRoleAccount />} />
+            <Route path="/create-student-account" exact element={<CreateStudent />} />
+            <Route path="/create-department" exact element={<CreateDepartment />} />
+            <Route path="/create-program" exact element={<CreateProgram />} />
+            <Route path="/login-staff" exact element={<LoginStaff />} />
+            <Route path="/login-student" exact element={<LoginStudent />} />
+            <Route path="/login-nurse" exact element={<LoginNurse />} />
+            <Route path="/login-admin" exact element={<LoginAdmin />} />
+            <Route path="/login-doctor" exact element={<LoginDoctor />} />
+            <Route path="/change-password" exact element={<ForgotPassword />} />
+            <Route path="/home" exact element={<Home />} />
+            <Route path="/aboutus" exact element={<AboutUs />} />
+            <Route path="/services" exact element={<Services />} />
+            <Route path="/contact" exact element={<Contact />} />
+            <Route path="/student-calendar" exact element={<StudentCalendar />} />
+            <Route path="/home-personnel" exact element={<AfterLogin />} />
+            <Route path="/studinfo" exact element={<Studinfo />} />
+            <Route path="/nurseinfo" exact element={<Nurseinfo />} />
+            <Route path="/docinfo" exact element={<Docinfo />} />
+            <Route path="/staffinfo" exact element={<Staffinfo />} />
+            <Route path="/RegisterForCheckup" exact element={<RgstrForCheckup />} />
+            <Route path="/CheckupForm/:id" exact element={<ChckupForm />} />
+            <Route path="/CheckupApplicantList" exact element={<CheckupApplicantList />} />
+            <Route path="/StudentMedicalHistory" exact element={<StudentMedicalHistory />} />
+            <Route path="/AfterLogin" exact element={<AfterLogin />} />
+            <Route path="/StudentMedicalRecords" exact element={<StudentMedicalRecords />} />
+            <Route path="/NurseSchedule" exact element={<NurseSchedule />} />
+            <Route path="/CalendarSchedule" exact element={<CalendarSchedule />} />
+            <Route path='/printview' exact element={<PrintView />} />
+            <Route path='/checkupform' exact element={<ChckupForm />} />
+            
+            {/* Doctor */}
+            <Route path='/dentalchartform' exact element={<DentalChartForm />} />
+            <Route path='/intaoralexamination' exact element={<IntraoralExamination />} />
+            <Route path='/docdashboard' exact element={<DocDashboard />} />
+            
+            {/* Booking Page */}
+            <Route path='/booking' exact element={<BookingPage />} />
+
+            <Route path="/account" component={<Account />} />
+            <Route path="/settings" component={<Settings />} />
+          </Routes>
+        </MedicalHistoryProvider>
+      </BrowserRouter>
+    </div>
+  );
+}
