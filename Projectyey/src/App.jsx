@@ -42,8 +42,6 @@ import DentalChartForm from './doctor/DentalChart';
 import IntraoralExamination from './doctor/IntraoralExam';
 import DocDashboard from './doctor/Dashboard';
 import BookingPage from './pages/BookingPage';
-import Account from './studentprofile/Account'
-import Settings from './studentprofile/Settings'
 
 export default function App() {
   // State to manage events
@@ -110,8 +108,7 @@ export default function App() {
             {/* Booking Page */}
             <Route path='/booking' exact element={<BookingPage />} />
 
-            <Route path="/account" component={<Account />} />
-            <Route path="/settings" component={<Settings />} />
+        
           </Routes>
         </MedicalHistoryProvider>
       </BrowserRouter>

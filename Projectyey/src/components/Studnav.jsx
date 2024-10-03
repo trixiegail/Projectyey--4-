@@ -45,38 +45,7 @@ export function Studnav() {
               <a href="/contact" className="text-gray-700 hover:text-black">Contact Us</a>
             </nav>
 
-            {/* Profile Section */}
-            <div className="relative ml-4">
-              {/* Profile Icon */}
-              <button onClick={handleDropdownToggle} className="flex items-center focus:outline-none">
-                <img
-                  src="src/image/profile-user.png" // Replace with user profile image path or use a default image
-                  alt="Profile"
-                  className="w-10 h-10 rounded-full"
-                />
-              </button>
-
-              {/* Dropdown Menu */}
-              {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
-                  <a href="/account" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
-                    Account
-                  </a>
-                  <a href="/settings" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
-                    Settings
-                  </a>
-                  <div
-                    onClick={() => {
-                      // Handle logout logic here
-                      console.log("Logging out...");
-                    }}
-                    className="block px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer"
-                  >
-                    Log Out
-                  </div>
-                </div>
-              )}
-            </div>
+          
 
             {/* Get Started button (for larger screens) */}
             <a href="/login-student" className="hidden lg:inline-block bg-[#88343B] text-white px-4 py-2 rounded">
