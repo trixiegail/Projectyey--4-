@@ -1,26 +1,28 @@
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
-import dayjs from 'dayjs';
+import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 import ReactDOM from 'react-dom';
 import Studfooter from '../components/Studfooter';
 import Studnav from '../components/Studnav';
+import './custom.css';
+
+const localizer = momentLocalizer(moment);
 
 function App() {
-  const [selectedDate, setSelectedDate] = useState(dayjs().format('YYYY-MM-DD'));
-  const [slots, setSlots] = useState({
-    '9 AM': 5, '10 AM': 5, '11 AM': 5, '1 PM': 5, '2 PM': 5, '3 PM': 5, '4 PM': 5
-  });
-  const [isShowing, setIsShowing] = useState(false);
+  const [events, setEvents] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
   const [currentSlot, setCurrentSlot] = useState('');
-
+  const [eventToDelete, setEventToDelete] = useState(null);
   const wrapperRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
-        setIsShowing(false);
+        setModalOpen(false);
+        setDeleteModalOpen(false);
       }
     };
 
@@ -30,50 +32,49 @@ function App() {
     };
   }, []);
 
-  const handleReserve = (time) => {
-    setCurrentSlot(time);
-    setIsShowing(true);
-  };
+  const handleSelectSlot = ({ start, end }) => {
+    const existingEvent = events.find(event => 
+      moment(start).isBetween(event.start, event.end, null, '[]')
+    );
 
-  const confirmReserve = async () => {
-    if (slots[currentSlot] > 0) {
-      const newSlots = { ...slots, [currentSlot]: slots[currentSlot] - 1 };
-      setSlots(newSlots);
-      await updateBackend(currentSlot, newSlots[currentSlot]);
-      setIsShowing(false);
+    if (existingEvent) {
+      setEventToDelete(existingEvent);
+      setDeleteModalOpen(true);
+    } else {
+      setSelectedDate(start);
+      setCurrentSlot({ start, end });
+      setModalOpen(true);
     }
   };
 
-  const updateBackend = async (time, newCount) => {
-    try {
-      const response = await fetch('', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ date: selectedDate, time, slots: newCount }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update reservation');
-      }
-      console.log("Updated successfully!");
-    } catch (error) {
-      console.error("Error updating reservation:", error);
+  const handleReserve = () => {
+    if (currentSlot) {
+      const newEvent = {
+        title: `Appointment on ${moment(currentSlot.start).format('MMMM Do YYYY')}`,
+        start: currentSlot.start,
+        end: currentSlot.end,
+      };
+      setEvents([...events, newEvent]);
+      setModalOpen(false);
     }
+  };
+
+  const handleDelete = () => {
+    setEvents(events.filter(event => event !== eventToDelete));
+    setDeleteModalOpen(false);
   };
 
   const Modal = () => {
-    if (!isShowing) return null;
+    if (!modalOpen) return null;
 
     return ReactDOM.createPortal(
       <div className="fixed inset-0 z-30 flex items-center justify-center overflow-y-auto text-black bg-black bg-opacity-50">
         <div ref={wrapperRef} className="bg-white rounded shadow-lg max-w-md mx-auto p-4">
           <h2 className="mt-1 text-xl font-bold text-center">Confirm Reservation</h2>
-          <p className='mt-2 text-center'>Are you sure you want to reserve the slot at {currentSlot}?</p>
+          <p className='mt-2 text-center'>Are you sure you want to reserve this slot?</p>
           <div className="flex justify-end space-x-4 mt-4">
-            <button className="bg-[#88343B] hover:bg-[#88343B] text-white font-bold py-2 px-4 rounded mb-1" onClick={() => setIsShowing(false)}>Cancel</button>
-            <button className="bg-[#F7C301] hover:bg-[#F7C301] text-white font-bold py-2 px-4 rounded mb-1" onClick={confirmReserve}>Confirm</button>
+            <button className="bg-[#88343B] hover:bg-[#88343B] text-white font-bold py-2 px-4 rounded mb-1" onClick={() => setModalOpen(false)}>Cancel</button>
+            <button className="bg-[#F7C301] hover:bg-[#F7C301] text-white font-bold py-2 px-4 rounded mb-1" onClick={handleReserve}>Confirm</button>
           </div>
         </div>
       </div>,
@@ -81,62 +82,56 @@ function App() {
     );
   };
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date.format('YYYY-MM-DD'));
+  const DeleteModal = () => {
+    if (!deleteModalOpen) return null;
+
+    return ReactDOM.createPortal(
+      <div className="fixed inset-0 z-30 flex items-center justify-center overflow-y-auto text-black bg-black bg-opacity-50">
+        <div ref={wrapperRef} className="bg-white rounded shadow-lg max-w-md mx-auto p-4">
+          <h2 className="mt-1 text-xl font-bold text-center">Delete Appointment</h2>
+          <p className='mt-2 text-center'>Are you sure you want to delete this appointment?</p>
+          <div className="flex justify-end space-x-4 mt-4">
+            <button className="bg-[#88343B] hover:bg-[#88343B] text-white font-bold py-2 px-4 rounded mb-1" onClick={() => setDeleteModalOpen(false)}>Cancel</button>
+            <button className="bg-[#F7C301] hover:bg-[#F7C301] text-white font-bold py-2 px-4 rounded mb-1" onClick={handleDelete}>Delete</button>
+          </div>
+        </div>
+      </div>,
+      document.body
+    );
   };
 
   return (
     <div>
       <Studnav />
       <Modal />
-      
+      <DeleteModal />
+
       <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
         <div className="mx-auto max-w-7xl text-center">
-
-          <div>
-            <div className="mx-auto max-w-2xl py-10 text-center">
-                <p className="py-5 text-black">Articles</p>
-                <h2 className="text-3xl font-bold tracking-tight text-black sm:text-4xl">Choose an Appointment</h2>
-                <p className="py-5 text-black">Read our latest blog posts for valuable insights</p>
-            </div>
+          <div className="mx-auto max-w-2xl py-10 text-center">
+            <p className="py-5 text-black">Articles</p>
+            <h1 className="text-4xl font-bold tracking-tight text-[#88343B] sm:text-5xl">Choose an Appointment</h1>
+            <p className="mt-6 text-lg leading-8 text-black">Choose an Appointment</p>
           </div>
-
-          <div className="isolate bg-[#88343B] px-6 py-24 sm:py-32 lg:px-8 rounded-lg">
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DateCalendar
-            value={dayjs(selectedDate)}
-            onChange={handleDateChange}
-            sx={{
-              color: 'white', // Ensures the calendar text color is white
-              '.MuiTypography-root': { color: 'white' }, // Change text for days, months, and year to white
-              '.MuiPickersDay-root': {
-                color: 'white', // Change day numbers color to white
-                '&.Mui-selected': {
-                  backgroundColor: '#F7C301', // Color for selected date background
-                  color: 'black', // Color for selected day text
-                },
-              },
-              '.MuiPickersCalendarHeader-label': { color: 'white' }, // Month and year label color
-              '.MuiSvgIcon-root': { color: 'white' }, // Arrow icons color
-            }}
-          />
-        </LocalizationProvider>
-            {selectedDate && Object.entries(slots).map(([time, count]) => (
-              <div key={time} className="flex justify-between gap-x-6 py-5 rounded-md ">
-                <div className="flex min-w-0 gap-x-4">
-                  <div className="min-w-0 flex-auto">
-                    <p className="text-xs font-semibold leading-6 text-white">{time}</p>
-                    <p className="mt-1 font-semibold text-lg leading-5 text-white">{count} slots</p>
-                  </div>
-                </div>
-                <div className="shrink-0 sm:flex sm:flex-col sm:items-end">
-                  <button className="px-4 py-2 text-sm text-white bg-[#F7C301] hover:bg-[#F7C301] rounded-lg" onClick={() => handleReserve(time)} disabled={count === 0}>Reserve</button>
-                </div>
-              </div>
-            ))}
+          <div className="isolate bg-[#88343B] px-6 py-24 sm:py-32 lg:px-8 rounded-lg text-white ">
+          <p className="text-lg text-white">Choose an Appointment</p>
+            <Calendar
+              localizer={localizer}
+              events={events}
+              startAccessor="start"
+              endAccessor="end"
+              style={{ height: 500 }}
+              selectable
+              onSelectSlot={handleSelectSlot}
+              views={['month', 'week', 'day']}
+              defaultView="month"
+              min={new Date(2024, 8, 10, 8, 0)}
+              max={new Date(2024, 8, 10, 18, 0)}
+            />
           </div>
         </div>
-      </div><Studfooter />
+      </div>
+      <Studfooter />
     </div>
   );
 }
