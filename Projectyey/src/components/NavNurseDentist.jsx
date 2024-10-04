@@ -42,7 +42,7 @@ export default function NavbarBasicPreview() {
             <li>
               <Link
                 to="/AfterLogin"
-                className={location.pathname === "/AfterLogin" ? "font-bold" : ""}
+                className={`${location.pathname === "/AfterLogin" ? "font-bold" : ""} block text-gray-600 hover:text-gray-900`}
               >
                 Home
               </Link>
@@ -50,7 +50,7 @@ export default function NavbarBasicPreview() {
             <li>
               <Link
                 to="/docdashboard"
-                className={location.pathname === "/docdashboard" ? "font-bold" : ""}
+                className={`${location.pathname === "/docdashboard" ? "font-bold" : ""} block text-gray-600 hover:text-gray-900`}
               >
                 Dashboard
               </Link>
@@ -58,7 +58,7 @@ export default function NavbarBasicPreview() {
             <li>
               <Link
                 to="/CalendarSchedule"
-                className={location.pathname === "/CalendarSchedule" ? "font-bold" : ""}
+                className={`${location.pathname === "/CalendarSchedule" ? "font-bold" : ""} block text-gray-600 hover:text-gray-900`}
               >
                 Schedule
               </Link>
@@ -66,7 +66,7 @@ export default function NavbarBasicPreview() {
             <li>
               <Link
                 to="/CheckupApplicantList"
-                className={location.pathname === "/CheckupApplicantList" ? "font-bold" : ""}
+                className={`${location.pathname === "/CheckupApplicantList" ? "font-bold" : ""} block text-gray-600 hover:text-gray-900`}
               >
                 Applicant List
               </Link>
@@ -74,7 +74,7 @@ export default function NavbarBasicPreview() {
               <li>
               <Link
                 to="/dentalchartform"
-                className={location.pathname === "/dentalchartform" ? "font-bold" : ""}
+                className={`${location.pathname === "/dentalchartform" ? "font-bold" : ""} block text-gray-600 hover:text-gray-900`}
               >
                 Dental Form
               </Link>
@@ -82,7 +82,7 @@ export default function NavbarBasicPreview() {
             <li>
               <Link
                 to="/intaoralexamination"
-                className={location.pathname === "/intaoralexamination" ? "font-bold" : ""}
+                className={`${location.pathname === "/intaoralexamination" ? "font-bold" : ""} block text-gray-600 hover:text-gray-900`}
               >
                 Intraoral Examination
               </Link>
