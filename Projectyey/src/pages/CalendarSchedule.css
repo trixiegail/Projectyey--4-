@@ -7,22 +7,26 @@
 /* Soft pastel pink for today’s highlight */
 .rbc-today {
   background-color: #fde0e0 !important; /* Pastel pink for today’s highlight */
+  color: black;
 }
  
 /* Custom style for the selected slot (if needed) */
 .rbc-selected-slot {
   background-color: #fde0e0 !important; /* Pastel pink for selected slots */
+  color: black;
 }
  
 .custom-toolbar {
   display: flex;
   justify-content: center; /* Center the label and arrows */
   align-items: center;
+  color:black;
 }
  
 .toolbar-left {
   display: flex;
   align-items: center;
+  color:black;
 }
  
 .toolbar-left button {
@@ -31,15 +35,18 @@
   cursor: pointer;
   font-size: 16px;
   margin: 0 10px;
+  color:black;
 }
  
 .toolbar-left span {
   font-size: 16px;
+  color:black;
 }
 
 /* Change calendar background to white */
 .calendar-container .rbc-calendar {
   background-color: white;
+  color: black;
 }
 
 /* Optional: Adjust the color of the event titles */
@@ -59,4 +66,17 @@
 .calendar-container .rbc-day-slot, 
 .calendar-container .rbc-date-cell {
   border: 1px solid #e0e0e0;
+  color: black;
 }
+
+/* Target the toolbar buttons */
+.rbc-toolbar button {
+  color: black; /* Set text color to black */
+}
+
+/* Optional: Change button hover styles */
+.rbc-toolbar button:hover {
+  color: black;
+  background-color: #f0f0f0; /* Change background color on hover if needed */
+}
+
