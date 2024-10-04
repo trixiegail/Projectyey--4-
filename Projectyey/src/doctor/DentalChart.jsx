@@ -12,9 +12,6 @@ const DentalChartForm = () => {
         age: '',
         nationality: '',
         homeAddress: '',
-        homeNo: '',
-        officeNo: '',
-        faxNo: '',
         mobileNo: '',
         email: '',
         dentalInsurance: '',
@@ -146,11 +143,18 @@ const DentalChartForm = () => {
 
                 <label style={styles.label}>
                     Gender:
-                    <select className="selectInput" name="sex" value={formData.sex} onChange={handleChange} style={styles.input}>
-                        <option value="male">M</option>
-                        <option value="female">F</option>
+                    <select 
+                        className="selectInput" 
+                        name="sex" 
+                        value={formData.sex} 
+                        onChange={handleChange} 
+                        style={{ ...styles.input, backgroundColor: 'white' }} 
+                    >
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
                     </select>
-                </label> 
+                </label>
+
 
                 <label style={styles.label}>
                     Religion:
@@ -166,21 +170,6 @@ const DentalChartForm = () => {
                 <label style={styles.label}>
                     Home Address:
                     <input type="text" name="homeAddress" value={formData.homeAddress} onChange={handleChange} style={styles.input} />
-                </label> 
-
-                <label style={styles.label}>
-                    Home No.:
-                    <input type="tel" name="homeNo" value={formData.homeNo} onChange={handleChange} style={styles.input} />
-                </label>
-
-                <label style={styles.label}>
-                    Office No.:
-                    <input type="tel" name="officeNo" value={formData.officeNo} onChange={handleChange} style={styles.input} />
-                </label> 
-
-                <label style={styles.label}>
-                    Fax No.:
-                    <input type="tel" name="faxNo" value={formData.faxNo} onChange={handleChange} style={styles.input} />
                 </label> 
 
                 <label style={styles.label}>
@@ -233,7 +222,7 @@ const DentalChartForm = () => {
 
                 <fieldset style={styles.fieldset}>
                     <legend>Questions</legend>
-                    <label style={styles.label}>
+                    <label style={styles.label} className="custom-radio">
                         1. Are you in good health?
                         <input type="radio" name="goodHealth" value="yes" checked={formData.goodHealth === 'yes'} onChange={handleChange} />
                         &ensp;Yes
@@ -241,7 +230,7 @@ const DentalChartForm = () => {
                         &ensp;No
                     </label> <br />
 
-                    <label style={styles.label}>
+                    <label style={styles.label} className="custom-radio">
                         2. Are you under medical treatment right now?
                         <input type="radio" name="medicalTreatment" value="yes" checked={formData.medicalTreatment === 'yes'} onChange={handleChange} />
                         &ensp;Yes
@@ -249,12 +238,12 @@ const DentalChartForm = () => {
                         &ensp;No
                     </label> <br />
 
-                    <label style={styles.label}>
+                    <label style={styles.label} className="custom-radio">
                         If yes, what is the condition being treated?
                         <input type="text" name="condition" value={formData.condition} onChange={handleChange} style={styles.input} />
                     </label> <br />
 
-                    <label style={styles.label}>
+                    <label style={styles.label} className="custom-radio">
                         3. Have you ever had serious illness or surgical operation?
                         <input type="radio" name="seriousIllness" value="yes" checked={formData.seriousIllness === 'yes'} onChange={handleChange} />
                         &ensp;Yes
@@ -262,12 +251,12 @@ const DentalChartForm = () => {
                         &ensp;No
                     </label> <br />
 
-                    <label style={styles.label}>
+                    <label style={styles.label} className="custom-radio">
                         If so, what illness or operation?
                         <input type="text" name="illnessOperation" value={formData.illnessOperation} onChange={handleChange} style={styles.input} />
                     </label> <br />
 
-                    <label style={styles.label}>
+                    <label style={styles.label} className="custom-radio">
                         4. Have you ever been hospitalized?
                         <input type="radio" name="hospitalized" value="yes" checked={formData.hospitalized === 'yes'} onChange={handleChange} />
                         &ensp;Yes
@@ -275,12 +264,12 @@ const DentalChartForm = () => {
                         &ensp;No
                     </label> <br />
 
-                    <label style={styles.label}>
+                    <label style={styles.label} className="custom-radio">
                         If so, when and why?
                         <input type="text" name="hospitalizationDetails" value={formData.hospitalizationDetails} onChange={handleChange} style={styles.input} />
                     </label> <br />
 
-                    <label style={styles.label}>
+                    <label style={styles.label} className="custom-radio">
                         5. Are you taking any prescription/non-prescription medication?
                         <input type="radio" name="medication" value="yes" checked={formData.medication === 'yes'} onChange={handleChange} />
                         &ensp;Yes
@@ -288,12 +277,12 @@ const DentalChartForm = () => {
                         &ensp;No
                     </label> <br />
 
-                    <label style={styles.label}>
+                    <label style={styles.label} className="custom-radio">
                         If so, please specify:
                         <input type="text" name="medicationDetails" value={formData.medicationDetails} onChange={handleChange} style={styles.input} />
                     </label> <br />
 
-                    <label style={styles.label}>
+                    <label style={styles.label} className="custom-radio">
                         6. Do you use tobacco products?
                         <input type="radio" name="tobacco" value="yes" checked={formData.tobacco === 'yes'} onChange={handleChange} />
                         &ensp;Yes
@@ -301,7 +290,7 @@ const DentalChartForm = () => {
                         &ensp;No
                     </label> <br />
 
-                    <label style={styles.label}>
+                    <label style={styles.label} className="custom-radio">
                         7. Do you use alcohol, cocaine, or other dangerous drugs?
                         <input type="radio" name="alcoholDrugs" value="yes" checked={formData.alcoholDrugs === 'yes'} onChange={handleChange} />
                         &ensp;Yes
@@ -312,59 +301,59 @@ const DentalChartForm = () => {
                     <label style={styles.label}>
                         8. Are you allergic to any of the following:
                         <div style={styles.checkboxContainer}>
-                            <label style={styles.checkbox}>
+                            <label style={styles.checkbox} className="custom-checkbox">
                                 <input
                                     type="checkbox"
                                     name="localAnesthetic"
                                     checked={formData.allergies.localAnesthetic}
                                     onChange={handleAllergyChange}
                                 />
-                                &ensp;Local Anesthetic (e.g., Lidocaine)
+                                &emsp;&emsp;&emsp;Local Anesthetic (e.g., Lidocaine)
                             </label>
-                            <label style={styles.checkbox}>
+                            <label style={styles.checkbox} className="custom-checkbox">
                                 <input
                                     type="checkbox"
                                     name="antibiotics"
                                     checked={formData.allergies.antibiotics}
                                     onChange={handleAllergyChange}
                                 />
-                                &ensp;Antibiotics (e.g., Penicillin)
+                                &emsp;&emsp;&emsp;Antibiotics (e.g., Penicillin)
                             </label>
-                            <label style={styles.checkbox}>
+                            <label style={styles.checkbox} className="custom-checkbox">
                                 <input
                                     type="checkbox"
                                     name="sulfa"
                                     checked={formData.allergies.sulfa}
                                     onChange={handleAllergyChange}
                                 />
-                                &ensp;Sulfa drugs
+                                &emsp;&emsp;&emsp;Sulfa drugs
                             </label>
-                            <label style={styles.checkbox}>
+                            <label style={styles.checkbox} className="custom-checkbox">
                                 <input
                                     type="checkbox"
                                     name="aspirin"
                                     checked={formData.allergies.aspirin}
                                     onChange={handleAllergyChange}
                                 />
-                                &ensp;Aspirin
+                                &emsp;&emsp;&emsp;Aspirin
                             </label>
-                            <label style={styles.checkbox}>
+                            <label style={styles.checkbox} className="custom-checkbox">
                                 <input
                                     type="checkbox"
                                     name="latex"
                                     checked={formData.allergies.latex}
                                     onChange={handleAllergyChange}
                                 />
-                                &ensp;Latex
+                                &emsp;&emsp;&emsp;Latex
                             </label>
-                            <label style={styles.checkbox}>
+                            <label style={styles.checkbox} className="custom-checkbox">
                                 <input
                                     type="checkbox"
                                     name="other"
                                     checked={formData.allergies.other}
                                     onChange={handleAllergyChange}
                                 />
-                                &ensp;Other:
+                                &emsp;&emsp;&emsp;Other:
                                 <input
                                     type="text"
                                     name="otherDetails"
@@ -377,7 +366,7 @@ const DentalChartForm = () => {
                     </label>
 
 
-                    <label style={styles.label}>
+                    <label style={styles.label} className="custom-radio">
                       10. For women only:
                       <div style={styles.radioContainer}>
                           <div style={styles.radioGroup}>
@@ -451,7 +440,7 @@ const DentalChartForm = () => {
 
                     <label style={styles.label}>
                           11. Blood Type:
-                        <input type="number" name="pregnancyWeeks" value={formData.pregnancyWeeks} onChange={handleChange} style={styles.input} />
+                        <input type="text" name="pregnancyWeeks" value={formData.pregnancyWeeks} onChange={handleChange} style={styles.input} />
                     </label> <br />
 
                     <label style={styles.label}>
@@ -462,220 +451,220 @@ const DentalChartForm = () => {
 
 
                 <label style={styles.label}>
-    Do you have or have you had any of the following? Check which apply:
-    <div style={styles.checkboxContainer}>
-        <div>
-            <input
-                type="checkbox"
-                name="heartDisease"
-                checked={formData.conditions.heartDisease}
-                onChange={handleConditionChange}
-            />
-            Heart Disease
-        </div>
-        <div>
-            <input
-                type="checkbox"
-                name="heartMurmur"
-                checked={formData.conditions.heartMurmur}
-                onChange={handleConditionChange}
-            />
-            Heart Murmur
-        </div>
-        <div>
-            <input
-                type="checkbox"
-                name="hepatitisLiverDisease"
-                checked={formData.conditions.hepatitisLiverDisease}
-                onChange={handleConditionChange}
-            />
-            Hepatitis / Liver Disease
-        </div>
-        <div>
-            <input
-                type="checkbox"
-                name="rheumaticFever"
-                checked={formData.conditions.rheumaticFever}
-                onChange={handleConditionChange}
-            />
-            Rheumatic Fever
-        </div>
-        <div>
-            <input
-                type="checkbox"
-                name="hayFeverAllergies"
-                checked={formData.conditions.hayFeverAllergies}
-                onChange={handleConditionChange}
-            />
-            Hay Fever / Allergies
-        </div>
-        <div>
-            <input
-                type="checkbox"
-                name="respiratoryProblems"
-                checked={formData.conditions.respiratoryProblems}
-                onChange={handleConditionChange}
-            />
-            Respiratory Problems
-        </div>
-        <div>
-            <input
-                type="checkbox"
-                name="hepatitisJaundice"
-                checked={formData.conditions.hepatitisJaundice}
-                onChange={handleConditionChange}
-            />
-            Hepatitis / Jaundice
-        </div>
-        <div>
-            <input
-                type="checkbox"
-                name="tuberculosis"
-                checked={formData.conditions.tuberculosis}
-                onChange={handleConditionChange}
-            />
-            Tuberculosis
-        </div>
-        <div>
-            <input
-                type="checkbox"
-                name="swollenAnkles"
-                checked={formData.conditions.swollenAnkles}
-                onChange={handleConditionChange}
-            />
-            Swollen Ankles
-        </div>
-        <div>
-            <input
-                type="checkbox"
-                name="kidneyDisease"
-                checked={formData.conditions.kidneyDisease}
-                onChange={handleConditionChange}
-            />
-            Kidney Disease
-        </div>
-        <div>
-            <input
-                type="checkbox"
-                name="diabetes"
-                checked={formData.conditions.diabetes}
-                onChange={handleConditionChange}
-            />
-            Diabetes
-        </div>
-        <div>
-            <input
-                type="checkbox"
-                name="chestPain"
-                checked={formData.conditions.chestPain}
-                onChange={handleConditionChange}
-            />
-            Chest Pain
-        </div>
-        <div>
-            <input
-                type="checkbox"
-                name="stroke"
-                checked={formData.conditions.stroke}
-                onChange={handleConditionChange}
-            />
-            Stroke
-        </div>
-        <div>
-            <input
-                type="checkbox"
-                name="cancerTumors"
-                checked={formData.conditions.cancerTumors}
-                onChange={handleConditionChange}
-            />
-            Cancer / Tumors
-        </div>
-        <div>
-            <input
-                type="checkbox"
-                name="anemia"
-                checked={formData.conditions.anemia}
-                onChange={handleConditionChange}
-            />
-            Anemia
-        </div>
-        <div>
-            <input
-                type="checkbox"
-                name="angina"
-                checked={formData.conditions.angina}
-                onChange={handleConditionChange}
-            />
-            Angina
-        </div>
-        <div>
-            <input
-                type="checkbox"
-                name="asthma"
-                checked={formData.conditions.asthma}
-                onChange={handleConditionChange}
-            />
-            Asthma
-        </div>
-        <div>
-            <input
-                type="checkbox"
-                name="emphysema"
-                checked={formData.conditions.emphysema}
-                onChange={handleConditionChange}
-            />
-            Emphysema
-        </div>
-        <div>
-            <input
-                type="checkbox"
-                name="bleedingProblems"
-                checked={formData.conditions.bleedingProblems}
-                onChange={handleConditionChange}
-            />
-            Bleeding Problems
-        </div>
-        <div>
-            <input
-                type="checkbox"
-                name="bleedingDiseases"
-                checked={formData.conditions.bleedingDiseases}
-                onChange={handleConditionChange}
-            />
-            Bleeding Diseases
-        </div>
-        <div>
-            <input
-                type="checkbox"
-                name="headInjuries"
-                checked={formData.conditions.headInjuries}
-                onChange={handleConditionChange}
-            />
-            Head Injuries
-        </div>
-        <div>
-            <input
-                type="checkbox"
-                name="arthritisRheumatism"
-                checked={formData.conditions.arthritisRheumatism}
-                onChange={handleConditionChange}
-            />
-            Arthritis / Rheumatism
-        </div>
-        <div>
-            <input
-                type="checkbox"
-                name="other"
-                checked={formData.conditions.other}
-                onChange={handleConditionChange}
-            />
-            Other:
-            <input type="text" name="otherDetails" value={formData.conditions.otherDetails} onChange={handleChange} style={styles.input} />
-        
-        </div>
-    </div>
-</label>
-</fieldset>
+                    Do you have or have you had any of the following? Check which apply: &emsp;
+                    <div style={styles.checkboxContainer}>
+                        <div className="custom-checkbox">
+                            <input
+                                type="checkbox"
+                                name="heartDisease"
+                                checked={formData.conditions.heartDisease}
+                                onChange={handleConditionChange}
+                            />
+                           &emsp;&emsp;&emsp; Heart Disease
+                        </div>
+                        <div className="custom-checkbox">
+                            <input
+                                type="checkbox"
+                                name="heartMurmur"
+                                checked={formData.conditions.heartMurmur}
+                                onChange={handleConditionChange}
+                            />
+                            &emsp;&emsp;&emsp;Heart Murmur
+                        </div>
+                        <div className="custom-checkbox">
+                            <input
+                                type="checkbox"
+                                name="hepatitisLiverDisease"
+                                checked={formData.conditions.hepatitisLiverDisease}
+                                onChange={handleConditionChange}
+                            />
+                            &emsp;&emsp;&emsp;Hepatitis / Liver Disease
+                        </div>
+                        <div className="custom-checkbox">
+                            <input
+                                type="checkbox"
+                                name="rheumaticFever"
+                                checked={formData.conditions.rheumaticFever}
+                                onChange={handleConditionChange}
+                            />
+                            &emsp;&emsp;&emsp;Rheumatic Fever
+                        </div>
+                        <div className="custom-checkbox">
+                            <input
+                                type="checkbox"
+                                name="hayFeverAllergies"
+                                checked={formData.conditions.hayFeverAllergies}
+                                onChange={handleConditionChange}
+                            />
+                            &emsp;&emsp;&emsp;Hay Fever / Allergies
+                        </div>
+                        <div className="custom-checkbox">
+                            <input
+                                type="checkbox"
+                                name="respiratoryProblems"
+                                checked={formData.conditions.respiratoryProblems}
+                                onChange={handleConditionChange}
+                            />
+                            &emsp;&emsp;&emsp;Respiratory Problems
+                        </div>
+                        <div className="custom-checkbox">
+                            <input
+                                type="checkbox"
+                                name="hepatitisJaundice"
+                                checked={formData.conditions.hepatitisJaundice}
+                                onChange={handleConditionChange}
+                            />
+                            &emsp;&emsp;&emsp;Hepatitis / Jaundice
+                        </div>
+                        <div className="custom-checkbox">
+                            <input
+                                type="checkbox"
+                                name="tuberculosis"
+                                checked={formData.conditions.tuberculosis}
+                                onChange={handleConditionChange}
+                            />
+                            &emsp;&emsp;&emsp;Tuberculosis
+                        </div>
+                        <div className="custom-checkbox">
+                            <input
+                                type="checkbox"
+                                name="swollenAnkles"
+                                checked={formData.conditions.swollenAnkles}
+                                onChange={handleConditionChange}
+                            />
+                            &emsp;&emsp;&emsp;Swollen Ankles
+                        </div>
+                        <div className="custom-checkbox">
+                            <input
+                                type="checkbox"
+                                name="kidneyDisease"
+                                checked={formData.conditions.kidneyDisease}
+                                onChange={handleConditionChange}
+                            />
+                            &emsp;&emsp;&emsp;Kidney Disease
+                        </div>
+                        <div className="custom-checkbox">
+                            <input
+                                type="checkbox"
+                                name="diabetes"
+                                checked={formData.conditions.diabetes}
+                                onChange={handleConditionChange}
+                            />
+                            &emsp;&emsp;&emsp;Diabetes
+                        </div>
+                        <div className="custom-checkbox">
+                            <input
+                                type="checkbox"
+                                name="chestPain"
+                                checked={formData.conditions.chestPain}
+                                onChange={handleConditionChange}
+                            />
+                            &emsp;&emsp;&emsp;Chest Pain
+                        </div>
+                        <div className="custom-checkbox">
+                            <input
+                                type="checkbox"
+                                name="stroke"
+                                checked={formData.conditions.stroke}
+                                onChange={handleConditionChange}
+                            />
+                            &emsp;&emsp;&emsp;Stroke
+                        </div>
+                        <div className="custom-checkbox">
+                            <input
+                                type="checkbox"
+                                name="cancerTumors"
+                                checked={formData.conditions.cancerTumors}
+                                onChange={handleConditionChange}
+                            />
+                            &emsp;&emsp;&emsp;Cancer / Tumors
+                        </div>
+                        <div className="custom-checkbox">
+                            <input
+                                type="checkbox"
+                                name="anemia"
+                                checked={formData.conditions.anemia}
+                                onChange={handleConditionChange}
+                            />
+                            &emsp;&emsp;&emsp;Anemia
+                        </div>
+                        <div className="custom-checkbox">
+                            <input
+                                type="checkbox"
+                                name="angina"
+                                checked={formData.conditions.angina}
+                                onChange={handleConditionChange}
+                            />
+                            &emsp;&emsp;&emsp;Angina
+                        </div>
+                        <div className="custom-checkbox">
+                            <input
+                                type="checkbox"
+                                name="asthma"
+                                checked={formData.conditions.asthma}
+                                onChange={handleConditionChange}
+                            />
+                            &emsp;&emsp;&emsp;Asthma
+                        </div>
+                        <div className="custom-checkbox">
+                            <input
+                                type="checkbox"
+                                name="emphysema"
+                                checked={formData.conditions.emphysema}
+                                onChange={handleConditionChange}
+                            />
+                            &emsp;&emsp;&emsp;Emphysema
+                        </div>
+                        <div className="custom-checkbox">
+                            <input
+                                type="checkbox"
+                                name="bleedingProblems"
+                                checked={formData.conditions.bleedingProblems}
+                                onChange={handleConditionChange}
+                            />
+                            &emsp;&emsp;&emsp;Bleeding Problems
+                        </div>
+                        <div className="custom-checkbox">
+                            <input
+                                type="checkbox"
+                                name="bleedingDiseases"
+                                checked={formData.conditions.bleedingDiseases}
+                                onChange={handleConditionChange}
+                            />
+                            &emsp;&emsp;&emsp;Bleeding Diseases
+                        </div>
+                        <div className="custom-checkbox">
+                            <input
+                                type="checkbox"
+                                name="headInjuries"
+                                checked={formData.conditions.headInjuries}
+                                onChange={handleConditionChange}
+                            />
+                            &emsp;&emsp;&emsp;Head Injuries
+                        </div>
+                        <div className="custom-checkbox">
+                            <input
+                                type="checkbox"
+                                name="arthritisRheumatism"
+                                checked={formData.conditions.arthritisRheumatism}
+                                onChange={handleConditionChange}
+                            />
+                            &emsp;&emsp;&emsp;Arthritis / Rheumatism
+                        </div>
+                        <div className="custom-checkbox"    >
+                            <input
+                                type="checkbox"
+                                name="other"
+                                checked={formData.conditions.other}
+                                onChange={handleConditionChange}
+                            />
+                            &emsp;&emsp;&emsp;Other:
+                            <input type="text" name="otherDetails" value={formData.conditions.otherDetails} onChange={handleChange} style={styles.input} />
+                        
+                        </div>
+                    </div>
+                </label>
+                </fieldset>
 
 
                 
@@ -688,13 +677,12 @@ const DentalChartForm = () => {
     
 };
 
-
 const styles = {
     container: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'flex-start', // Changed from center to flex-start
-      padding: '20px', // Added padding
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        padding: '20px',
     },
     form: {
         backgroundColor: 'white',
@@ -702,40 +690,37 @@ const styles = {
         borderRadius: '8px',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
         width: '1000px',
-        overflowY: 'auto', // Added to allow scrolling if needed
-        maxHeight: '90vh', // Added to limit the height
+        overflowY: 'auto',
+        maxHeight: '90vh',
+        color: 'black', 
     },
     title: {
         textAlign: 'center',
         marginBottom: '20px',
+        color: 'black',
     },
     label: {
-        // display: 'block',
-        // marginBottom: '10px',
         display: 'flex',
-        alignItems: 'center', // Align items vertically centered
-        marginBottom: '10px', // Space between each label-input pair
+        alignItems: 'center',
+        marginBottom: '10px',
+        color: 'black', 
     },
     input: {
-        // width: '100%',
         flex: 1,
         padding: '5px',
-        // marginTop: '5px',
-        // borderRadius: '4px',
-        // border: '1px solid #ccc',
-        // boxSizing: 'border-box',
         border: 'none',
         borderBottom: '1px solid black',
-        
+        color: 'black', 
     },
     fieldset: {
         margin: '10px 0',
         padding: '10px',
         border: '1px solid #ccc',
         borderRadius: '5px',
+        color: 'black', 
     },
     button: {
-        backgroundColor: '#007BFF',
+        backgroundColor: '#88343b',
         color: 'white',
         padding: '10px',
         border: 'none',
@@ -744,47 +729,41 @@ const styles = {
         width: '100%',
     },
     dateInput: {
-      // width: '100%',
-      flex: 1,
-      color: 'black', // Text color
-        backgroundColor: 'white', // Background color
+        flex: 1,
+        color: 'black',
+        backgroundColor: 'white',
         padding: '8px',
-        // border: '1px solid #ccc',
-        // borderRadius: '4px',
-        // boxSizing: 'border-box',
-        WebkitAppearance: 'none', // For Safari
-        MozAppearance: 'none', // For Firefox
-        appearance: 'none', // General reset
+        WebkitAppearance: 'none',
+        MozAppearance: 'none',
+        appearance: 'none',
         borderBottom: '1px solid black',
-  },
-    chackboxLabel: {
-        display: 'block', // Ensure label is block-level for new lines
-        marginBottom: '10px', // Space between each label
     },
     checkboxContainer: {
         display: 'flex',
-        flexDirection: 'column', // Stack checkboxes vertically
-        marginTop: '5px', // Space above the checkboxes
+        flexDirection: 'column',
+        marginTop: '5px',
+        color: 'black', 
     },
     checkbox: {
-        marginBottom: '5px', // Space between each checkbox
-        marginLeft: '10px',
+        marginBottom: '5px',
+        marginLeft: '50px',
+        color: 'black', 
     },
     radioContainer: {
-      display: 'flex',
-      flexDirection: 'column', // Stack radio buttons vertically
-      marginTop: '5px', // Space above the radio buttons
-  },
-  radioGroup: {
-      display: 'flex',
-      alignItems: 'center',
-      marginBottom: '5px', // Spaace between each radio group
-  },
-  radioInput: {
-      marginLeft: '5px', // Space between label and radio button
-  },
-
-  
+        display: 'flex',
+        flexDirection: 'column',
+        marginTop: '5px',
+        color: 'black', 
+    },
+    radioGroup: {
+        display: 'flex',
+        alignItems: 'center',
+        marginBottom: '5px',
+        color: 'black',
+    },
+    radioInput: {
+        marginLeft: '5px',
+    },
 };
 
 

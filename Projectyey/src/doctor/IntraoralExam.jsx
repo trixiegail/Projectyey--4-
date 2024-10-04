@@ -21,19 +21,22 @@ const teethLower = [
   { id: 48, label: '48' },
 ];
 
-
 const IntraoralExamination = () => {
   const [formData, setFormData] = useState({
     name: '',
     age: '',
     gender: 'male',
     date: '',
+    toothStatus: '',
+    customCondition: '',
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [toothNumber, setToothNumber] = useState('');
   const [customCondition, setCustomCondition] = useState('');
 
+  // New state to store the status of each tooth
+  const [toothStatuses, setToothStatuses] = useState({});
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -45,20 +48,8 @@ const IntraoralExamination = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Add form submission logic here
     const finalStatus = formData.toothStatus === 'other' ? customCondition : formData.toothStatus;
     console.log('Form submitted:', { ...formData, toothStatus: finalStatus });
-  };
-
-
-  const tableStyle = {
-    borderCollapse: "collapse",
-    width: "100%",
-  };
-
-  const cellStyle = {
-    border: "1px solid black",
-    padding: "5px",
   };
 
   const handleToothClick = (toothId) => {
@@ -70,57 +61,72 @@ const IntraoralExamination = () => {
     setIsModalOpen(false);
   };
 
+  const tableStyle = {
+    borderCollapse: "collapse",
+    width: "100%",
+  };
+
+  const cellStyle = {
+    border: "1px solid black",
+    padding: "5px",
+  };
+
+  
+  
+
   const handleSave = () => {
-    const finalStatus = formData.toothStatus === 'other' ? customStatus : formData.toothStatus;
-    console.log('Saved Status:', { toothNumber, status: finalStatus });
-    // You can add logic here to handle saving the status (e.g., updating state or sending to an API)
-    closeModal(); // Close the modal after saving
+    const finalStatus = formData.toothStatus === 'other' ? customCondition : formData.toothStatus;
+    setToothStatuses((prevStatuses) => ({
+      ...prevStatuses,
+      [toothNumber]: finalStatus,
+    }));
+    closeModal();
+  };
+
+  const modalOverlayStyle = {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  };
+
+  const modalStyle = {
+    backgroundColor: 'white',
+    padding: '20px',
+    borderRadius: '8px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    textAlign: 'center',
+  };
+
+  const modalButtonStyle = {
+    backgroundColor: '#88343b',
+    color: 'white',
+    padding: '10px',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+  };
+
+  const handlePrint = () => {
+    window.print();
   };
   
 
-  const modalOverlayStyle = {
-  position: 'fixed',
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-};
-
-const modalStyle = {
-  backgroundColor: 'white',
-  padding: '20px',
-  borderRadius: '8px',
-  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-  textAlign: 'center',
-};
-
-const modalButtonStyle = {
-  backgroundColor: '#007BFF',
-  color: 'white',
-  padding: '10px',
-  border: 'none',
-  borderRadius: '4px',
-  cursor: 'pointer',
-};
-
-
-  
-
   return (
-    <><Nav />    
+    <>
+      <Nav />
+      <div style={styles.container}>
+        <form onSubmit={handleSubmit} style={styles.form}>
+          <h1 style={styles.title}> 
+            <strong>DENTAL CHART</strong>
+          </h1>
 
-
-    <div style={styles.container}>
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <h1 style={styles.title}>
-          <strong>DENTAL CHART</strong>
-        </h1>
-
-        <h2>
+          <h2>
           <strong>Patient Information Record</strong>
         </h2>
         <br />
@@ -154,10 +160,10 @@ const modalButtonStyle = {
             name="gender"
             value={formData.gender}
             onChange={handleChange}
-            style={styles.input}
+            style={{ ...styles.input, backgroundColor: 'white' }} 
           >
-            <option value="male">M</option>
-            <option value="female">F</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
           </select>
         </label>
 
@@ -173,97 +179,152 @@ const modalButtonStyle = {
         </label>
 
 
-        <div className="teeth-chart-container">
-      <div className="teeth-chart">
-        <img src="src/image/teeth.png" alt="Teeth Chart" />
-
-        <div className="teeth-buttons">
-          {/* Upper Teeth */}
-          {teethUpper.map((tooth) => (
-            <button
-              key={tooth.id}
-              className={`tooth-button tooth-upper-${tooth.id}`}
-              onClick={() => handleToothClick(tooth.id)}
-            >
-              {tooth.label}
-            </button>
-          ))}
-
-          {/* Lower Teeth */}
-          {teethLower.map((tooth) => (
-            <button
-              key={tooth.id}
-              className={`tooth-button tooth-lower-${tooth.id}`}
-              onClick={() => handleToothClick(tooth.id)}
-            >
-              {tooth.label}
-            </button>
-          ))}
-          
-        </div>
-      </div>
-    </div>
-
-    {isModalOpen && (
-  <div style={modalOverlayStyle}>
-    <div style={modalStyle}>
-      <h2>Clicked Tooth Number</h2>
-      <p>{toothNumber}</p>
-      
-      <label style={styles.label}>
-        Tooth Status:
-        <select
-          name="toothStatus"
-          value={formData.toothStatus}
-          onChange={(e) => {
-            const value = e.target.value;
-            setFormData({ ...formData, toothStatus: value });
-            if (value === 'other') {
-              setCustomCondition(''); // Clear custom status when "Other" is selected
-            }
-          }}
-          style={styles.input}
+          <div className="teeth-chart-container">
+  <div className="teeth-chart" style={{ ...styles.title, marginBottom: '-50px', marginTop:'-60px' }}>
+    <img className="no-print" src="src/image/teeth.png" alt="Teeth Chart" />
+    <div className="teeth-buttons">
+      {/* Upper Teeth Buttons */}
+      {teethUpper.map((tooth, index) => (
+        <button
+          key={tooth.id}
+          className={`tooth-button tooth-upper-${tooth.id} no-print`}
+          onClick={() => handleToothClick(tooth.id)}
         >
-          <option value="">Select Status</option>
-          <option value="/">/</option>
-          <option value="D">D</option>
-          <option value="F">F</option>
-          <option value="M">M</option>
-          <option value="Dx">Dx</option>
-          <option value="Un">Un</option>
-          <option value="S">S</option>
-          <option value="JC">JC</option>
-          <option value="P">P</option>
-          <option value="Rf">Rf</option>
-          <option value="Imp">Imp</option>
-          <option value="other">Other</option>
-        </select>
-      </label>
-
-      {formData.toothStatus === 'other' && (
-        <label style={styles.label}>
-          Custom Status:
-          <input
-            type="text"
-            value={customCondition}
-            onChange={(e) => setCustomCondition(e.target.value)}
-            style={styles.input}
-          />
-        </label>
-      )}
-
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <button onClick={closeModal} style={modalButtonStyle}>Close</button>
-        <button onClick={handleSave} style={modalButtonStyle}>Save</button>
-      </div>
+          {tooth.label}
+        </button>
+      ))}
+      
+      {/* Lower Teeth Buttons */}
+      {teethLower.map((tooth, index) => (
+        <button
+          key={tooth.id}
+          className={`tooth-button tooth-lower-${tooth.id} no-print`}
+          onClick={() => handleToothClick(tooth.id)}
+        >
+          {tooth.label}
+        </button>
+      ))}
     </div>
   </div>
-)}
+
+  {/* Status boxes for upper teeth */}
+  <div className="status-container">
+    <h3>Upper Teeth Status</h3>
+    <div className="status-boxes">
+      {teethUpper.slice(0, 8).map((tooth) => (
+        <div key={tooth.id} className="tooth-status-box" >
+          {tooth.id}: {toothStatuses[tooth.id] || ' '}
+          
+        </div>
+        
+      ))}
+    </div>
+    <div className="status-boxes">
+      {teethUpper.slice(8).map((tooth) => (
+        <div key={tooth.id} className="tooth-status-box">
+          {tooth.id}: {toothStatuses[tooth.id] || ' '}
+        </div>
+      ))}
+    </div>
+  </div>
+
+  {/* Status boxes for lower teeth */}
+  <div className="status-container">
+    <h3>Lower Teeth Status</h3>
+    <div className="status-boxes">
+      {teethLower.slice(0, 8).map((tooth) => (
+        <div key={tooth.id} className="tooth-status-box">
+          {tooth.id}: {toothStatuses[tooth.id] || ' '}
+        </div>
+      ))}
+    </div>
+    <div className="status-boxes">
+      {teethLower.slice(8).map((tooth) => (
+        <div key={tooth.id} className="tooth-status-box">
+          {tooth.id}: {toothStatuses[tooth.id] || ' '}
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+  {/* Insert a page break here if needed */}
+  <div className="print-page-break">
+          <h3>Dental Examination Details</h3>
+          <table style={tableStyle}>
+            {/* Table content */}
+          </table>
+        </div>
+
+        {/* Teeth Count Summary */}
+        <div className="print-page-break">
+          <h3>Teeth Count Summary</h3>
+          <table style={tableStyle}>
+            {/* Table content */}
+          </table>
+        </div>
 
 
+          {/* Modal for selecting tooth status */}
+          {isModalOpen && (
+            <div style={modalOverlayStyle}>
+              <div style={modalStyle}>
+                <h2>Tooth Number <strong>{toothNumber}</strong></h2><br />
 
+                <label style={styles.label}>
+                  Tooth Status:
+                  <select
+                    name="toothStatus"
+                    value={formData.toothStatus}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setFormData({ ...formData, toothStatus: value });
+                      if (value === 'other') {
+                        setCustomCondition('');
+                      }
+                    }}
+                    style={{ ...styles.input, backgroundColor: 'white' }}
+                  >
+                    <option value="" disabled>Select Status</option>
+                    <option value="/">/</option>
+                    <option value="D">D</option>
+                    <option value="F">F</option>
+                    <option value="M">M</option>
+                    <option value="Dx">Dx</option>
+                    <option value="Un">Un</option>
+                    <option value="S">S</option>
+                    <option value="JC">JC</option>
+                    <option value="P">P</option>
+                    <option value="Rf">Rf</option>
+                    <option value="Imp">Imp</option>
+                    <option value="other">Other</option>
+                  </select>
+                </label><br />
 
-        <div className='margintop'>
+                {formData.toothStatus === 'other' && (
+                  <label style={styles.label}>
+                    Custom Status:
+                    <input
+                      type="text"
+                      value={customCondition}
+                      onChange={(e) => setCustomCondition(e.target.value)}
+                      style={styles.input}
+                    />
+                  </label>
+                )}
+
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <button onClick={closeModal} style={modalButtonStyle}>Close</button>
+                  <button onClick={handleSave} style={modalButtonStyle}
+                    disabled={formData.toothStatus === 'other' && !customCondition.trim()}>
+                    Save
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+<div className='margintop'>
         <table style={tableStyle}>
         <thead>
           <tr>
@@ -473,37 +534,44 @@ const modalButtonStyle = {
       </table>
     </div>
 
-        <button type="submit" style={styles.button}>
-          Submit
-        </button>
-        
-      </form>
-    </div>
+          
+    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
+  <button className="no-print" type="submit" style={{ ...styles.button, width: '200px', color:'white' }}>
+    Submit
+  </button>
 
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+  <button className="no-print" type="button" onClick={handlePrint} style={{ ...styles.button, width: '200px', color:'white' }}>
+    Print
+  </button>
+</div>
+
+
+        </form>
+        
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
   <img
-    style={{ width: '500px', height: 'auto' }}
+    style={{ width: '500px', height: 'auto', marginBottom:'20px' }}
     src="src/image/teethNumber.png"
     alt="teethNumber"
   />
   <img
-    style={{ width: '460px', height: 'auto' }}
+    style={{ width: '460px', height: 'auto' , marginBottom:'20px'}}
     src="src/image/teethQuadrants.png"
     alt="teethQuadrants"
   />
 </div>
-
     </>
-
   );
 };
 
-const styles = {
+
+  const styles = {
   container: {
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'flex-start', // Changed from center to flex-start
-    padding: '20px', // Added padding
+    alignItems: 'flex-start', 
+    padding: '20px',
   },
   form: {
     backgroundColor: 'white',
@@ -511,32 +579,37 @@ const styles = {
     borderRadius: '8px',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     width: '1000px',
-    overflowY: 'auto',
-    maxHeight: '90vh',
+    // overflowY: 'auto',
+    // maxHeight: '90vh',
+    color: 'black',
   },
   title: {
     textAlign: 'center',
     marginBottom: '20px',
+    color: 'black',
   },
   label: {
     display: 'flex',
     alignItems: 'center',
     marginBottom: '10px',
+    color: 'black',
   },
   input: {
     flex: 1,
     padding: '5px',
     border: 'none',
     borderBottom: '1px solid black',
+    color: 'black',
   },
   button: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#88343b',
     color: 'white',
     padding: '10px',
     border: 'none',
     borderRadius: '4px',
     cursor: 'pointer',
     width: '100%',
+    color: 'black',
   },
   dateInput: {
     flex: 1,
@@ -547,7 +620,11 @@ const styles = {
     WebkitAppearance: 'none',
     MozAppearance: 'none',
     appearance: 'none',
+    color: 'black',
   },
+
+  
 };
+
 
 export default IntraoralExamination;
