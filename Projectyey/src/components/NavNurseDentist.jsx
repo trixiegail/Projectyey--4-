@@ -9,10 +9,11 @@ export default function NavbarBasicPreview() {
     <>
       {/*<!-- Component: Basic Navbar --> */}
       <header className="border-b-1 relative z-20 w-full border-b border-slate-200 bg-[#F7C301] shadow-lg shadow-slate-700/5 after:absolute after:top-full after:left-0 after:z-10 after:block after:h-px after:w-full after:bg-slate-200 lg:border-slate-200 lg:backdrop-blur-sm lg:after:hidden">
-        <div className="relative mx-auto max-w-full px-6 lg:max-w-5xl xl:max-w-7xl 2xl:max-w-[96rem]">
+        {/* <div className="relative mx-auto max-w-full px-6 lg:max-w-5xl xl:max-w-7xl 2xl:max-w-[96rem]"> */}
+        <div style={{marginLeft:'20px', color:'#88343B'}}>
           <nav
             aria-label="main navigation"
-            className="flex h-[5.5rem] items-stretch justify-between font-medium text-slate-700"
+            className="flex h-[5 rem] items-stretch justify-between font-medium text-slate-700"
             role="navigation"
           >
             {/*      <!-- Brand logo --> */}
@@ -24,8 +25,8 @@ export default function NavbarBasicPreview() {
               href="javascript:void(0)"
             >
               <img
-                className="h-20 w-auto"
-                src="src/image/logo1.png"
+                className="h-10 w-auto"
+                src="src/image/teethLogo.png"
                 alt="Your Company"
               />
               Cebu Institute of Technology - University

@@ -5,7 +5,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import ReactDOM from 'react-dom';
 import Studfooter from '../components/Studfooter';
 import Studnav from '../components/Studnav';
-
+import './custom.css'; 
 
 
 const localizer = momentLocalizer(moment);
@@ -178,8 +178,8 @@ function App() {
             <h1 className="text-4xl font-bold tracking-tight text-[#88343B] sm:text-5xl">Choose an Appointment</h1>
             <p className="mt-6 text-lg leading-8 text-black">Choose an Appointment</p>
           </div>
-          <div className="isolate bg-[#88343B] px-6 py-24 sm:py-32 lg:px-8 rounded-lg text-white ">
-            <p className="text-lg text-white">Choose an Appointment</p>
+          <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8 rounded-lg text-black ">
+            <p className="text-lg text-black">Choose an Appointment</p>
             <Calendar
               localizer={localizer}
               events={events}
