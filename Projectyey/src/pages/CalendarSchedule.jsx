@@ -1,4 +1,4 @@
-import React, { useState, useEffect  } from 'react';
+import React, { useState } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -9,7 +9,9 @@ import { Switch, TextField, Button, IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
- 
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday'; // Icon for rescheduling
+import DoneIcon from '@mui/icons-material/Done'; // Icon for marking event as done
+
 const localizer = momentLocalizer(moment);
 
 const modalStyles = {
@@ -34,13 +36,16 @@ const CalendarSchedule = () => {
       title: 'Morning Appointment',
       start: new Date(2024, 8, 10, 9, 0),
       end: new Date(2024, 8, 10, 10, 0),
+      done: false, // Track if the event is done
     },
     {
       title: 'Afternoon Appointment',
       start: new Date(2024, 8, 10, 13, 0),
       end: new Date(2024, 8, 10, 14, 0),
+      done: false, // Track if the event is done
     },
   ]);
+
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [note, setNote] = useState('');
@@ -48,10 +53,12 @@ const CalendarSchedule = () => {
   const [timeSlots, setTimeSlots] = useState([{ startTime: '', endTime: '' }]);
   const [dayEvents, setDayEvents] = useState([]);
   const [editEvent, setEditEvent] = useState(null);
- 
-  const handleSelectSlot = ({ start, end }) => {
-    const filteredEvents = events.filter(
-      (event) => moment(event.start).isSame(start, 'day')
+  const [rescheduleEvent, setRescheduleEvent] = useState(null); 
+  const [newDate, setNewDate] = useState(null); 
+
+  const handleSelectSlot = ({ start }) => {
+    const filteredEvents = events.filter(event =>
+      moment(event.start).isSame(start, 'day')
     );
     const clickedEvent = filteredEvents.find(event =>
       moment(start).isBetween(event.start, event.end, null, '[)')
@@ -81,38 +88,54 @@ const CalendarSchedule = () => {
     if (note && timeSlots[0].startTime && timeSlots[0].endTime) {
       const startTime = moment(timeSlots[0].startTime, 'h:mm a').toDate();
       const endTime = moment(timeSlots[0].endTime, 'h:mm a').toDate();
-
-      const start = new Date(selectedDate);
-      start.setHours(startTime.getHours(), startTime.getMinutes());
-
-      const end = new Date(selectedDate);
-      end.setHours(endTime.getHours(), endTime.getMinutes());
-
       const newEvent = {
         title: note,
-        start: new Date(selectedDate.setHours(startTime.getHours(), startTime.getMinutes())),
-        end: new Date(selectedDate.setHours(endTime.getHours(), endTime.getMinutes())),
+        start: new Date(
+          selectedDate.setHours(startTime.getHours(), startTime.getMinutes())
+        ),
+        end: new Date(
+          selectedDate.setHours(endTime.getHours(), endTime.getMinutes())
+        ),
+        done: editEvent ? editEvent.done : false, // Preserve done status if editing
       };
 
       if (editEvent) {
-        // Update existing event
-        setEvents(events.map(e => e === editEvent ? newEvent : e));
+        setEvents(events.map(e => (e === editEvent ? newEvent : e)));
       } else {
-        // Add new event
         setEvents([...events, newEvent]);
       }
       setDayEvents([...dayEvents, newEvent]);
-      setEditEvent(null); // Clear edit event after saving
+      setEditEvent(null);
+      setRescheduleEvent(null); 
     }
     setModalOpen(false);
   };
- 
+
+  const handleReschedule = () => {
+    if (newDate && timeSlots[0].startTime && timeSlots[0].endTime) {
+      const startTime = moment(timeSlots[0].startTime, 'h:mm a').toDate();
+      const endTime = moment(timeSlots[0].endTime, 'h:mm a').toDate();
+
+      const rescheduledEvent = {
+        ...rescheduleEvent,
+        start: new Date(newDate.setHours(startTime.getHours(), startTime.getMinutes())),
+        end: new Date(newDate.setHours(endTime.getHours(), endTime.getMinutes())),
+      };
+
+      setEvents(events.map(e => (e === rescheduleEvent ? rescheduledEvent : e)));
+      setRescheduleEvent(null);
+      setNewDate(null);
+      setModalOpen(false);
+    }
+  };
+
   const handleCancel = () => {
-    setEditEvent(null); // Clear edit event when canceling
+    setEditEvent(null);
+    setRescheduleEvent(null);
     setModalOpen(false);
   };
- 
-  const handleEditEvent = (event) => {
+
+  const handleEditEvent = event => {
     setEditEvent(event);
     setNote(event.title);
     setTimeSlots([
@@ -123,13 +146,30 @@ const CalendarSchedule = () => {
     ]);
     setModalOpen(true);
   };
- 
-  const handleDeleteEvent = (event) => {
+
+  const handleDeleteEvent = event => {
     setEvents(events.filter(e => e !== event));
     setDayEvents(dayEvents.filter(e => e !== event));
     setModalOpen(false);
   };
- 
+
+  const handleRescheduleEvent = event => {
+    setRescheduleEvent(event);
+    setNote(event.title);
+    setTimeSlots([
+      {
+        startTime: moment(event.start).format('h:mm a'),
+        endTime: moment(event.end).format('h:mm a'),
+      },
+    ]);
+    setModalOpen(true);
+  };
+
+  const handleMarkAsDone = event => {
+    setEvents(events.map(e => (e === event ? { ...e, done: true } : e)));
+    setDayEvents(dayEvents.map(e => (e === event ? { ...e, done: true } : e)));
+  };
+
   return (
     <div>
       <NavNurseDentist />
@@ -159,7 +199,6 @@ const CalendarSchedule = () => {
           onRequestClose={handleCancel}
           style={modalStyles}
           contentLabel="Manage Schedule"
-          appElement={document.getElementById('root')}
         >
           <IconButton
             onClick={handleCancel}
@@ -174,8 +213,17 @@ const CalendarSchedule = () => {
             {dayEvents.length > 0 && !rescheduleEvent ? (
               <ul>
                 {dayEvents.map((event, index) => (
-                  <li key={index}>
+                  <li key={index} className={event.done ? 'event-done' : ''}>
                     <strong>{event.title}</strong> ({moment(event.start).format('h:mm a')} - {moment(event.end).format('h:mm a')})
+                    {!event.done && (
+                      <IconButton
+                        onClick={() => handleMarkAsDone(event)}
+                        aria-label="done"
+                        style={{ marginLeft: '10px' }}
+                      >
+                        <DoneIcon />
+                      </IconButton>
+                    )}
                     <IconButton
                       onClick={() => handleEditEvent(event)}
                       aria-label="edit"
@@ -186,195 +234,106 @@ const CalendarSchedule = () => {
                     <IconButton
                       onClick={() => handleDeleteEvent(event)}
                       aria-label="delete"
-                      color="error"
                       style={{ marginLeft: '10px' }}
                     >
                       <DeleteIcon />
                     </IconButton>
+                    <IconButton
+                      onClick={() => handleRescheduleEvent(event)}
+                      aria-label="reschedule"
+                      style={{ marginLeft: '10px' }}
+                    >
+                      <CalendarTodayIcon />
+                    </IconButton>
                   </li>
                 ))}
               </ul>
-            ) : rescheduleEvent ? (
-              <div>
-                <h4>Select New Date</h4>
-                <TextField
-                  label="New Date"
-                  type="date"
-                  value={moment(newDate).format('YYYY-MM-DD')}
-                  onChange={e => setNewDate(new Date(e.target.value))}
-                  InputLabelProps={{ shrink: true }}
-                  fullWidth
-                />
-              </div>
             ) : (
-              <p>No events for this day.</p>
+              <p>No schedules for this day.</p>
             )}
           </div>
 
-          <TextField
-            label="Add Note"
-            value={note}
-            onChange={e => setNote(e.target.value)}
-            fullWidth
-          />
-          <div style={{ margin: '20px 0' }}>
-            <Switch
-              checked={availability}
-              onChange={() => setAvailability(!availability)}
-              color="primary"
-            />
-            {availability ? 'Available' : 'Unavailable'}
-          </div>
-
-          <h4>Time Slots</h4>
-          {timeSlots.map((slot, index) => (
-            <div key={index} style={{ marginBottom: '15px' }}>
+          {rescheduleEvent ? (
+            <div>
+              <TextField
+                label="New Date"
+                type="date"
+                value={moment(newDate).format('YYYY-MM-DD')}
+                onChange={e => setNewDate(new Date(e.target.value))}
+                InputLabelProps={{ shrink: true }}
+                fullWidth
+                margin="normal"
+              />
               <TextField
                 label="Start Time"
                 type="time"
-                value={slot.startTime}
-                onChange={e =>
-                  setTimeSlots(
-                    timeSlots.map((s, i) =>
-                      i === index ? { ...s, startTime: e.target.value } : s
-                    )
-                  )
-                }
+                value={timeSlots[0].startTime}
+                onChange={e => setTimeSlots([{ ...timeSlots[0], startTime: e.target.value }])}
                 InputLabelProps={{ shrink: true }}
-                InputProps={{ inputProps: { step: 300 } }}
+                fullWidth
+                margin="normal"
               />
               <TextField
                 label="End Time"
                 type="time"
-                value={slot.endTime}
-                onChange={e =>
-                  setTimeSlots(
-                    timeSlots.map((s, i) =>
-                      i === index ? { ...s, endTime: e.target.value } : s
-                    )
-                  )
-                }
+                value={timeSlots[0].endTime}
+                onChange={e => setTimeSlots([{ ...timeSlots[0], endTime: e.target.value }])}
                 InputLabelProps={{ shrink: true }}
-                style={{ marginLeft: '10px' }}
-                InputProps={{ inputProps: { step: 300 } }}
+                fullWidth
+                margin="normal"
               />
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleReschedule}
+                fullWidth
+                style={{ marginTop: '10px' }}
+              >
+                Save Rescheduled Event
+              </Button>
             </div>
-          ))}
-
-          <Button
-            onClick={rescheduleEvent ? handleReschedule : handleSave}
-            color="primary"
-            variant="contained"
-            style={{ marginRight: '10px' }}
-          >
-            {editEvent ? 'Update' : rescheduleEvent ? 'Reschedule' : 'Save'}
-          </Button>
-          <Button onClick={handleCancel} color="secondary" variant="contained">
-            Cancel
-          </Button>
+          ) : (
+            <div>
+              <TextField
+                label="Note"
+                value={note}
+                onChange={e => setNote(e.target.value)}
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                label="Start Time"
+                type="time"
+                value={timeSlots[0].startTime}
+                onChange={e => setTimeSlots([{ ...timeSlots[0], startTime: e.target.value }])}
+                InputLabelProps={{ shrink: true }}
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                label="End Time"
+                type="time"
+                value={timeSlots[0].endTime}
+                onChange={e => setTimeSlots([{ ...timeSlots[0], endTime: e.target.value }])}
+                InputLabelProps={{ shrink: true }}
+                fullWidth
+                margin="normal"
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSave}
+                fullWidth
+                style={{ marginTop: '10px' }}
+              >
+                {editEvent ? 'Update Event' : 'Save Event'}
+              </Button>
+            </div>
+          )}
         </Modal>
-      </div>
-      
-
-  
-
-      <div style={{ marginBottom: '20px', marginLeft: '50px'  }}>
-  <h4>Select Days for Multiple Events</h4>
-  {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => (
-    <div key={day}>
-      <Switch
-        checked={selectedDays.includes(day)}
-        onChange={() => handleDaySelection(day)}
-        color="primary"
-      />
-      {day}
-    </div>
-  ))}
-  
-  <h4>Set Time Slots for Selected Days</h4>
-  {multiTimeSlots.map((slot, index) => (
-    <div key={index} style={{ marginBottom: '15px' }}>
-      <TextField
-        label="Start Time"
-        type="time"
-        value={slot.startTime}
-        onChange={(e) => handleMultiTimeSlotChange(index, 'startTime', e.target.value)}
-        InputLabelProps={{ shrink: true }}
-        InputProps={{ inputProps: { step: 300 } }} // Adjust step for granularity
-      />
-      <TextField
-        label="End Time"
-        type="time"
-        value={slot.endTime}
-        onChange={(e) => handleMultiTimeSlotChange(index, 'endTime', e.target.value)}
-        InputLabelProps={{ shrink: true }}
-        style={{ marginLeft: '10px' }}
-        InputProps={{ inputProps: { step: 300 } }} // Adjust step for granularity
-      />
-      <IconButton
-        onClick={() => removeMultiTimeSlot(index)}
-        aria-label="delete time slot"
-        color="secondary"
-        style={{ marginLeft: '10px' }}
-      >
-        <DeleteIcon />
-      </IconButton>
-    </div>
-  ))}
-  
-  <Button onClick={addMultiTimeSlot} color="primary" variant="contained" style={{ marginTop: '10px', marginBottom: '20px' }}>
-    Add Time Slot
-  </Button>
-  
-  <Button onClick={handleCreateMultipleEvents} color="primary" variant="contained" style={{ marginTop: '10px', marginLeft: '5px', marginBottom: '20px' }}>
-    Create Available Slots
-  </Button>
-
-    <Dialog
-    open={confirmOpen}
-    onClose={() => setConfirmOpen(false)}
-  >
-    <DialogTitle>Confirm Event Creation</DialogTitle>
-    <DialogContent>
-      <DialogContentText>
-        {eventSummary}
-      </DialogContentText>
-    </DialogContent>
-    <DialogActions>
-      <Button onClick={() => setConfirmOpen(false)} color="primary">
-        Cancel
-      </Button>
-      <Button onClick={confirmEventCreation} color="secondary">
-        Confirm
-      </Button>
-    </DialogActions>
-  </Dialog>
-
-</div>
-
-
-
-     
-
-
-<div style={{ marginBottom: '20px', marginLeft: '30px' }}>
- {defaultTimeSlots.map((slot, index) => (
-    <div key={index} style={{ marginBottom: '15px' }}>
-    
-
-          
-
-
-
-         
-
-          </div>
-          
-        ))}
       </div>
     </div>
   );
 };
 
 export default CalendarSchedule;
-
