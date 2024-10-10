@@ -145,3 +145,25 @@
   justify-content: initial;
   align-items: initial;
 }
+
+.actions-cell button {
+  margin-right: 10px;
+}
+
+.actions-cell button:last-child {
+  margin-right: 0;
+}
+
+.actions-cell button {
+  background-color: #800000; /* Maroon background */
+  color: #FFFFFF; /* White text */
+  margin-right: 10px;
+}
+
+.actions-cell button:last-child {
+  margin-right: 0;
+}
+
+.actions-cell button:hover {
+  background-color: #a52a2a; /* Slightly lighter maroon for hover effect */
+}
