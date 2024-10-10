@@ -81,20 +81,3 @@
   background-color: #f0f0f0; /* Change background color on hover if needed */
 }
 
-/* Available Slot - Yellow background */
-.rbc-event.available {
-  background-color: #fffacd !important; /* Light yellow */
-  color: #000 !important; /* Black text for better readability */
-}
-
-/* Unavailable Slot - Gray background */
-.rbc-event.unavailable {
-  background-color: #d3d3d3 !important; /* Light gray */
-  color: #000 !important;
-}
-
-/* Holiday Slot - Pink background */
-.rbc-event.holiday {
-  background-color: #fde0e0 !important; /* Light pink */
-  color: #000 !important;
-}

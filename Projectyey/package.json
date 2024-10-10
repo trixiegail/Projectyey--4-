@@ -17,7 +17,7 @@
     "@material-tailwind/react": "^2.1.9",
     "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.16.7",
-    "@mui/x-date-pickers": "^7.7.0",
+    "@mui/x-date-pickers": "^7.18.0",
     "antd": "^5.19.3",
     "axios": "^1.7.2",
     "date-fns": "^3.6.0",

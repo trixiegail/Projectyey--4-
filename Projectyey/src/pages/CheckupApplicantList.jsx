@@ -1,5 +1,5 @@
 import React, { useState, createContext, useContext } from 'react';
-import { Box, Typography, Select, MenuItem, TextField, Table, TableHead, TableRow, TableCell, TableBody, FormControl, InputLabel } from '@mui/material';
+import { Box, Typography, Select, MenuItem, TextField, Table, TableHead, TableRow, TableCell, TableBody, FormControl, InputLabel, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Nav from '../components/NavNurseDentist';
 
@@ -80,12 +80,21 @@ const ApplicantList = () => {
 
   const handleDepartmentChange = (department) => {
     setFilterDepartment(department);
-    // Reset course filter when department changes
     setFilterCourse('');
   };
 
   const handleRowClick = (applicant) => {
     navigate(`/CheckupForm/${applicant.id}`, { state: { applicant } });
+  };
+
+  const handleAccept = (applicantId) => {
+    alert(`Accepted appointment for applicant ID: ${applicantId}`);
+    // Implement acceptance logic here
+  };
+
+  const handleRefuse = (applicantId) => {
+    alert(`Refused appointment for applicant ID: ${applicantId}`);
+    // Implement refusal logic here
   };
 
   return (
@@ -126,57 +135,36 @@ const ApplicantList = () => {
             <TableRow style={{ backgroundColor: '#a52a2a', color: '#FFFFFF' }}>
               <TableCell style={{ color: '#FFFFFF', paddingLeft: 20 }}>ID Number</TableCell>
               <TableCell style={{ color: '#FFFFFF', paddingLeft: 20 }}>Full Name</TableCell>
-              <TableCell>
-                <FormControl variant="outlined" size="small" style={{ minWidth: 150, marginLeft: 10 }}>
-                  <InputLabel style={{ color: '#FFFFFF' }}>Course</InputLabel>
-                  <Select
-                    value={filterCourse}
-                    onChange={(e) => setFilterCourse(e.target.value)}
-                    label="Course"
-                  >
-                    <MenuItem value="">All</MenuItem>
-                    {filterDepartment && coursesByDepartment[filterDepartment].map((course) => (
-                      <MenuItem key={course} value={course}>{course}</MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </TableCell>
-              <TableCell>
-                <FormControl variant="outlined" size="small" style={{ minWidth: 100, marginLeft: 10 }}>
-                  <InputLabel style={{ color: '#FFFFFF' }}>Year</InputLabel>
-                  <Select
-                    value={filterYear}
-                    onChange={(e) => setFilterYear(e.target.value)}
-                    label="Year"
-                  >
-                    <MenuItem value="">All</MenuItem>
-                    <MenuItem value="1">1</MenuItem>
-                    <MenuItem value="2">2</MenuItem>
-                    <MenuItem value="3">3</MenuItem>
-                    <MenuItem value="4">4</MenuItem>
-                  </Select>
-                </FormControl>
-              </TableCell>
-              <TableCell style={{ color: '#FFFFFF', paddingLeft: 20 }}>
-                Date & Time
-                <TextField
-                  type="date"
-                  value={filterDate}
-                  onChange={(e) => setFilterDate(e.target.value)}
-                  size="small"
-                  style={{ marginLeft: 10, color: '#FFFFFF' }}
-                />
-              </TableCell>
+              <TableCell>Course</TableCell>
+              <TableCell>Year</TableCell>
+              <TableCell style={{ color: '#FFFFFF', paddingLeft: 20 }}>Date & Time</TableCell>
+              <TableCell style={{ color: '#FFFFFF', paddingLeft: 20 }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody style={{backgroundColor:"white"}}>
             {filteredApplicants.map((applicant) => (
-              <TableRow key={applicant.id} onClick={() => handleRowClick(applicant)} style={{ cursor: 'pointer' }}>
+              <TableRow key={applicant.id} style={{ cursor: 'pointer' }}>
                 <TableCell style={{ paddingLeft: 20 }}>{applicant.id}</TableCell>
                 <TableCell style={{ paddingLeft: 20 }}>{applicant.fullName}</TableCell>
                 <TableCell>{applicant.course}</TableCell>
                 <TableCell>{applicant.year}</TableCell>
                 <TableCell style={{ paddingLeft: 20 }}>{`${applicant.date} ${applicant.time}`}</TableCell>
+                <TableCell>
+                <Button
+                   variant="contained"
+                   onClick={() => handleAccept(applicant.id)}
+                  style={{ backgroundColor: '#800000', color: '#FFFFFF', marginRight: 10 }} // Maroon background with white text
+                  >
+                Accept
+                </Button>
+                <Button
+                    variant="contained"
+                    onClick={() => handleRefuse(applicant.id)}
+                    style={{ backgroundColor: '#800000', color: '#FFFFFF' }} // Maroon background with white text
+                  >
+                   Refuse
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -196,8 +184,6 @@ const CheckupApplicantList = () => {
     { id: '18-1256-189', fullName: 'Brian Despi', department: 'COLLEGE OF MANAGEMENT, BUSINESS & ACCOUNTANCY', course: 'BS Accountancy', year: 3, date: '2024-06-16', time: '1:00PM' },
     { id: '18-1256-180', fullName: 'Nichole Cuizon', department: 'COLLEGE OF MANAGEMENT, BUSINESS & ACCOUNTANCY', course: 'BS Management Accounting', year: 1, date: '2024-04-19', time: '2:00PM' },
     { id: '18-1256-196', fullName: 'Deriel Magallanes', department: 'COLLEGE OF NURSING & ALLIED HEALTH SCIENCES', course: 'BS Nursing', year: 1, date: '2024-04-28', time: '3:00PM' },
-
-    // Add more applicants as needed
   ]);
 
   const addApplicant = (applicant) => {
