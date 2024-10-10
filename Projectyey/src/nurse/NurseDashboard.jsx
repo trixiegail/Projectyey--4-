@@ -1,17 +1,19 @@
-import React from 'react';
+import React from "react";
+import Nav from '../components/NavNurseDentist';
+import { Link, useLocation } from 'react-router-dom';
 import { Box, Grid, Card, Typography, Button, TextField, IconButton, List, ListItem, Avatar } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import Sidebar from '../components/DocSidebar';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
 
-const Dashboard = () => {
+const NurseDashboard = () => {
+  const location = useLocation();
   return (
-    <Box sx={{ display: 'flex' }}>
-      <Sidebar /> {/* Add Sidebar Component */}
+    <><Nav />    
+        <Box sx={{ display: 'flex' }}>
       <Box sx={{ flexGrow: 1, p: 3 }}>
         {/* Header */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
@@ -135,7 +137,9 @@ const Dashboard = () => {
         </Grid>
       </Box>
     </Box>
+    </>
+
   );
 };
 
-export default Dashboard;
+export default NurseDashboard;

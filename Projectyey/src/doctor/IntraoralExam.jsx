@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import './style.css';
 import Nav from '../components/NavNurseDentist';
 import './teethchart.css';
+import './style.css';
+import Sidebar from '../components/DocSidebar';
 
 const teethUpper = [
   { id: 11, label: '11' }, { id: 12, label: '12' }, { id: 13, label: '13' },
@@ -34,6 +36,8 @@ const IntraoralExamination = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [toothNumber, setToothNumber] = useState('');
   const [customCondition, setCustomCondition] = useState('');
+  const teethImage = document.querySelector('.teeth-chart img.no-print');
+  
 
   // New state to store the status of each tooth
   const [toothStatuses, setToothStatuses] = useState({});
@@ -54,6 +58,11 @@ const IntraoralExamination = () => {
 
   const handleToothClick = (toothId) => {
     setToothNumber(toothId);
+
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      toothStatus: [], // Reset toothStatus to an empty array
+    }));
     setIsModalOpen(true);
   };
 
@@ -101,6 +110,8 @@ const IntraoralExamination = () => {
     borderRadius: '8px',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     textAlign: 'center',
+    position: 'relative',
+    width: '300px',
   };
 
   const modalButtonStyle = {
@@ -115,11 +126,13 @@ const IntraoralExamination = () => {
   const handlePrint = () => {
     window.print();
   };
-  
+
 
   return (
     <>
-      <Nav />
+    <div className="no-print">
+      <Sidebar />
+      </div>
       <div style={styles.container}>
         <form onSubmit={handleSubmit} style={styles.form}>
           <h1 style={styles.title}> 
@@ -178,8 +191,8 @@ const IntraoralExamination = () => {
           />
         </label>
 
-
-          <div className="teeth-chart-container">
+       
+          <div className="teeth-chart-container" >
   <div className="teeth-chart" style={{ ...styles.title, marginBottom: '-50px', marginTop:'-60px' }}>
     <img className="no-print" src="src/image/teeth.png" alt="Teeth Chart" />
     <div className="teeth-buttons">
@@ -204,7 +217,7 @@ const IntraoralExamination = () => {
           {tooth.label}
         </button>
       ))}
-    </div>
+  </div>
   </div>
 
   {/* Status boxes for upper teeth */}
@@ -248,81 +261,87 @@ const IntraoralExamination = () => {
   </div>
 </div>
 
-  {/* Insert a page break here if needed */}
-  <div className="print-page-break">
-          <h3>Dental Examination Details</h3>
-          <table style={tableStyle}>
-            {/* Table content */}
-          </table>
-        </div>
-
-        {/* Teeth Count Summary */}
-        <div className="print-page-break">
-          <h3>Teeth Count Summary</h3>
-          <table style={tableStyle}>
-            {/* Table content */}
-          </table>
-        </div>
 
 
           {/* Modal for selecting tooth status */}
           {isModalOpen && (
-            <div style={modalOverlayStyle}>
-              <div style={modalStyle}>
-                <h2>Tooth Number <strong>{toothNumber}</strong></h2><br />
+  <div style={modalOverlayStyle}>
+    <div style={modalStyle}>
+    <button
+        onClick={closeModal}
+        style={{
+          position: 'absolute',
+          top: '10px',
+          right: '10px',
+          background: 'transparent',
+          border: 'none',
+          fontSize: '20px',
+          cursor: 'pointer',
+          color: '#88343b',
+        }}
+      >
+        &times;
+      </button>
 
-                <label style={styles.label}>
-                  Tooth Status:
-                  <select
-                    name="toothStatus"
-                    value={formData.toothStatus}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      setFormData({ ...formData, toothStatus: value });
-                      if (value === 'other') {
-                        setCustomCondition('');
-                      }
-                    }}
-                    style={{ ...styles.input, backgroundColor: 'white' }}
-                  >
-                    <option value="" disabled>Select Status</option>
-                    <option value="/">/</option>
-                    <option value="D">D</option>
-                    <option value="F">F</option>
-                    <option value="M">M</option>
-                    <option value="Dx">Dx</option>
-                    <option value="Un">Un</option>
-                    <option value="S">S</option>
-                    <option value="JC">JC</option>
-                    <option value="P">P</option>
-                    <option value="Rf">Rf</option>
-                    <option value="Imp">Imp</option>
-                    <option value="other">Other</option>
-                  </select>
-                </label><br />
+      <h2>Tooth Number <strong>{toothNumber}</strong></h2><br />
 
-                {formData.toothStatus === 'other' && (
-                  <label style={styles.label}>
-                    Custom Status:
-                    <input
-                      type="text"
-                      value={customCondition}
-                      onChange={(e) => setCustomCondition(e.target.value)}
-                      style={styles.input}
-                    />
-                  </label>
-                )}
+      <label style={styles.checkboxContainer}>
+  Tooth Status:
+  <div style={{ ...styles.input, backgroundColor: 'white', padding: '10px' }}>
+    {['/', 'D', 'F', 'M', 'Dx', 'Un', 'S', 'JC', 'P', 'Rf', 'Imp', 'other'].map((status) => (
+      <div key={status}>
+        <label style={{ ...styles.checkbox, display: 'flex', alignItems: 'center' }} className="custom-checkbox">
+          <input
+            type="checkbox"
+            name="toothStatus"
+            value={status}
+            checked={formData.toothStatus.includes(status)}
+            onChange={(e) => {
+              const value = e.target.value;
+              setFormData((prevFormData) => {
+                const newStatuses = prevFormData.toothStatus.includes(value)
+                  ? prevFormData.toothStatus.filter((s) => s !== value)
+                  : [...prevFormData.toothStatus, value];
+                return { ...prevFormData, toothStatus: newStatuses };
+              });
+              if (value === 'other') {
+                setCustomCondition('');
+              }
+            }}
+          />
+          <span style={{ marginLeft: '50px', minWidth: '30px', textAlign: 'left' }}>{status}</span>
+        </label>
+      </div>
+    ))}
+  </div>
+</label>
+<br />
 
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <button onClick={closeModal} style={modalButtonStyle}>Close</button>
-                  <button onClick={handleSave} style={modalButtonStyle}
-                    disabled={formData.toothStatus === 'other' && !customCondition.trim()}>
-                    Save
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
+
+
+      {formData.toothStatus.includes('other') && (
+        <label style={styles.label}>
+          Custom Status:
+          <input
+            type="text"
+            value={customCondition}
+            onChange={(e) => setCustomCondition(e.target.value)}
+            style={styles.input}
+          />
+        </label>
+      )}
+
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <button onClick={closeModal} style={modalButtonStyle}>Close</button>
+        <button onClick={handleSave} style={modalButtonStyle}
+          disabled={formData.toothStatus.includes('other') && !customCondition.trim()}>
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
 
 <div className='margintop'>
         <table style={tableStyle}>
@@ -551,11 +570,13 @@ const IntraoralExamination = () => {
       </div>
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
   <img
+    className="no-print"
     style={{ width: '500px', height: 'auto', marginBottom:'20px' }}
     src="src/image/teethNumber.png"
     alt="teethNumber"
   />
   <img
+    className="no-print"
     style={{ width: '460px', height: 'auto' , marginBottom:'20px'}}
     src="src/image/teethQuadrants.png"
     alt="teethQuadrants"
@@ -620,7 +641,6 @@ const IntraoralExamination = () => {
     WebkitAppearance: 'none',
     MozAppearance: 'none',
     appearance: 'none',
-    color: 'black',
   },
 
   

@@ -169,7 +169,7 @@ const ApplicantList = () => {
               </TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
+          <TableBody style={{backgroundColor:"white"}}>
             {filteredApplicants.map((applicant) => (
               <TableRow key={applicant.id} onClick={() => handleRowClick(applicant)} style={{ cursor: 'pointer' }}>
                 <TableCell style={{ paddingLeft: 20 }}>{applicant.id}</TableCell>

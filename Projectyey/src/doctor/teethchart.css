@@ -187,5 +187,20 @@
     margin: 0;
     padding: 0;
   }
+
+  .teeth-chart {
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
+  }
+
+  .margintop {
+    margin-top: 0 !important;
+  }
+
+  /* Make sure page breaks are handled correctly */
+  .print-page-break {
+    page-break-before: always;
+  }
+  
 }
 

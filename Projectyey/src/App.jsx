@@ -42,6 +42,10 @@ import DentalChartForm from './doctor/DentalChart';
 import IntraoralExamination from './doctor/IntraoralExam';
 import DocDashboard from './doctor/Dashboard';
 import BookingPage from './pages/BookingPage';
+import Sidebar from './components/DocSidebar';
+import NurseDashboard from './nurse/NurseDashboard';
+import DocCalendar from './doctor/DocCalendar';
+import FormManagement from './doctor/FormManagement';
 
 export default function App() {
   // State to manage events
@@ -104,9 +108,14 @@ export default function App() {
             <Route path='/dentalchartform' exact element={<DentalChartForm />} />
             <Route path='/intaoralexamination' exact element={<IntraoralExamination />} />
             <Route path='/docdashboard' exact element={<DocDashboard />} />
+            <Route path='/doccalendar' exact element={<DocCalendar />} />
+            <Route path='/forms' exact element={<FormManagement />} />
+            
             
             {/* Booking Page */}
             <Route path='/booking' exact element={<BookingPage />} />
+
+            <Route path='/nursedashboard' exact element={<NurseDashboard />} />
 
         
           </Routes>

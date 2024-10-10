@@ -24,39 +24,46 @@ export function Studnav() {
     <>
       {/* Top bar */}
       <div className="bg-[#F7C301] text-black py-5">
-        <div className="container mx-auto flex justify-between items-center px-6 text-sm">
-          <div className="flex items-center space-x-4">
-            <MapPinIcon className="h-5 w-5" />
-            <span>7VVJ+QFR, Natalio B. Bacalso Ave, Cebu City, 6000 Cebu</span>
-          </div>
-          <div className="flex items-center space-x-4">
-            <PhoneIcon className="h-5 w-5" />
-            <span>(032) 261 7741</span>
-            <EnvelopeIcon className="h-5 w-5" />
-            <span>hi@happydental.com</span>
-          </div>
+      <div className="w-full px-6 text-sm flex justify-between items-center">
+        {/* Left section (address) */}
+        <div className="flex items-center space-x-4">
+          <MapPinIcon className="h-5 w-5" />
+          <span>7VVJ+QFR, Natalio B. Bacalso Ave, Cebu City, 6000 Cebu</span>
+        </div>
+
+        {/* Right section (phone and email) */}
+        <div className="flex items-center space-x-4">
+          <PhoneIcon className="h-5 w-5" />
+          <span>(032) 261 7741</span>
+          <EnvelopeIcon className="h-5 w-5" />
+          <span>hi@happydental.com</span>
         </div>
       </div>
+    </div>
+
+
 
       {/* Main Navbar */}
       <header className="bg-white shadow-2xl">
-        <div className="container mx-auto px-5 py-7">
-          <div className="flex justify-between items-center">
-            {/* Brand logo */}
-            <a href="/home" className="flex items-center text-xl font-bold text-black">
-              HAPPY <span className="text-gray-800">DENTAL</span>
-            </a>
-            
-            {/* Navigation links */}
-            <nav className="hidden lg:flex space-x-8">
-              <a href="/home" className="text-gray-700 hover:text-black">Home</a>
-              <a href="/aboutus" className="text-gray-700 hover:text-black">About Us</a>
-              <a href="/services" className="text-gray-700 hover:text-black">Services</a>
-              <a href="/student-calendar" className="text-gray-700 hover:text-black">Book now</a>
-              <a href="/contact" className="text-gray-700 hover:text-black">Contact Us</a>
-            </nav>
+  <div className="w-full px-5 py-1">
+    <div className="flex justify-start items-center">
+      {/* Brand logo */}
+      <a href="/home" className="flex items-center text-xl font-bold text-black">
+        <img src="src/image/teethLogoDesign.png" alt="Teeth Logo" className="h-14" />
+        {/* HAPPY <span className="text-gray-800">DENTAL</span> */}
+      </a>
+
+      {/* Navigation links */}
+      <nav className="hidden lg:flex space-x-8 ml-8"> {/* Added ml-8 for spacing */}
+        <a href="/home" className="text-gray-700 hover:text-black">Home</a>
+        <a href="/aboutus" className="text-gray-700 hover:text-black">About Us</a>
+        <a href="/services" className="text-gray-700 hover:text-black">Services</a>
+        <a href="/student-calendar" className="text-gray-700 hover:text-black">Book now</a>
+        <a href="/contact" className="text-gray-700 hover:text-black">Contact Us</a>
+      </nav>
 
             {/* Get Started button */}
+            <div className="flex items-center ml-auto">
             <Menu className='shadow-2xl'>
               <MenuHandler>
                 <Avatar
@@ -157,6 +164,7 @@ export function Studnav() {
                 </MenuItem>
               </MenuList>
             </Menu>
+            </div>
 
             {/* Modal for notifications */}
             {isModalOpen && (

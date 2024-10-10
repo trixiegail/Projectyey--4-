@@ -50,8 +50,8 @@ export default function NavbarBasicPreview() {
             </li>
             <li>
               <Link
-                to="/docdashboard"
-                className={`${location.pathname === "/docdashboard" ? "font-bold" : ""} block text-gray-600 hover:text-gray-900`}
+                to="/nurseDashboard"
+                className={`${location.pathname === "/nurseDashboard" ? "font-bold" : ""} block text-gray-600 hover:text-gray-900`}
               >
                 Dashboard
               </Link>
