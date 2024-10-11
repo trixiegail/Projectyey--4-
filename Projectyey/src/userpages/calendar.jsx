@@ -156,11 +156,16 @@ function App() {
     );
   };
 
-  const eventPropGetter = () => {
-    return {
-      className: 'custom-event', // Add a custom class to each event
-    };
+  const CustomEvent = ({ event }) => {
+    const isDotText = event.title.toLowerCase().includes('.');
+    
+    return (
+      <span style={{ color: isDotText ? 'transparent' : 'inherit' }}>
+        {event.title}
+      </span>
+    );
   };
+
   
   
   
@@ -189,11 +194,34 @@ function App() {
               selectable
               // onSelectSlot={handleSelectSlot}
               onSelectEvent={handleSelectEvent} 
-              eventPropGetter={eventPropGetter} 
               views={['month', 'week', 'day']}
               defaultView="month"
               min={new Date(2024, 8, 10, 8, 0)}
               max={new Date(2024, 8, 10, 18, 0)}
+              eventPropGetter={(event) => {
+                const now = new Date();
+                let style = {
+                  backgroundColor: '#add8e6',
+                  color: '#000', 
+                  borderRadius: '5px', 
+                  border: 'none', 
+                  padding: '2px 5px' 
+                };
+              
+                if (new Date(event.end) < now) {
+                  style.backgroundColor = '#d3d3d3'; 
+                } else if (event.type === 'Available') {
+                  style.backgroundColor = '#fffacd'; 
+                } else if (event.type === 'Holiday') {
+                  style.backgroundColor = '#fde0e0';
+                }
+              
+                return { style };
+              }}
+              
+              components={{
+                event: CustomEvent, 
+              }}
             />
           </div>
         </div>

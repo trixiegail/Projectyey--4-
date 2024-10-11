@@ -46,6 +46,9 @@ import Sidebar from './components/DocSidebar';
 import NurseDashboard from './nurse/NurseDashboard';
 import DocCalendar from './doctor/DocCalendar';
 import FormManagement from './doctor/FormManagement';
+import DoctorList from './doctor/DoctorList';
+import DocForms from './doctor/DocForms';
+import DocSettings from './doctor/DocSettings';
 
 export default function App() {
   // State to manage events
@@ -77,12 +80,6 @@ export default function App() {
             <Route path="/create-student-account" exact element={<CreateStudent />} />
             <Route path="/create-department" exact element={<CreateDepartment />} />
             <Route path="/create-program" exact element={<CreateProgram />} />
-            <Route path="/login-staff" exact element={<LoginStaff />} />
-            <Route path="/login-student" exact element={<LoginStudent />} />
-            <Route path="/login-nurse" exact element={<LoginNurse />} />
-            <Route path="/login-admin" exact element={<LoginAdmin />} />
-            <Route path="/login-doctor" exact element={<LoginDoctor />} />
-            <Route path="/change-password" exact element={<ForgotPassword />} />
             <Route path="/home" exact element={<Home />} />
             <Route path="/aboutus" exact element={<AboutUs />} />
             <Route path="/services" exact element={<Services />} />
@@ -110,6 +107,18 @@ export default function App() {
             <Route path='/docdashboard' exact element={<DocDashboard />} />
             <Route path='/doccalendar' exact element={<DocCalendar />} />
             <Route path='/forms' exact element={<FormManagement />} />
+            <Route path='/doctorlist' exact element={<DoctorList />} />
+            <Route path='/docforms' exact element={<DocForms />} />
+            <Route path='/docsettings' exact element={<DocSettings />} />
+
+            {/* Login */}
+            <Route path="/login-student" exact element={<LoginStudent />} />
+            <Route path="/login-staff" exact element={<LoginStaff />} />
+            <Route path="/login-nurse" exact element={<LoginNurse />} />
+            <Route path="/login-admin" exact element={<LoginAdmin />} />
+            <Route path="/login-doctor" exact element={<LoginDoctor />} />
+            <Route path="/change-password" exact element={<ForgotPassword />} />
+            
             
             
             {/* Booking Page */}

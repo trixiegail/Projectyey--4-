@@ -5,11 +5,12 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './CalendarSchedule.css';
 import NavNurseDentist from '../components/NavNurseDentist';
 import Modal from 'react-modal';
-import { Switch, TextField, Button, IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { Box, Typography, TextField, IconButton, Avatar, Switch, Button,
+  Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,
+  RadioGroup, FormControlLabel, Radio} from '@mui/material';
  
 const localizer = momentLocalizer(moment);
  
@@ -38,9 +39,9 @@ const CalendarSchedule = () => {
   const [timeSlots, setTimeSlots] = useState([{ startTime: '', endTime: '' }]);
   const [dayEvents, setDayEvents] = useState([]);
   const [editEvent, setEditEvent] = useState(null);
-  const [availableDays, setAvailableDays] = useState([]); // Added missing state
+  const [availableDays, setAvailableDays] = useState([]); 
   const [defaultTimeSlots, setDefaultTimeSlots] = useState([
-    { startTime: '09:00', endTime: '10:00' }, // Added missing default time slots
+    { startTime: '09:00', endTime: '10:00' },
   ]);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [eventToDelete, setEventToDelete] = useState(null);
@@ -52,20 +53,32 @@ const CalendarSchedule = () => {
     setMultiTimeSlots((slots) => slots.filter((_, i) => i !== index));
   };
   const [showModal, setShowModal] = useState(false);
-
+  
+  const [selectedEventType, setSelectedEventType] = useState('Available'); 
 
 
   useEffect(() => {
     // Fetch events from the backend
     fetch('http://localhost:8080/api/events')
       .then(response => response.json())
-      .then(data => setEvents(data.map(event => ({
-        ...event,
-        start: new Date(event.start),
-        end: new Date(event.end),
-      }))))
+      .then(data => {
+        const now = new Date(); // Current date and time
+  
+        // Update events: set type to "Unavailable" if the event is in the past
+        const formattedEvents = data.map(event => ({
+          ...event,
+          start: new Date(event.start),
+          end: new Date(event.end),
+          type: new Date(event.end) < now ? 'Unavailable' : event.type, // Set to "Unavailable" if in the past
+        }));
+  
+        setEvents(formattedEvents);
+        console.log('Fetched Events:', formattedEvents); // Log events to verify
+      })
       .catch(error => console.error('Error fetching events:', error));
   }, []);
+  
+  
 
   const handleSelectSlot = ({ start, end }) => {
     const filteredEvents = events.filter(event => moment(event.start).isSame(start, 'day'));
@@ -74,7 +87,6 @@ const CalendarSchedule = () => {
     );
 
     if (clickedEvent) {
-      // If an event exists at the clicked time slot, set it for editing
       setEditEvent(clickedEvent);
       setNote(clickedEvent.title);
       setTimeSlots([{
@@ -82,7 +94,6 @@ const CalendarSchedule = () => {
         endTime: moment(clickedEvent.end).format('h:mm a'),
       }]);
     } else {
-      // Otherwise, prepare to add a new event
       setEditEvent(null);
       setNote('');
       setTimeSlots([{ startTime: '', endTime: '' }]);
@@ -93,26 +104,37 @@ const CalendarSchedule = () => {
     setModalOpen(true);
   };
 
+  const CustomEvent = ({ event }) => {
+    const isDotText = event.title.toLowerCase().includes('.');
+    
+    return (
+      <span style={{ color: isDotText ? 'transparent' : 'inherit' }}>
+        {event.title}
+      </span>
+    );
+  };
+  
+
   const handleSave = () => {
-    if (note && timeSlots[0].startTime && timeSlots[0].endTime) {
+    if (timeSlots[0].startTime && timeSlots[0].endTime && selectedDate) {
       const startTime = moment(timeSlots[0].startTime, 'h:mm a').toDate();
       const endTime = moment(timeSlots[0].endTime, 'h:mm a').toDate();
-
-      const start = new Date(selectedDate);
+  
+      const start = new Date(selectedDate); // Ensure 'start' is defined here
       start.setHours(startTime.getHours(), startTime.getMinutes());
-
-      const end = new Date(selectedDate);
+  
+      const end = new Date(selectedDate); // Ensure 'end' is defined here
       end.setHours(endTime.getHours(), endTime.getMinutes());
-
+  
       const newEvent = {
-        title: note,
+        title: note || '.',
         start: start,
         end: end,
         isBooked: false,
+        type: selectedEventType,
       };
-
+  
       if (editEvent) {
-        // Update existing event
         fetch(`http://localhost:8080/api/events/${editEvent.id}`, {
           method: 'PUT',
           headers: {
@@ -129,7 +151,6 @@ const CalendarSchedule = () => {
           })
           .catch(error => console.error('Error updating event:', error));
       } else {
-        // Add new event
         fetch('http://localhost:8080/api/events', {
           method: 'POST',
           headers: {
@@ -149,6 +170,15 @@ const CalendarSchedule = () => {
       setModalOpen(false);
     }
   };
+  
+  
+
+  const handleEventTypeChange = (event) => {
+    setSelectedEventType(event.target.value);
+  };
+  
+
+
 
   const handleCancel = () => {
     setEditEvent(null);
@@ -156,18 +186,20 @@ const CalendarSchedule = () => {
   };
 
   const handleEditEvent = (event) => {
-    setEditEvent(event);
-    setNote(event.title);
-    setTimeSlots([{
-      startTime: moment(event.start).format('h:mm a'),
-      endTime: moment(event.end).format('h:mm a'),
-    }]);
-    setModalOpen(true);
-  };
+  setEditEvent(event);
+  setNote(event.title);
+  setSelectedEventType(event.type || 'Available'); 
+  setTimeSlots([{
+    startTime: moment(event.start).format('h:mm a'),
+    endTime: moment(event.end).format('h:mm a'),
+  }]);
+  setModalOpen(true);
+};
+
 
   const handleDeleteEvent = (event) => {
     setEventToDelete(event);
-    setDeleteConfirmOpen(true); // Open the confirmation modal
+    setDeleteConfirmOpen(true); 
   };
 
   const confirmDeleteEvent = () => {
@@ -181,7 +213,6 @@ const CalendarSchedule = () => {
               throw new Error(`Failed to delete the event: ${text}`);
             });
           }
-          // Remove the event from the local state
           setEvents(events.filter(e => e.id !== eventToDelete.id));
           setDayEvents(dayEvents.filter(e => e.id !== eventToDelete.id));
           setEventToDelete(null);
@@ -195,17 +226,14 @@ const CalendarSchedule = () => {
   
 
   const setMonthAvailability = () => {
-    const currentMonth = moment().month(); // Get the current month (0-based)
-    const year = moment().year(); // Get the current year
+    const currentMonth = moment().month();
+    const year = moment().year(); 
     let newEvents = [];
   
-    // Iterate through each day of the current month
     for (let day = 1; day <= moment().daysInMonth(); day++) {
       const date = moment([year, currentMonth, day]);
   
-      // Check if the date matches any of the selected available days
       if (availableDays.includes(date.format('dddd'))) {
-        // Create events for each selected time slot
         defaultTimeSlots.forEach((slot) => {
           const startTime = moment(slot.startTime, 'HH:mm').toDate();
           const endTime = moment(slot.endTime, 'HH:mm').toDate();
@@ -220,49 +248,39 @@ const CalendarSchedule = () => {
       }
     }
   
-    // Update events state
     setEvents([...events, ...newEvents]);
-  
-    // Optionally, you can send these new events to the backend here
   };
   
-
-  // Toggle the selected days
 const handleDayChange = (day) => {
   setAvailableDays((prevDays) =>
     prevDays.includes(day) ? prevDays.filter((d) => d !== day) : [...prevDays, day]
   );
 };
 
-// Update the default time slots
 const handleTimeSlotChange = (index, field, value) => {
   setDefaultTimeSlots((slots) =>
     slots.map((slot, i) => (i === index ? { ...slot, [field]: value } : slot))
   );
 };
 
-// Toggle day selection for multiple event creation
 const handleDaySelection = (day) => {
   setSelectedDays((prevDays) => 
     prevDays.includes(day) ? prevDays.filter(d => d !== day) : [...prevDays, day]
   );
 };
 
-// Update time slots for multiple event creation
 const handleMultiTimeSlotChange = (index, field, value) => {
   setMultiTimeSlots((slots) =>
     slots.map((slot, i) => (i === index ? { ...slot, [field]: value } : slot))
   );
 };
 
-// Add a new time slot for multiple event creation
 const addMultiTimeSlot = () => {
   setMultiTimeSlots([...multiTimeSlots, { startTime: '', endTime: '' }]);
 };
 
 
 const handleCreateMultipleEvents = () => {
-  // Check if at least one day and one time slot is selected
   if (selectedDays.length === 0 || multiTimeSlots.some(slot => !slot.startTime || !slot.endTime)) {
     alert('Please select at least one day and provide valid time slots.');
     return;
@@ -271,16 +289,13 @@ const handleCreateMultipleEvents = () => {
   openConfirmation();
 
   const newEvents = [];
-  const currentMonth = moment().month(); // Current month (0-based, January is 0)
-  const year = moment().year(); // Current year
+  const currentMonth = moment().month(); 
+  const year = moment().year(); 
 
-  // Iterate over each day of the current month
   for (let day = 1; day <= moment().daysInMonth(); day++) {
     const date = moment([year, currentMonth, day]);
 
-    // Check if the current date is one of the selected days (e.g., Monday, Tuesday, etc.)
     if (selectedDays.includes(date.format('dddd'))) {
-      // Create events for each selected time slot
       multiTimeSlots.forEach((slot) => {
         const start = date.clone().set({
           hour: moment(slot.startTime, 'HH:mm').hour(),
@@ -301,7 +316,6 @@ const handleCreateMultipleEvents = () => {
     }
   }
 
-  // Save each event to the backend individually
   const createEventPromises = newEvents.map(event => {
     return fetch('http://localhost:8080/api/events', {
       method: 'POST',
@@ -316,11 +330,10 @@ const handleCreateMultipleEvents = () => {
             throw new Error(`Failed to create event: ${text}`);
           });
         }
-        return response.json(); // Return the created event
+        return response.json();
       });
   });
 
-  // Wait for all the events to be created before updating the state
   Promise.all(createEventPromises)
     .then(createdEvents => {
       setEvents([...events, ...createdEvents]);
@@ -331,27 +344,23 @@ const handleCreateMultipleEvents = () => {
 };
 
 const openConfirmation = () => {
-  // Create a summary of the selected days and time slots for display
   const selectedTimes = multiTimeSlots.map(slot => `${slot.startTime} - ${slot.endTime}`).join(', ');
   const summary = `You have chosen to create events on: ${selectedDays.join(', ')} at the following times: ${selectedTimes}. Do you want to proceed?`;
 
-  setEventSummary(summary); // Set the summary for the modal
-  setConfirmOpen(true); // Open the confirmation modal
+  setEventSummary(summary);
+  setConfirmOpen(true); 
 };
 
 
 const confirmEventCreation = () => {
   const newEvents = [];
-  const currentMonth = moment().month(); // Current month (0-based, January is 0)
-  const year = moment().year(); // Current year
+  const currentMonth = moment().month(); 
+  const year = moment().year(); 
 
-  // Iterate over each day of the current month
   for (let day = 1; day <= moment().daysInMonth(); day++) {
     const date = moment([year, currentMonth, day]);
 
-    // Check if the current date is one of the selected days (e.g., Monday, Tuesday, etc.)
     if (selectedDays.includes(date.format('dddd'))) {
-      // Create events for each selected time slot
       multiTimeSlots.forEach((slot) => {
         const start = date.clone().set({
           hour: moment(slot.startTime, 'HH:mm').hour(),
@@ -372,7 +381,6 @@ const confirmEventCreation = () => {
     }
   }
 
-  // Save each event to the backend individually
   const createEventPromises = newEvents.map(event => {
     return fetch('http://localhost:8080/api/events', {
       method: 'POST',
@@ -387,23 +395,19 @@ const confirmEventCreation = () => {
             throw new Error(`Failed to create event: ${text}`);
           });
         }
-        return response.json(); // Return the created event
+        return response.json(); 
       });
   });
 
-  // Wait for all the events to be created before updating the state
   Promise.all(createEventPromises)
     .then(createdEvents => {
       setEvents([...events, ...createdEvents]);
       setSelectedDays([]);
       setMultiTimeSlots([{ startTime: '', endTime: '' }]);
-      setConfirmOpen(false); // Close the confirmation modal
+      setConfirmOpen(false); 
     })
     .catch(error => console.error('Error creating events:', error));
 };
-
-
-
 
 
  
@@ -519,17 +523,42 @@ const confirmEventCreation = () => {
             timeslots={2}
             min={new Date(2024, 8, 10, 8, 0)}
             max={new Date(2024, 8, 10, 18, 0)}
+            eventPropGetter={(event) => {
+              const now = new Date();
+              let style = {
+                backgroundColor: '#add8e6',
+                color: '#000', 
+                borderRadius: '5px', 
+                border: 'none', 
+                padding: '2px 5px' 
+              };
+            
+              if (new Date(event.end) < now) {
+                style.backgroundColor = '#d3d3d3'; 
+              } else if (event.type === 'Available') {
+                style.backgroundColor = '#fffacd'; 
+              } else if (event.type === 'Holiday') {
+                style.backgroundColor = '#fde0e0';
+              }
+            
+              return { style };
+            }}
+            
+            components={{
+              event: CustomEvent, 
+            }}
           />
         )}
        
 
-        <Modal
+       <Modal
           isOpen={modalOpen}
           onRequestClose={handleCancel}
           style={modalStyles}
           contentLabel="Manage Schedule"
           appElement={document.getElementById('root')}
         >
+
           <IconButton
             onClick={handleCancel}
             aria-label="close"
@@ -580,18 +609,21 @@ const confirmEventCreation = () => {
           </div>
  
           <TextField
-            label="Add Note"
+            label="Add Note (Optional)"
             value={note}
             onChange={(e) => setNote(e.target.value)}
             fullWidth
           />
           <div style={{ margin: '20px 0' }}>
-            <Switch
-              checked={availability}
-              onChange={() => setAvailability(!availability)}
-              color="primary"
-            />
-            {availability ? 'Available' : 'Unavailable'}
+
+          <RadioGroup value={selectedEventType} onChange={handleEventTypeChange}>
+  <FormControlLabel value="Available" control={<Radio />} label="Available" />
+  <FormControlLabel value="Holiday" control={<Radio />} label="Holiday" />
+</RadioGroup>
+
+
+
+        
           </div>
  
           <h4>Time Slots</h4>

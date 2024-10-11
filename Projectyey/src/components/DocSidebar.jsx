@@ -9,27 +9,33 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import DescriptionIcon from '@mui/icons-material/Description';
 import MailIcon from '@mui/icons-material/Mail';
-import { Link } from 'react-router-dom';
+import { Link , useNavigate } from 'react-router-dom';
 
 
 const Sidebar = () => {
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/docdashboard' },
-    { text: 'Doctors', icon: <LocalHospitalIcon /> , path: '/'  },
+    { text: 'Doctors', icon: <LocalHospitalIcon /> , path: '/doctorlist'  },
     { text: 'Patients', icon: <PeopleIcon /> , path: '/' },
   ];
 
   const manageItems = [
     { text: 'Calendar', icon: <CalendarTodayIcon /> , path: '/doccalendar' },
     { text: 'Appointments', icon: <EventAvailableIcon  /> , path: '/' },
-    { text: 'Forms', icon: <DescriptionIcon  /> , path: '/' },
+    { text: 'Forms', icon: <DescriptionIcon  /> , path: '/docforms' },
     { text: 'Messages', icon: <MailIcon  /> , path: '/' },
-    { text: 'Settings', icon: <SettingsIcon /> , path: '/' },
+    { text: 'Settings', icon: <SettingsIcon /> , path: '/docsettings' },
   ];
 
   const [isHovered, setIsHovered] = useState(false);
   const handleLogoClick = () => {
     setIsClicked(true);
+  };
+
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate('/docdashboard');
   };
 
 
@@ -52,6 +58,7 @@ const Sidebar = () => {
         sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        onClick={handleClick} 
       >
         <img
           src={isHovered ? 'src/image/teethLogoDesignYellow.png' : 'src/image/teethLogoDesignWhite.png'}
@@ -122,11 +129,19 @@ const Sidebar = () => {
         ))}
       </List>
 
-      <Divider sx={{ borderColor: '#1B5E61', mt: 'auto' }} />
+      <Divider sx={{ borderColor: '#f8c404', mt: 'auto' }} />
       <Box sx={{ p: 2 }}>
         <Button
           startIcon={<ExitToAppIcon />}
-          sx={{ color: '#FFFFFF', textTransform: 'none', '&:hover': { backgroundColor: '#1B5E61' } }}
+          sx={{ color: '#FFFFFF', textTransform: 'none', 
+              '&:hover': {
+                backgroundColor: '#f8c404',
+                color: '#88343b',
+                '& .MuiListItemIcon-root': {
+                  color: '#88343b', // Change icon color on hover
+                },
+              },
+             }}
         > Log Out
         </Button> <br/>
         <Typography variant="caption" sx={{ mt: 1, color: '#AAAAAA',  textAlign: 'center', marginLeft: '50px' }}>

@@ -56,7 +56,7 @@ const DocCalendar = () => {
   };
   const [showModal, setShowModal] = useState(false);
   
-  const [selectedEventType, setSelectedEventType] = useState('Available'); // Default to "Available"
+  const [selectedEventType, setSelectedEventType] = useState('Available'); 
 
 
   useEffect(() => {
@@ -414,12 +414,12 @@ const confirmEventCreation = () => {
 
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh'}}>
       <Sidebar /> 
       <Box sx={{ flexGrow: 1, p: 3 }}>
         {/* Header */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h4" sx={{ fontWeight: 'bold' }} style={{color:'maroon'}}>Calendar</Typography>
+          <Typography variant="h4" sx={{ fontWeight: 'bold' }} style={{color:'#90343c'}}>Calendar</Typography>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <TextField
               variant="outlined"
@@ -565,31 +565,27 @@ const confirmEventCreation = () => {
             eventPropGetter={(event) => {
               const now = new Date();
               let style = {
-                backgroundColor: '#add8e6', // Default color
-                color: '#000', // Default text color
-                borderRadius: '5px', // Optional: add some styling to make it more noticeable
-                border: 'none', // Optional: remove any default borders
-                padding: '2px 5px' // Optional: add padding for better appearance
+                backgroundColor: '#add8e6',
+                color: '#000', 
+                borderRadius: '5px', 
+                border: 'none', 
+                padding: '2px 5px' 
               };
             
-              // Automatically mark past events as "Unavailable"
               if (new Date(event.end) < now) {
-                style.backgroundColor = '#d3d3d3'; // Light gray for unavailable slots
+                style.backgroundColor = '#d3d3d3'; 
               } else if (event.type === 'Available') {
-                style.backgroundColor = '#fffacd'; // Light yellow for available slots
+                style.backgroundColor = '#fffacd'; 
               } else if (event.type === 'Holiday') {
-                style.backgroundColor = '#fde0e0'; // Light pink for holidays
+                style.backgroundColor = '#fde0e0';
               }
             
               return { style };
-              
             }}
 
             components={{
-              event: CustomEvent, // Use the custom event component
+              event: CustomEvent, 
             }}
-            
-            
           />
         )}
        

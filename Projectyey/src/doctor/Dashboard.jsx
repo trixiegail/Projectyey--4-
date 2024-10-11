@@ -10,11 +10,11 @@ import SettingsIcon from '@mui/icons-material/Settings';
 
 const Dashboard = () => {
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex' , minHeight: '100vh' }}>
       <Sidebar /> {/* Add Sidebar Component */}
       <Box sx={{ flexGrow: 1, p: 3 }}>
         {/* Header */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, color:'#90343c' }}>
           <Typography variant="h4" sx={{ fontWeight: 'bold' }}>Dashboard</Typography>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <TextField
@@ -94,7 +94,7 @@ const Dashboard = () => {
 
 
             <Card sx={{ p: 2, mb: 3 }}>
-              <Typography variant="h6" sx={{ fontWeight: 'bold' }}>October 2021</Typography>
+              <Typography variant="h6" sx={{ fontWeight: 'bold' }}>October 2024</Typography>
               <Typography variant="body2" color="textSecondary">[Calendar Placeholder]</Typography>
             </Card>
 

@@ -278,7 +278,7 @@ export default function SideNavigationSearchBar() {
                 />
               </svg>
             </div>
-            <div className="flex w-full flex-1 flex-col items-start justify-center gap-0 overflow-hidden truncate text-sm font-medium">
+            <div onClick={handleLogout} className="flex w-full flex-1 flex-col items-start justify-center gap-0 overflow-hidden truncate text-sm font-medium">
               Logout
             </div>
           </button>

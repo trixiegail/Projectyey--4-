@@ -1,4 +1,3 @@
-// src/Login.js
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -7,16 +6,16 @@ const LoginStudent = () => {
   const [idNumber, setIdNumber] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [studentInfo, setStudentInfo] = useState(null); 
   const navigate = useNavigate();
 
-
   const handleStudentLogin = async (event) => { 
-    event.preventDefault(); // Prevent the default form submission behavior
+    event.preventDefault();
 
     try {
       const endpoint = 'http://localhost:8080/user/login';
       const response = await axios.post(endpoint, { idNumber, password });
-  
+
       if (response.data) {
         console.log('Student Login successful:', response.data);
         navigate('/home');
@@ -38,7 +37,7 @@ const LoginStudent = () => {
           <div className="mb-4">
             <p>{errorMessage}</p>
             <label htmlFor="username" className="block mb-2 text-sm font-medium text-[#fff]">
-            Username (ID Number)
+              Username (ID Number)
             </label>
             <input
               type="text"
@@ -63,7 +62,7 @@ const LoginStudent = () => {
             />
           </div>
           <div className="mb-6">
-          <p className="text-sm font-medium text-[#fff]">Forgot your password? <Link to="/change-password">Click here</Link></p>
+            <p className="text-sm font-medium text-[#fff]">Forgot your password? <Link to="/change-password">Click here</Link></p>
           </div>
           <button
             type="submit"
