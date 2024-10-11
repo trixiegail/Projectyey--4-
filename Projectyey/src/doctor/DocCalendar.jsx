@@ -450,11 +450,11 @@ const confirmEventCreation = () => {
 
          {/* Color Legend */}
          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 , color: 'black' }}>
-          <Box sx={{ backgroundColor: 'yellow', width: 20, height: 20, mr: 1 }} />
+          <Box sx={{ backgroundColor: '#FDE74C ', width: 20, height: 20, mr: 1 }} />
           <Typography variant="body2" sx={{ mr: 2 }}>Available Slot</Typography>
-          <Box sx={{ backgroundColor: 'gray', width: 20, height: 20, mr: 1 }} />
+          <Box sx={{ backgroundColor: '#B0BEC5 ', width: 20, height: 20, mr: 1 }} />
           <Typography variant="body2" sx={{ mr: 2 }}>Unavailable Slot</Typography>
-          <Box sx={{ backgroundColor: 'pink', width: 20, height: 20, mr: 1 }} />
+          <Box sx={{ backgroundColor: '#FFB6C1 ', width: 20, height: 20, mr: 1 }} />
           <Typography variant="body2">Holiday</Typography>
         </Box>
 
@@ -553,7 +553,7 @@ const confirmEventCreation = () => {
             events={events}
             startAccessor="start"
             endAccessor="end"
-            style={{ height: 500, color:'black', backgroundColor:'white' }}
+            style={{ height: 800, color:'black', backgroundColor:'white' }}
             selectable
             onSelectSlot={handleSelectSlot}
             views={['month', 'week', 'day']}
@@ -573,11 +573,11 @@ const confirmEventCreation = () => {
               };
             
               if (new Date(event.end) < now) {
-                style.backgroundColor = '#d3d3d3'; 
+                style.backgroundColor = '#e6e6e6'; 
               } else if (event.type === 'Available') {
-                style.backgroundColor = '#fffacd'; 
+                style.backgroundColor = '#FDE74C';
               } else if (event.type === 'Holiday') {
-                style.backgroundColor = '#fde0e0';
+                style.backgroundColor = '#ffc9d2';
               }
             
               return { style };

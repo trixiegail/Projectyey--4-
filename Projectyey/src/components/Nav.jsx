@@ -4,6 +4,12 @@ export default function SideNavigationSearchBar() {
   const [isSideNavOpen, setIsSideNavOpen] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  const handleLogout = () => {
+    // Add your logout logic here
+    console.log('User logged out');
+    document.getElementById('logout_modal').close(); // Close the modal if needed
+  };
+
   return (
     <>
       
