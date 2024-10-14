@@ -31,7 +31,7 @@ import CheckupApplicantList from "./pages/CheckupApplicantList";
 import StudentMedicalHistory from "./pages/StudentMedicalHistory";
 import MedicalHistoryProvider from "./pages/MedicalHistoryProvider";
 import AfterLogin from "./pages/AfterLogin";
-import StudentMedicalRecords from "./pages/StudentMedicalRecords";
+import StudentMedicalRecords from "./pages/StudentMedicalRecords";  
 import NurseSchedule from "./pages/NurseSchedule";
 import CalendarSchedule from "./pages/CalendarSchedule";
 import StaffArchive from './staffpages/StaffArchive';
@@ -49,6 +49,11 @@ import FormManagement from './doctor/FormManagement';
 import DoctorList from './doctor/DoctorList';
 import DocForms from './doctor/DocForms';
 import DocSettings from './doctor/DocSettings';
+import StaffDashboard from './staff/Dashboard';
+import StaffCalendar from './staff/StaffCalendar';
+import StaffList from './staff/StaffList';
+import StaffForms from './staff/StaffForms';
+import StaffSettings from './staff/StaffSettings';
 
 export default function App() {
   // State to manage events
@@ -61,7 +66,6 @@ export default function App() {
     alert(`You have booked: ${event.title}`);
     // Logic for handling booking can be added here
   };
-
   return (
     <div>
       <BrowserRouter>
@@ -110,6 +114,13 @@ export default function App() {
             <Route path='/doctorlist' exact element={<DoctorList />} />
             <Route path='/docforms' exact element={<DocForms />} />
             <Route path='/docsettings' exact element={<DocSettings />} />
+
+            {/* Staff */}
+            <Route path='/staffdashboard' exact element={<StaffDashboard />} />
+            <Route path='/staffcalendar' exact element={<StaffCalendar />} />
+            <Route path='/stafflist' exact element={<StaffList />} />
+            <Route path='/staffforms' exact element={<StaffForms />} />
+            <Route path='/staffsettings' exact element={<StaffSettings />} />
 
             {/* Login */}
             <Route path="/login-student" exact element={<LoginStudent />} />
