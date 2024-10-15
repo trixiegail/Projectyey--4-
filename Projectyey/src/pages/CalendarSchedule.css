@@ -1,68 +1,80 @@
-/* Soft pastel pink for appointments */
+/* General Styles */
 .rbc-event {
-  /* background-color: #fde0e0 !important; Pastel pink for events */
-  color: #000 !important; /* Black text color for better readability */
+  color: #000 ;/* Black text color for better readability */
+  margin-block-end: 2px;
+  inline-size: 90%;
+  margin-inline-start: auto;
+  margin-inline-end: auto;
+  transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
 }
- 
-/* Soft pastel pink for today’s highlight */
+
+.rbc-event:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Add a more prominent shadow on hover */
+  transform: scale(1.05); /* Slightly enlarge the event */
+}
+
+/* Soft pastel pink for today's highlight */
 .rbc-today {
-  /* background-color: #fde0e0 !important; Pastel pink for today’s highlight */
-  border-color: green;
   color: black;
 }
- 
+
 /* Custom style for the selected slot (if needed) */
 .rbc-selected-slot {
-  /* background-color: #fde0e0 !important; Pastel pink for selected slots */
   color: black;
 }
- 
+
+/* Toolbar Styling */
 .custom-toolbar {
   display: flex;
   justify-content: center; /* Center the label and arrows */
   align-items: center;
-  color:black;
+  color: black;
 }
- 
+
 .toolbar-left {
   display: flex;
   align-items: center;
-  color:black;
+  color: black;
 }
- 
+
 .toolbar-left button {
   background: none;
   border: none;
   cursor: pointer;
   font-size: 16px;
   margin: 0 10px;
-  color:black;
-}
- 
-.toolbar-left span {
-  font-size: 16px;
-  color:black;
+  color: black;
 }
 
-/* Change calendar background to white */
+.toolbar-left span {
+  font-size: 16px;
+  color: black;
+}
+
+.rbc-calendar {
+  height: 80vh; /* Adjust to your preferred height */
+  overflow-y: auto; /* Enable scrolling if needed */
+}
+
+
+/* Calendar Background and Event Title Styling */
 .calendar-container .rbc-calendar {
   background-color: white;
   color: black;
 }
 
-/* Optional: Adjust the color of the event titles */
 .calendar-container .rbc-event {
   color: black;
 }
 
-/* Optional: Customize the date and time slot appearance */
+/* Time Slot Appearance */
 .calendar-container .rbc-time-view, 
 .calendar-container .rbc-month-view {
   background-color: white;
   color: black;
 }
 
-/* Adjust the border and color of time slots for better visibility */
+/* Border and Color of Time Slots */
 .calendar-container .rbc-timeslot-group, 
 .calendar-container .rbc-day-slot, 
 .calendar-container .rbc-date-cell {
@@ -70,14 +82,114 @@
   color: black;
 }
 
-/* Target the toolbar buttons */
+/* Toolbar Button Styling */
 .rbc-toolbar button {
-  color: black; /* Set text color to black */
+  color: black;
 }
 
-/* Optional: Change button hover styles */
 .rbc-toolbar button:hover {
   color: black;
-  background-color: #f0f0f0; /* Change background color on hover if needed */
+  background-color: #f0f0f0;
 }
 
+
+/* Month View Event Styling */
+/* Make each event fill an equal portion of the day */
+.rbc-month-view .rbc-row-segment {
+  block-size: calc(100% / var(--event-count, 1));
+  margin: 0;
+  padding: 0;
+}
+
+/* Ensure Equal Height for All Row Segments */
+.rbc-day .rbc-row-segment {
+  display: flex;
+  flex-grow: 1;
+}
+
+/* Make Single Event Fill the Entire Day */
+.rbc-day .rbc-row-segment:nth-of-type(1):only-of-type {
+  block-size: 100%;
+}
+
+/* Remove Default Gaps Around the Calendar */
+.rbc-month-view {
+  margin: 0;
+}
+
+@keyframes fadeInOverlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInModal {
+  from {
+    transform: translate(-50%, -40%);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -50%);
+    opacity: 1;
+  }
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+  background-color: #88343B;
+  border-radius: 50px;
+  width: 15px;
+  height: 15px;
+  padding: 5px;
+  border: none; /* Optional: remove border if not needed */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for both scale and shadow */
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator:hover {
+  transform: scale(1.2); /* Slightly enlarge the icon to 'attract' */
+}
+
+
+button{
+  background-color: #88343B;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for both scale and shadow */
+}
+
+button:hover {
+  transform: scale(1.1); /* Slightly enlarge the icon to 'attract' */
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  background-color: #f5f5f5; /* Change as needed */
+  padding: 10px;
+}
+
+.search-bar {
+  margin-right: 20px; /* Space between the search bar and notification icon */
+  flex-grow: 1; /* Allows the search bar to expand */
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+}
+
+
+.rbc-month-row {
+  height: auto; /* Row adjusts to content */
+}
+
+.rbc-event {
+  margin: 1px 2px; /* Minimal margin between events */
+  height: 20px; /* Compact event height */
+  justify-content: center;
+}
+
+.rbc-row-content {
+  padding: 0; /* Compress row content */
+  margin: 0;
+}

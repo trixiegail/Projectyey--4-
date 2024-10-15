@@ -10,15 +10,18 @@ import { Box, Typography, TextField, IconButton, Avatar, Switch, Button,
         Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,
         RadioGroup, FormControlLabel, Radio} from '@mui/material';
 import Sidebar from '../components/DocSidebar';
+import DocNavBar from '../components/DocNavBar';
 import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import CalendarSchedule from '../pages/CalendarSchedule';
 
  
 const localizer = momentLocalizer(moment);
  
 const modalStyles = {
   overlay: {
-    backgroundColor: 'rgba(0, 0, 0, 0.7)', 
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+    animation: 'fadeInOverlay 0.3s ease-in-out',
   },
   content: {
     top: '50%',
@@ -27,8 +30,14 @@ const modalStyles = {
     bottom: 'auto',
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
-    width: '400px',
+    width: '500px',
     zIndex: 1000, 
+    borderRadius: '10px',
+    backgroundColor: '#f5f5f5',
+    // padding: '30px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+    border: 'none',
+    animation: 'fadeInModal 0.3s ease-in-out',
   },
 };
  
@@ -55,16 +64,36 @@ const DocCalendar = () => {
     setMultiTimeSlots((slots) => slots.filter((_, i) => i !== index));
   };
   const [showModal, setShowModal] = useState(false);
-  
   const [selectedEventType, setSelectedEventType] = useState('Available'); 
+  
 
 
   useEffect(() => {
+    const now = new Date(); // Current date and time
+
     // Fetch events from the backend
     fetch('http://localhost:8080/api/events')
       .then(response => response.json())
       .then(data => {
-        const now = new Date(); // Current date and time
+        const pastEvents = data.filter(event => new Date(event.end) < now); // Filter past events
+        const upcomingEvents = data.filter(event => new Date(event.end) >= now); // Keep future or ongoing events
+
+        // Delete all past events
+        pastEvents.forEach(event => {
+          fetch(`http://localhost:8080/api/events/${event.id}`, {
+            method: 'DELETE',
+          })
+            .then(response => {
+              if (!response.ok) {
+                return response.text().then((text) => {
+                  throw new Error(`Failed to delete the event: ${text}`);
+                });
+              }
+              console.log(`Deleted past event: ${event.title}`);
+            })
+            .catch(error => console.error('Error deleting event:', error));
+        });
+        
   
         // Update events: set type to "Unavailable" if the event is in the past
         const formattedEvents = data.map(event => ({
@@ -75,6 +104,7 @@ const DocCalendar = () => {
         }));
   
         setEvents(formattedEvents);
+        setEventHeightVariables(); 
         console.log('Fetched Events:', formattedEvents); // Log events to verify
       })
       .catch(error => console.error('Error fetching events:', error));
@@ -83,6 +113,23 @@ const DocCalendar = () => {
   
 
   const handleSelectSlot = ({ start, end }) => {
+    const now = new Date();
+    const isTodayOrFuture = start >= now.setHours(0, 0, 0, 0);
+
+    if (isTodayOrFuture) {
+      setSelectedDate(start);
+      setEditEvent(null); // Prepare for a new event
+      setNote('');
+      setTimeSlots([{ startTime: '', endTime: '' }]);
+      setSelectedEventType('Available');
+      setModalOpen(true);
+    } 
+
+    if (start < now) {
+      alert('You cannot select a past date.');
+      return;
+    }
+    
     const filteredEvents = events.filter(event => moment(event.start).isSame(start, 'day'));
     const clickedEvent = filteredEvents.find(event =>
       moment(start).isBetween(event.start, event.end, null, '[)')
@@ -95,10 +142,12 @@ const DocCalendar = () => {
         startTime: moment(clickedEvent.start).format('h:mm a'),
         endTime: moment(clickedEvent.end).format('h:mm a'),
       }]);
+      setSelectedEventType(clickedEvent.type || 'Available');
     } else {
       setEditEvent(null);
       setNote('');
       setTimeSlots([{ startTime: '', endTime: '' }]);
+      setSelectedEventType('Available');
     }
 
     setSelectedDate(start);
@@ -108,28 +157,73 @@ const DocCalendar = () => {
 
   const CustomEvent = ({ event }) => {
     const isDotText = event.title.toLowerCase().includes('.');
-    
+    const isHoliday = event.type === 'Holiday';
+    const isUnavailable  = event.type === 'Unavailable ';
+  
+    let textColor;
+    if (isDotText) {
+      textColor = 'transparent'; // Hide the text if it contains a dot
+    } else if (isHoliday || isUnavailable) {
+      textColor = '#fff'; // White text for holiday events
+    } else {
+      textColor = 'inherit'; // Default color for other events
+    }
+  
     return (
-      <span style={{ color: isDotText ? 'transparent' : 'inherit' }}>
+      <span
+        style={{
+          color: textColor,
+          display: 'block',
+          whiteSpace: 'normal', // Allow text to wrap
+          wordWrap: 'break-word', // Ensure words wrap within the container
+          cursor: 'pointer', 
+        }}
+        title={isHoliday ? '' : event.title || isUnavailable ? '' : event.title }
+        onClick={() => onClick(event)}
+      >
         {event.title}
       </span>
     );
   };
+
+  
+  
+  
+  
   
 
   const handleSave = () => {
-    if (timeSlots[0].startTime && timeSlots[0].endTime && selectedDate) {
-      const startTime = moment(timeSlots[0].startTime, 'h:mm a').toDate();
-      const endTime = moment(timeSlots[0].endTime, 'h:mm a').toDate();
-  
-      const start = new Date(selectedDate); // Ensure 'start' is defined here
-      start.setHours(startTime.getHours(), startTime.getMinutes());
-  
-      const end = new Date(selectedDate); // Ensure 'end' is defined here
-      end.setHours(endTime.getHours(), endTime.getMinutes());
-  
+    if (selectedDate) {
+      let start, end;
+      if (selectedEventType !== 'Available') {
+        // Set the entire day as the range for a holiday
+        start = moment(selectedDate).startOf('day').toDate();
+        end = moment(selectedDate).endOf('day').toDate();
+      } else if (timeSlots[0].startTime && timeSlots[0].endTime) {
+        const startTime = moment(timeSlots[0].startTime, 'h:mm a').toDate();
+        const endTime = moment(timeSlots[0].endTime, 'h:mm a').toDate();
+        
+        start = new Date(selectedDate);
+        start.setHours(startTime.getHours(), startTime.getMinutes());
+        
+        end = new Date(selectedDate);
+        end.setHours(endTime.getHours(), endTime.getMinutes());
+      } else {
+        setModalOpen(false);
+        alert("Set Time Slots")
+        return;
+      }
+
+      let title = note || ''; // Use the note if provided, otherwise, keep it empty.
+    if (selectedEventType === 'Available' && timeSlots[0].startTime && timeSlots[0].endTime) {
+      // Generate a title based on time slots for "Available" events
+      const formattedStartTime = moment(start).format('h:mm a');
+      const formattedEndTime = moment(end).format('h:mm a');
+      title += title ? ` (${formattedStartTime} - ${formattedEndTime})` : `${formattedStartTime} - ${formattedEndTime}`;
+    }
+
       const newEvent = {
-        title: note || '.',
+        title: title.trim(),
         start: start,
         end: end,
         isBooked: false,
@@ -199,10 +293,7 @@ const DocCalendar = () => {
 };
 
 
-  const handleDeleteEvent = (event) => {
-    setEventToDelete(event);
-    setDeleteConfirmOpen(true); 
-  };
+
 
   const confirmDeleteEvent = () => {
     if (eventToDelete) {
@@ -288,8 +379,6 @@ const handleCreateMultipleEvents = () => {
     return;
   }
 
-  openConfirmation();
-
   const newEvents = [];
   const currentMonth = moment().month(); 
   const year = moment().year(); 
@@ -297,6 +386,7 @@ const handleCreateMultipleEvents = () => {
   for (let day = 1; day <= moment().daysInMonth(); day++) {
     const date = moment([year, currentMonth, day]);
 
+    // Check if the day is included in selected days
     if (selectedDays.includes(date.format('dddd'))) {
       multiTimeSlots.forEach((slot) => {
         const start = date.clone().set({
@@ -309,10 +399,17 @@ const handleCreateMultipleEvents = () => {
           minute: moment(slot.endTime, 'HH:mm').minute(),
         }).toDate();
 
+        const formattedStartTime = moment(start).format('h:mm a');
+        const formattedEndTime = moment(end).format('h:mm a');
+        const title = `${formattedStartTime} - ${formattedEndTime}`;
+
+        // Ensure the new event matches the structure expected by the calendar
         newEvents.push({
-          title: 'Available Slot',
+          title,  // Title now includes the time range
           start: start,
           end: end,
+          type: 'Available', // Example: 'Available' type
+          isBooked: false,
         });
       });
     }
@@ -338,9 +435,10 @@ const handleCreateMultipleEvents = () => {
 
   Promise.all(createEventPromises)
     .then(createdEvents => {
-      setEvents([...events, ...createdEvents]);
-      setSelectedDays([]);
-      setMultiTimeSlots([{ startTime: '', endTime: '' }]);
+      setEvents((prevEvents) => [...prevEvents, ...newEvents]);
+      setShowModal(false); // Close the modal
+      setSelectedDays([]); // Reset selected days
+      setMultiTimeSlots([{ startTime: '', endTime: '' }]); 
     })
     .catch(error => console.error('Error creating events:', error));
 };
@@ -376,8 +474,10 @@ const confirmEventCreation = () => {
 
         newEvents.push({
           title: 'Available Slot',
-          start: start,
-          end: end,
+          start: new Date(), // Start time of the event
+          end: new Date(),   // End time of the event
+          type: 'Available', // Type of event (can be 'Available', 'Holiday', etc.)
+          isBooked: false,   // Flag to indicate booking status
         });
       });
     }
@@ -411,61 +511,171 @@ const confirmEventCreation = () => {
     .catch(error => console.error('Error creating events:', error));
 };
 
+const calculateDayHeight = (day) => {
+  // Count the number of events on the specific day
+  const eventsOnDay = events.filter(event => moment(event.start).isSame(day, 'day'));
+
+  // Base height for a day cell (e.g., 100px)
+  const baseHeight = 100;
+
+  // Additional height per event, e.g., 50px
+  const additionalHeightPerEvent = 50;
+
+  // Calculate total height for this specific day
+  return baseHeight + (eventsOnDay.length * additionalHeightPerEvent);
+};
+
+const eventStyleGetter = (event, start, end, isSelected) => {
+  const now = new Date();
+  const eventEndDate = new Date(event.end);
+  const isPastEvent = eventEndDate < now && eventEndDate.toDateString() !== now.toDateString();
+
+  // Default style for events
+  let style = {
+   backgroundColor: '#add8e6',
+      borderRadius: '5px',
+      border: 'none',
+      height: 'auto', // Dynamically calculated height will be applied to the day, not event
+      whiteSpace: 'normal',
+      lineHeight: '25px',
+      margin: 'auto', // Minimal margin between events
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      marginBottom:'1px',
+  };
+
+  // Set background color based on event type
+  if (new Date(event.end) < now || event.type === 'Unavailable') {
+    style.backgroundColor = '#B0BEC5'; // Grey for past/unavailable events
+    style.color = '#fff'; 
+    style.pointerEvents = 'none'; // Disable interaction
+  } else if (event.type === 'Available') {
+    style.backgroundColor = '#FDE74C'; // Yellow for available events
+    style.color = '#000'; 
+  } else if (event.type === 'Holiday') {
+    style.backgroundColor = '#cc9999'; // Red for holidays
+    style.color = '#fff'; 
+  }
+
+  return { style };
+};
+
+
+
+
+const setEventHeightVariables = () => {
+  const daysWithEvents = {};
+
+  // Count the number of events for each day
+  events.forEach(event => {
+    const day = moment(event.start).format('YYYY-MM-DD');
+    if (!daysWithEvents[day]) {
+      daysWithEvents[day] = 0;
+    }
+    daysWithEvents[day]++;
+  });
+
+  // Set CSS variables for each day
+  Object.keys(daysWithEvents).forEach(day => {
+    const dayElement = document.querySelector(`[data-date="${day}"]`);
+    if (dayElement) {
+      dayElement.style.setProperty('--event-count', daysWithEvents[day]);
+    }
+  });
+};
+
+// Call the function after setting events
+useEffect(() => {
+  setEventHeightVariables();
+}, [events]);
+
+
+const handleEventClick = (event) => {
+  setEditEvent(event);
+  setSelectedDate(event.start);
+  setNote(event.title);
+  setSelectedEventType(event.type || 'Available');
+  setTimeSlots([{
+    startTime: moment(event.start).format('h:mm a'),
+    endTime: moment(event.end).format('h:mm a'),
+  }]);
+
+  setModalOpen(true);
+  
+  // Update dayEvents to show events for the selected date
+  // const filteredEvents = events.filter(e => moment(e.start).isSame(event.start, 'day'));
+  // setDayEvents(filteredEvents);
+  
+  // setModalOpen(true); // Open the modal
+};
+
+const handleDeleteEvent = (event) => {
+  setEventToDelete(event);
+  setDeleteConfirmOpen(true); 
+};
+
+
 
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh'}}>
       <Sidebar /> 
       <Box sx={{ flexGrow: 1, p: 3 }}>
-        {/* Header */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h4" sx={{ fontWeight: 'bold' }} style={{color:'#90343c'}}>Calendar</Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <TextField
-              variant="outlined"
-              placeholder="Search Here"
-              size="small"
-              InputProps={{
-                endAdornment: (
-                  <IconButton>
-                    <SearchIcon />
-                  </IconButton>
-                ),
-              }}
-              sx={{ mr: 2 }}
-            />
-            <IconButton>
-              <NotificationsIcon />
-            </IconButton>
-            <Box sx={{ ml: 2, display: 'flex', alignItems: 'center' }}>
-              <Avatar src="src/image/doctor-profile.png" alt="Profile" sx={{ width: 40, height: 40, mr: 1 }} />
-              <Box>
-                <Typography variant="body1">Dr. Maria Luz M. Lumayno</Typography>
-                <Typography variant="body2" color="textSecondary">Practical Dentist</Typography>
-              </Box>
-            </Box>
-          </Box>
+      <Box 
+          sx={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center', 
+            mb: 2 
+          }}
+        >
+          <Typography 
+            variant="h4" 
+            sx={{ fontWeight: 'bold', color: '#90343c' }} 
+          >
+            Calendar
+          </Typography>
+          <DocNavBar />
         </Box>
+          
 
 
          {/* Color Legend */}
          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 , color: 'black' }}>
           <Box sx={{ backgroundColor: '#FDE74C ', width: 20, height: 20, mr: 1 }} />
           <Typography variant="body2" sx={{ mr: 2 }}>Available Slot</Typography>
-          <Box sx={{ backgroundColor: '#B0BEC5 ', width: 20, height: 20, mr: 1 }} />
+          <Box sx={{ backgroundColor: '#b8bcc4 ', width: 20, height: 20, mr: 1 }} />
           <Typography variant="body2" sx={{ mr: 2 }}>Unavailable Slot</Typography>
-          <Box sx={{ backgroundColor: '#FFB6C1 ', width: 20, height: 20, mr: 1 }} />
+          <Box sx={{ backgroundColor: '#cc9999 ', width: 20, height: 20, mr: 1 }} />
           <Typography variant="body2">Holiday</Typography>
         </Box>
 
 
-        <div>
+        <div >
+       
       <Button onClick={() => setShowModal(true)} color="primary" variant="contained"
       style={{marginBottom:'10px', backgroundColor:'#88343B' }}>
       Select Days and Time Slots
       </Button>
 
-      <Dialog open={showModal} onClose={() => setShowModal(false)} maxWidth="sm"  >
+      <Dialog open={showModal} onClose={() => setShowModal(false)} maxWidth="lg" 
+      PaperProps={{
+        style: {
+          width: '410px', // Set your desired width here
+          maxWidth: '90vw', // Optional: set a maximum width to prevent the modal from being too wide
+        },
+      }} >
+      <IconButton
+        onClick={() => setShowModal(false)} // Change handleCancel to directly close the modal
+        aria-label="close"
+        style={{ position: 'absolute', right: '10px', top: '10px' }}
+      >
+        <CloseIcon />
+      </IconButton>
         <DialogTitle>Select Days and Time Slots</DialogTitle>
         <DialogContent>
           <div style={{ marginBottom: '20px', color: 'black' }}>
@@ -512,23 +722,23 @@ const confirmEventCreation = () => {
               </div>
             ))}
             
-            <Button onClick={addMultiTimeSlot} color="primary" variant="contained" style={{ marginTop: '10px', marginBottom: '20px', backgroundColor:'#88343B' }}>
+            <Button onClick={addMultiTimeSlot} color="primary" variant="contained" style={{ marginTop: '10px', backgroundColor:'#88343B' }}>
               Add Time Slot
             </Button>
             
-            <Button onClick={handleCreateMultipleEvents} color="primary" variant="contained" style={{ marginTop: '10px', marginLeft: '5px', marginBottom: '20px', backgroundColor:'#88343B'  }}>
+            <Button onClick={handleCreateMultipleEvents} color="primary" variant="contained" style={{ marginTop: '10px', marginLeft: '5px',  backgroundColor:'#88343B'  }}>
               Create Available Slots
             </Button>
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setShowModal(false)} color="primary">
+          {/* <Button onClick={() => setShowModal(false)} color="primary">
             Close
-          </Button>
+          </Button> */}
         </DialogActions>
       </Dialog>
 
-      <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
+      <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)} disableBackdropClick={false} >
         <DialogTitle>Confirm Event Creation</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -545,48 +755,26 @@ const confirmEventCreation = () => {
         </DialogActions>
       </Dialog>
     </div>
+    
 
        
         {!modalOpen && (
           <Calendar
-            localizer={localizer}
-            events={events}
-            startAccessor="start"
-            endAccessor="end"
-            style={{ height: 800, color:'black', backgroundColor:'white' }}
-            selectable
-            onSelectSlot={handleSelectSlot}
-            views={['month', 'week', 'day']}
-            defaultView="month"
-            step={30}
-            timeslots={2}
-            min={new Date(2024, 8, 10, 8, 0)}
-            max={new Date(2024, 8, 10, 18, 0)}
-            eventPropGetter={(event) => {
-              const now = new Date();
-              let style = {
-                backgroundColor: '#add8e6',
-                color: '#000', 
-                borderRadius: '5px', 
-                border: 'none', 
-                padding: '2px 5px' 
-              };
-            
-              if (new Date(event.end) < now) {
-                style.backgroundColor = '#e6e6e6'; 
-              } else if (event.type === 'Available') {
-                style.backgroundColor = '#FDE74C';
-              } else if (event.type === 'Holiday') {
-                style.backgroundColor = '#ffc9d2';
-              }
-            
-              return { style };
-            }}
-
-            components={{
-              event: CustomEvent, 
-            }}
-          />
+          localizer={localizer}
+          events={events}
+          startAccessor="start"
+          endAccessor="end"
+          style={{ color: 'black', backgroundColor: 'white' }}
+          selectable
+          onSelectSlot={handleSelectSlot}
+          onSelectEvent={handleEventClick}
+          views={['month', 'week', 'day']}
+          defaultView="month"
+          eventPropGetter={eventStyleGetter}
+  components={{
+    event: (props) => <CustomEvent {...props} onClick={handleEventClick} />
+  }}
+/>
         )}
        
 
@@ -598,122 +786,172 @@ const confirmEventCreation = () => {
           appElement={document.getElementById('root')}
         >
 
-          <IconButton
-            onClick={handleCancel}
-            aria-label="close"
-            style={{ position: 'absolute', top: '10px', right: '10px' }}
-          >
-            <CloseIcon />
-          </IconButton>
-          <h3>Agenda for {moment(selectedDate).format('MMMM Do YYYY')}</h3>
-         
-          <div>
-            {dayEvents.length > 0 ? (
-              <ul>
-                {dayEvents.map((event, index) => (
-                  <li key={index}>
-                    <strong>{event.title}</strong> ({moment(event.start).format('h:mm a')} - {moment(event.end).format('h:mm a')})
-                    <IconButton onClick={() => handleEditEvent(event)} aria-label="edit" style={{ marginLeft: '10px' }}>
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton onClick={() => handleDeleteEvent(event)} aria-label="delete" color="error" style={{ marginLeft: '10px' }}>
-                      <DeleteIcon style={{ color: 'maroon' }} />
-                    </IconButton>
-                    <Dialog
-                      open={deleteConfirmOpen}
-                      onClose={() => setDeleteConfirmOpen(false)}
+        <Box sx={{ position: 'relative' }}>
+            <IconButton
+              onClick={handleCancel}
+              aria-label="close"
+              style={{ position: 'absolute', right: '0px' , top:'-5px' }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <Typography variant="h5" style={{ color: '#90343c', marginBottom: '20px' }}>
+              Agenda for {moment(selectedDate).format('MMMM Do YYYY')}
+            </Typography>
+
+            <div style={{ maxHeight: 'auto', overflowY: 'auto', overflowX: 'hidden', marginBottom: '20px' }}>
+              {dayEvents.length > 0 ? (
+                <ul style={{ padding: '0', listStyle: 'none' }}>
+                  {dayEvents.map((event, index) => (
+                    <li
+                      key={index}
+                      style={{
+                        marginBottom: '10px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        flexWrap: 'nowrap',
+                        width: '100%', // Make sure it takes the full width of the container
+                      }}
                     >
-                      <DialogTitle>Confirm Deletion</DialogTitle>
-                      <DialogContent>
-                        <DialogContentText>
-                          Are you sure you want to delete the event: "{eventToDelete?.title}"?
-                        </DialogContentText>
-                      </DialogContent>
-                      <DialogActions>
-                        <Button onClick={() => setDeleteConfirmOpen(false)} color="primary">
-                          Cancel
-                        </Button>
-                        <Button onClick={confirmDeleteEvent} color="secondary">
-                          Delete
-                        </Button>
-                      </DialogActions>
-                    </Dialog>
+                      <Typography
+                        variant="body1"
+                        style={{
+                          flex: 1,
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                        }}
+                      >
+                        <strong>{event.title}</strong> ({moment(event.start).format('h:mm a')} - {moment(event.end).format('h:mm a')})
+                      </Typography>
+                      <IconButton
+                        onClick={() => handleEditEvent(event)}
+                        aria-label="edit"
+                        style={{ color: '#88343B', marginLeft: '10px' }}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => handleDeleteEvent(event)}
+                        aria-label="delete"
+                        style={{ color: 'maroon', marginLeft: '5px' }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
 
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>No events for this day.</p>
-            )}
-          </div>
- 
-          <TextField
-            label="Add Note (Optional)"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            fullWidth
-          />
-          <div style={{ margin: '20px 0' }}>
-
-          <RadioGroup value={selectedEventType} onChange={handleEventTypeChange}>
-  <FormControlLabel value="Available" control={<Radio />} label="Available" />
-  <FormControlLabel value="Holiday" control={<Radio />} label="Holiday" />
-</RadioGroup>
-
-
-
-        
-          </div>
- 
-          <h4>Time Slots</h4>
-          <br></br>
-          {timeSlots.map((slot, index) => (
-            <div key={index} style={{ marginBottom: '15px' }}>
-              <TextField
-                label="Start Time"
-                type="time"
-                value={slot.startTime}
-                onChange={(e) =>
-                  setTimeSlots(
-                    timeSlots.map((s, i) =>
-                      i === index ? { ...s, startTime: e.target.value } : s
-                    )
-                  )
-                }
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                InputProps={{ inputProps: { step: 300 } }} // Adjust step for better time granularity
-              />
-              <TextField
-                label="End Time"
-                type="time"
-                value={slot.endTime}
-                onChange={(e) =>
-                  setTimeSlots(
-                    timeSlots.map((s, i) =>
-                      i === index ? { ...s, endTime: e.target.value } : s
-                    )
-                  )
-                }
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                style={{ marginLeft: '10px' }}
-                InputProps={{ inputProps: { step: 300 } }} // Adjust step for better time granularity
-              />
+                      <Dialog
+                        open={deleteConfirmOpen}
+                        onClose={() => setDeleteConfirmOpen(false)}
+                      >
+                        <DialogTitle>Confirm Deletion</DialogTitle>
+                        <DialogContent>
+                          <DialogContentText>
+                            Are you sure you want to delete the event: "{eventToDelete?.title}"?
+                          </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                          <Button onClick={() => setDeleteConfirmOpen(false)} style={{ color: "#8c2930" }}>
+                            Cancel
+                          </Button>
+                          <Button onClick={confirmDeleteEvent} style={{ color: "#cc9999" }}>
+                            Delete
+                          </Button>
+                        </DialogActions>
+                      </Dialog>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <Typography variant="body2" color="textSecondary">
+                  No events scheduled.
+                </Typography>
+              )}
             </div>
-          ))}
- 
-          <Button onClick={handleSave} color="primary" variant="contained" style={{ marginRight: '10px' }}>
-            {editEvent ? 'Update' : 'Save'}
-          </Button>
-          <Button onClick={handleCancel} color="secondary" variant="contained">
-            Cancel
-          </Button>
+
+
+            <TextField
+              label="Add Note (Optional)"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              fullWidth
+              style={{ marginBottom: '20px' }}
+            />
+
+            <div style={{ marginBottom: '20px' }}>
+              <Typography variant="subtitle1" style={{ marginBottom: '10px', color: '#90343c' }}>
+                Event Type
+              </Typography>
+              <RadioGroup value={selectedEventType} onChange={handleEventTypeChange}>
+                <FormControlLabel value="Available"
+                  control={<Radio sx={{ color: 'maroon', '&.Mui-checked': { color: 'maroon' } }} />}
+                  label="Available"
+                  style={{color:'black'}}/>
+                <FormControlLabel value="Unavailable" 
+                  control={<Radio sx={{ color: 'maroon', '&.Mui-checked': { color: 'maroon' } }} />}
+                  label="Unavailable"
+                  style={{color:'black'}}/>
+                <FormControlLabel value="Holiday" 
+                  control={<Radio sx={{ color: 'maroon', '&.Mui-checked': { color: 'maroon' } }} />}
+                  label="Holiday"
+                  style={{color:'black'}}/>
+              </RadioGroup>
+              {selectedEventType === 'Available' && (
+                <div style={{ marginTop: '10px' }}>
+                  <Typography variant="subtitle1" style={{ marginBottom: '10px', color: '#90343c' }}>
+                    Time Slots
+                  </Typography>
+                  {timeSlots.map((slot, index) => (
+                    <div key={index} style={{ marginBottom: '15px', display: 'flex', gap: '10px' }}>
+                      <TextField
+                        label="Start Time"
+                        type="time"
+                        value={slot.startTime}
+                        onChange={(e) =>
+                          setTimeSlots(
+                            timeSlots.map((s, i) =>
+                              i === index ? { ...s, startTime: e.target.value } : s
+                            )
+                          )
+                        }
+                        InputLabelProps={{ shrink: true }}
+                        InputProps={{ inputProps: { step: 300 } }}
+                      />
+                      <TextField
+                        label="End Time"
+                        type="time"
+                        value={slot.endTime}
+                        onChange={(e) =>
+                          setTimeSlots(
+                            timeSlots.map((s, i) =>
+                              i === index ? { ...s, endTime: e.target.value } : s
+                            )
+                          )
+                        }
+                        InputLabelProps={{ shrink: true }}
+                        InputProps={{ inputProps: { step: 300 } }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+              <Button
+                onClick={handleSave}
+                color="primary"
+                variant="contained"
+                style={{ backgroundColor: '#8c2930' }}
+              >
+                {editEvent ? 'Update' : 'Save'}
+              </Button>
+              {/* <Button onClick={handleCancel} color="secondary" variant="contained">
+                Cancel
+              </Button> */}
+            </Box>
+          </Box>
         </Modal>
-      
-      
+              
 
 
 
