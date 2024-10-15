@@ -4,8 +4,8 @@ import Sidebar from '../components/DocSidebar';
 
 function Settings() {
   const [formData, setFormData] = useState({
-    username: 'Dr. Maria Luz M. Lumayno',
-    email: 'maria.lumayno@gmail.com',
+    username: 'Jane Smith',
+    email: 'jane.smith@gmail.com',
     password: '',
   });
   const [notifications, setNotifications] = useState({

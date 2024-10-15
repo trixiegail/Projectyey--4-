@@ -34,7 +34,7 @@ const Dashboard = () => {
               <NotificationsIcon />
             </IconButton>
             <Box sx={{ ml: 2, display: 'flex', alignItems: 'center' }}>
-              <Avatar src="src/image/doctor-profile.png" alt="Profile" sx={{ width: 40, height: 40, mr: 1 }} />
+              <Avatar src="src/image/staff-profile.png" alt="Profile" sx={{ width: 40, height: 40, mr: 1 }} />
               <Box>
                 <Typography variant="body1">Jane Smith</Typography>
                 <Typography variant="body2" color="textSecondary">Staff</Typography>

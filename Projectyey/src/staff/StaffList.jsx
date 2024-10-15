@@ -7,25 +7,25 @@ import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 
 function StaffList() {
-  const [doctors, setDoctors] = useState([]);
+  const [staff, setStaff] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchDoctors();
+    fetchStaff();
   }, []);
 
-  const fetchDoctors = async () => {
+  const fetchStaff = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/user/doctors?archived=false');
+      const response = await axios.get('http://localhost:8080/user/staff?archived=false');
       if (response.status === 200) {
-        setDoctors(response.data);
+        setStaff(response.data);
       } else {
-        throw new Error('Failed to fetch doctor accounts');
+        throw new Error('Failed to fetch staff accounts');
       }
     } catch (error) {
-      console.error('Error fetching doctor accounts:', error);
-      setError('Failed to load doctor accounts.');
+      console.error('Error fetching staff accounts:', error);
+      setError('Failed to load staff accounts.');
     } finally {
       setLoading(false);
     }
@@ -37,7 +37,7 @@ function StaffList() {
       <Box sx={{ flexGrow: 1, p: 3 }}>
         {/* Header */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h4" sx={{ fontWeight: 'bold' }} style={{color:'#90343c'}}>Doctors</Typography>
+          <Typography variant="h4" sx={{ fontWeight: 'bold' }} style={{color:'#90343c'}}>Staff</Typography>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <TextField
               variant="outlined"
@@ -56,10 +56,10 @@ function StaffList() {
               <NotificationsIcon />
             </IconButton>
             <Box sx={{ ml: 2, display: 'flex', alignItems: 'center' }}>
-              <Avatar src="src/image/doctor-profile.png" alt="Profile" sx={{ width: 40, height: 40, mr: 1 }} />
+              <Avatar src="src/image/staff-profile.png" alt="Profile" sx={{ width: 40, height: 40, mr: 1 }} />
               <Box>
-                <Typography variant="body1">Dr. Maria Luz M. Lumayno</Typography>
-                <Typography variant="body2" color="textSecondary">Practical Dentist</Typography>
+                <Typography variant="body1">Jane Smith</Typography>
+                <Typography variant="body2" color="textSecondary">Staff</Typography>
               </Box>
             </Box>
           </Box>
@@ -76,8 +76,8 @@ function StaffList() {
           </Typography>
         ) : (
           <Grid container spacing={3} justifyContent="left">
-            {doctors.map((doctor) => (
-              <Grid item xs={12} sm={6} md={4} key={doctor.id}>
+            {staff.map((staff) => (
+              <Grid item xs={12} sm={6} md={4} key={staff.id}>
                 <Card
                   sx={{
                     backgroundColor: 'white',
@@ -93,14 +93,14 @@ function StaffList() {
                   <CardContent>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                       <Avatar sx={{ bgcolor: '#90343c', marginRight: 2 }}>
-                        {doctor.firstname.charAt(0)}{doctor.lastname.charAt(0)}
+                        {staff.firstname.charAt(0)}{staff.lastname.charAt(0)}
                       </Avatar>
                       <Box>
                         <Typography variant="h6" gutterBottom>
-                          {doctor.firstname} {doctor.lastname}
+                          {staff.firstname} {staff.lastname}
                         </Typography>
                         <Typography variant="body2" color="textSecondary">
-                          {doctor.email}
+                          {staff.email}
                         </Typography>
                       </Box>
                     </Box>
@@ -108,19 +108,19 @@ function StaffList() {
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                       <Badge sx={{ marginRight: 1, color: '#90343c' }} />
                       <Typography variant="body2" color="textSecondary">
-                        ID Number: {doctor.idNumber}
+                        ID Number: {staff.idNumber}
                       </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                       <Cake sx={{ marginRight: 1, color: '#90343c' }} />
                       <Typography variant="body2" color="textSecondary">
-                        Birthdate: {doctor.birthdate}
+                        Birthdate: {staff.birthdate}
                       </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                       <Email sx={{ marginRight: 1, color: '#90343c' }} />
                       <Typography variant="body2" color="textSecondary">
-                        Email: {doctor.email}
+                        Email: {staff.email}
                       </Typography>
                     </Box>
                   </CardContent>
