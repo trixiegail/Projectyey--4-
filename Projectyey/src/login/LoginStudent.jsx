@@ -6,10 +6,9 @@ const LoginStudent = () => {
   const [idNumber, setIdNumber] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [studentInfo, setStudentInfo] = useState(null); 
   const navigate = useNavigate();
 
-  const handleStudentLogin = async (event) => { 
+  const handleStudentLogin = async (event) => {
     event.preventDefault();
 
     try {
@@ -17,15 +16,20 @@ const LoginStudent = () => {
       const response = await axios.post(endpoint, { idNumber, password });
 
       if (response.data) {
-        console.log('Student Login successful:', response.data);
+        console.log('Login successful:', response.data);
+
+        // Store first and last name in localStorage
+        const { firstname, lastname } = response.data;
+        localStorage.setItem('studentName', `${firstname} ${lastname}`);
+        console.log(`Stored Student Name: ${firstname} ${lastname}`);  // Debugging log
+
         navigate('/home');
       } else {
-        setErrorMessage("Student login failed: Invalid username or password");
-        console.error('Student Login failed: Response data is undefined');
+        setErrorMessage('Invalid username or password');
       }
     } catch (error) {
-      setErrorMessage("Invalid username or password");
-      console.error('Student Login failed:', error.response?.data || error.message);
+      setErrorMessage('Invalid username or password');
+      console.error('Login failed:', error.response?.data || error.message);
     }
   };
 

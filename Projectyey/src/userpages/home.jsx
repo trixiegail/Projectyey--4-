@@ -52,7 +52,7 @@ export function Home() {
           </div>
         </div>
  
-        <video className="h-50 w-50 rounded-lg container mx-auto flex flex-col items-center mt-20" controls autoPlay>
+        <video className="h-50 w-50 rounded-lg container mx-auto flex flex-col items-center mt-20" controls>
           <source src="src/image/video.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>

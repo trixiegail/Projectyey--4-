@@ -69,16 +69,14 @@ const DocCalendar = () => {
 
 
   useEffect(() => {
-    const now = new Date(); // Current date and time
+    const now = new Date(); 
 
-    // Fetch events from the backend
     fetch('http://localhost:8080/api/events')
       .then(response => response.json())
       .then(data => {
-        const pastEvents = data.filter(event => new Date(event.end) < now); // Filter past events
-        const upcomingEvents = data.filter(event => new Date(event.end) >= now); // Keep future or ongoing events
+        const pastEvents = data.filter(event => new Date(event.end) < now); 
+        const upcomingEvents = data.filter(event => new Date(event.end) >= now); 
 
-        // Delete all past events
         pastEvents.forEach(event => {
           fetch(`http://localhost:8080/api/events/${event.id}`, {
             method: 'DELETE',
@@ -95,17 +93,16 @@ const DocCalendar = () => {
         });
         
   
-        // Update events: set type to "Unavailable" if the event is in the past
         const formattedEvents = data.map(event => ({
           ...event,
           start: new Date(event.start),
           end: new Date(event.end),
-          type: new Date(event.end) < now ? 'Unavailable' : event.type, // Set to "Unavailable" if in the past
+          type: new Date(event.end) < now ? 'Unavailable' : event.type, 
         }));
   
         setEvents(formattedEvents);
         setEventHeightVariables(); 
-        console.log('Fetched Events:', formattedEvents); // Log events to verify
+        console.log('Fetched Events:', formattedEvents); 
       })
       .catch(error => console.error('Error fetching events:', error));
   }, []);
@@ -162,11 +159,11 @@ const DocCalendar = () => {
   
     let textColor;
     if (isDotText) {
-      textColor = 'transparent'; // Hide the text if it contains a dot
+      textColor = 'transparent'; 
     } else if (isHoliday || isUnavailable) {
-      textColor = '#fff'; // White text for holiday events
+      textColor = '#fff'; 
     } else {
-      textColor = 'inherit'; // Default color for other events
+      textColor = 'inherit'; 
     }
   
     return (
@@ -174,8 +171,8 @@ const DocCalendar = () => {
         style={{
           color: textColor,
           display: 'block',
-          whiteSpace: 'normal', // Allow text to wrap
-          wordWrap: 'break-word', // Ensure words wrap within the container
+          whiteSpace: 'normal', 
+          wordWrap: 'break-word', 
           cursor: 'pointer', 
         }}
         title={isHoliday ? '' : event.title || isUnavailable ? '' : event.title }
@@ -186,17 +183,10 @@ const DocCalendar = () => {
     );
   };
 
-  
-  
-  
-  
-  
-
   const handleSave = () => {
     if (selectedDate) {
       let start, end;
       if (selectedEventType !== 'Available') {
-        // Set the entire day as the range for a holiday
         start = moment(selectedDate).startOf('day').toDate();
         end = moment(selectedDate).endOf('day').toDate();
       } else if (timeSlots[0].startTime && timeSlots[0].endTime) {
@@ -214,9 +204,8 @@ const DocCalendar = () => {
         return;
       }
 
-      let title = note || ''; // Use the note if provided, otherwise, keep it empty.
+      let title = note || ''; 
     if (selectedEventType === 'Available' && timeSlots[0].startTime && timeSlots[0].endTime) {
-      // Generate a title based on time slots for "Available" events
       const formattedStartTime = moment(start).format('h:mm a');
       const formattedEndTime = moment(end).format('h:mm a');
       title += title ? ` (${formattedStartTime} - ${formattedEndTime})` : `${formattedStartTime} - ${formattedEndTime}`;
@@ -267,15 +256,11 @@ const DocCalendar = () => {
     }
   };
   
-  
 
   const handleEventTypeChange = (event) => {
     setSelectedEventType(event.target.value);
   };
   
-
-
-
   const handleCancel = () => {
     setEditEvent(null);
     setModalOpen(false);
@@ -291,8 +276,6 @@ const DocCalendar = () => {
   }]);
   setModalOpen(true);
 };
-
-
 
 
   const confirmDeleteEvent = () => {
@@ -315,7 +298,6 @@ const DocCalendar = () => {
         .catch(error => console.error('Error deleting event:', error));
     }
   };
-  
   
 
   const setMonthAvailability = () => {
@@ -386,7 +368,6 @@ const handleCreateMultipleEvents = () => {
   for (let day = 1; day <= moment().daysInMonth(); day++) {
     const date = moment([year, currentMonth, day]);
 
-    // Check if the day is included in selected days
     if (selectedDays.includes(date.format('dddd'))) {
       multiTimeSlots.forEach((slot) => {
         const start = date.clone().set({
@@ -403,12 +384,11 @@ const handleCreateMultipleEvents = () => {
         const formattedEndTime = moment(end).format('h:mm a');
         const title = `${formattedStartTime} - ${formattedEndTime}`;
 
-        // Ensure the new event matches the structure expected by the calendar
         newEvents.push({
-          title,  // Title now includes the time range
+          title,  
           start: start,
           end: end,
-          type: 'Available', // Example: 'Available' type
+          type: 'Available', 
           isBooked: false,
         });
       });
@@ -436,8 +416,8 @@ const handleCreateMultipleEvents = () => {
   Promise.all(createEventPromises)
     .then(createdEvents => {
       setEvents((prevEvents) => [...prevEvents, ...newEvents]);
-      setShowModal(false); // Close the modal
-      setSelectedDays([]); // Reset selected days
+      setShowModal(false);
+      setSelectedDays([]); 
       setMultiTimeSlots([{ startTime: '', endTime: '' }]); 
     })
     .catch(error => console.error('Error creating events:', error));
@@ -474,10 +454,10 @@ const confirmEventCreation = () => {
 
         newEvents.push({
           title: 'Available Slot',
-          start: new Date(), // Start time of the event
-          end: new Date(),   // End time of the event
-          type: 'Available', // Type of event (can be 'Available', 'Holiday', etc.)
-          isBooked: false,   // Flag to indicate booking status
+          start: new Date(), 
+          end: new Date(),   
+          type: 'Available', 
+          isBooked: false,   
         });
       });
     }
@@ -512,16 +492,12 @@ const confirmEventCreation = () => {
 };
 
 const calculateDayHeight = (day) => {
-  // Count the number of events on the specific day
   const eventsOnDay = events.filter(event => moment(event.start).isSame(day, 'day'));
 
-  // Base height for a day cell (e.g., 100px)
   const baseHeight = 100;
 
-  // Additional height per event, e.g., 50px
   const additionalHeightPerEvent = 50;
 
-  // Calculate total height for this specific day
   return baseHeight + (eventsOnDay.length * additionalHeightPerEvent);
 };
 
@@ -530,15 +506,14 @@ const eventStyleGetter = (event, start, end, isSelected) => {
   const eventEndDate = new Date(event.end);
   const isPastEvent = eventEndDate < now && eventEndDate.toDateString() !== now.toDateString();
 
-  // Default style for events
   let style = {
    backgroundColor: '#add8e6',
       borderRadius: '5px',
       border: 'none',
-      height: 'auto', // Dynamically calculated height will be applied to the day, not event
+      height: 'auto', 
       whiteSpace: 'normal',
       lineHeight: '25px',
-      margin: 'auto', // Minimal margin between events
+      margin: 'auto', 
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -548,16 +523,15 @@ const eventStyleGetter = (event, start, end, isSelected) => {
       marginBottom:'1px',
   };
 
-  // Set background color based on event type
   if (new Date(event.end) < now || event.type === 'Unavailable') {
-    style.backgroundColor = '#B0BEC5'; // Grey for past/unavailable events
+    style.backgroundColor = '#B0BEC5'; 
     style.color = '#fff'; 
-    style.pointerEvents = 'none'; // Disable interaction
+    style.pointerEvents = 'none'; 
   } else if (event.type === 'Available') {
-    style.backgroundColor = '#FDE74C'; // Yellow for available events
+    style.backgroundColor = '#FDE74C'; 
     style.color = '#000'; 
   } else if (event.type === 'Holiday') {
-    style.backgroundColor = '#cc9999'; // Red for holidays
+    style.backgroundColor = '#cc9999'; 
     style.color = '#fff'; 
   }
 
@@ -565,12 +539,9 @@ const eventStyleGetter = (event, start, end, isSelected) => {
 };
 
 
-
-
 const setEventHeightVariables = () => {
   const daysWithEvents = {};
 
-  // Count the number of events for each day
   events.forEach(event => {
     const day = moment(event.start).format('YYYY-MM-DD');
     if (!daysWithEvents[day]) {
@@ -579,7 +550,6 @@ const setEventHeightVariables = () => {
     daysWithEvents[day]++;
   });
 
-  // Set CSS variables for each day
   Object.keys(daysWithEvents).forEach(day => {
     const dayElement = document.querySelector(`[data-date="${day}"]`);
     if (dayElement) {
@@ -588,7 +558,6 @@ const setEventHeightVariables = () => {
   });
 };
 
-// Call the function after setting events
 useEffect(() => {
   setEventHeightVariables();
 }, [events]);
@@ -605,12 +574,6 @@ const handleEventClick = (event) => {
   }]);
 
   setModalOpen(true);
-  
-  // Update dayEvents to show events for the selected date
-  // const filteredEvents = events.filter(e => moment(e.start).isSame(event.start, 'day'));
-  // setDayEvents(filteredEvents);
-  
-  // setModalOpen(true); // Open the modal
 };
 
 const handleDeleteEvent = (event) => {

@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Typography, TextField, Button, Paper, Grid, Switch, FormControlLabel } from '@mui/material';
 import Sidebar from '../components/DocSidebar';
 import DocNavBar from '../components/DocNavBar';
+import axios from 'axios'; // Import axios for HTTP requests
+import { useAuth } from '../contexts/AuthContext'; // Access logged-in doctor info
 
 function Settings() {
+  const { doctor } = useAuth(); // Get logged-in doctor from context
+  const [loading, setLoading] = useState(true); // Track loading state
   const [formData, setFormData] = useState({
-    username: 'Dr. Maria Luz M. Lumayno',
-    email: 'maria.lumayno@gmail.com',
+    username: '',
+    email: '',
     password: '',
   });
   const [notifications, setNotifications] = useState({
@@ -14,6 +18,36 @@ function Settings() {
     smsNotifications: false,
   });
   const [darkMode, setDarkMode] = useState(false);
+
+  // Fetch doctor data from backend
+  useEffect(() => {
+    const fetchDoctorData = async () => {
+      try {
+        if (doctor && doctor.id) {
+          const response = await axios.get(`http://localhost:8080/user/profile/${doctor.id}`);
+          const doctorData = response.data;
+
+          // Populate form with fetched data
+          setFormData({
+            username: doctorData.username,
+            email: doctorData.email,
+            password: '', // Do not pre-fill password for security
+          });
+          setNotifications({
+            emailNotifications: doctorData.emailNotifications,
+            smsNotifications: doctorData.smsNotifications,
+          });
+          setDarkMode(doctorData.darkMode);
+        }
+      } catch (error) {
+        console.error('Failed to fetch doctor data:', error);
+      } finally {
+        setLoading(false); // Stop loading
+      }
+    };
+
+    fetchDoctorData();
+  }, [doctor]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -29,30 +63,39 @@ function Settings() {
     setDarkMode(!darkMode);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log('Settings Form Data:', formData);
-    console.log('Notification Preferences:', notifications);
-    console.log('Dark Mode:', darkMode);
+    try {
+      const updatedData = {
+        ...formData,
+        emailNotifications: notifications.emailNotifications,
+        smsNotifications: notifications.smsNotifications,
+        darkMode,
+      };
+
+      await axios.put(`http://localhost:8080/user/profile/${doctor.id}`, updatedData);
+      alert('Profile updated successfully!');
+    } catch (error) {
+      console.error('Failed to update profile:', error);
+      alert('An error occurred while updating the profile.');
+    }
   };
 
+  if (loading) return <Typography>Loading...</Typography>;
+
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh'}}>
-      <Sidebar /> 
+    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+      <Sidebar />
       <Box sx={{ flexGrow: 1, p: 3 }}>
-      <Box 
-          sx={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center', 
-            mb: 2 
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: 2,
           }}
         >
-          <Typography 
-            variant="h4" 
-            sx={{ fontWeight: 'bold', color: '#90343c' }} 
-          >
+          <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#90343c' }}>
             Settings
           </Typography>
           <DocNavBar />

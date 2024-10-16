@@ -5,230 +5,198 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import ReactDOM from 'react-dom';
 import Studfooter from '../components/Studfooter';
 import Studnav from '../components/Studnav';
-import './custom.css'; 
-
+import Modal from 'react-modal';
+import { Box, Typography, Button } from '@mui/material';
 
 const localizer = momentLocalizer(moment);
 
-function App() {
+const modalStyles = {
+  overlay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+    animation: 'fadeInOverlay 0.3s ease-in-out',
+  },
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+    width: '500px',
+    zIndex: 1000, 
+    borderRadius: '10px',
+    backgroundColor: '#f5f5f5',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+    border: 'none',
+    animation: 'fadeInModal 0.3s ease-in-out',
+  },
+};
+
+const App = () => {
   const [events, setEvents] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [currentSlot, setCurrentSlot] = useState('');
-  const [eventToDelete, setEventToDelete] = useState(null);
-  const wrapperRef = useRef(null);
+  const wrapperRef = useRef(null); // Ref for modal click outside detection
 
+  // Fetch events on initial load
   useEffect(() => {
-    // Fetch events from the backend API
+    const now = new Date();
+
     fetch('http://localhost:8080/api/events')
-      .then((response) => response.json())
-      .then((data) => {
-        const formattedEvents = data.map((event) => ({
+      .then(response => response.json())
+      .then(data => {
+        const formattedEvents = data.map(event => ({
           ...event,
           start: new Date(event.start),
           end: new Date(event.end),
+          type: new Date(event.end) < now ? 'Unavailable' : event.type,
         }));
         setEvents(formattedEvents);
       })
-      .catch((error) => console.error('Error fetching events:', error));
+      .catch(error => console.error('Error fetching events:', error));
   }, []);
+
+  // Only open modal for "Available" events
+  const handleEventClick = (event) => {
+    if (event.type === 'Available') {
+      setSelectedEvent(event);
+      setModalOpen(true);
+    } else {
+      console.log('Event is not available, modal will not open.');
+    }
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setSelectedEvent(null);
+  };
+
+  // Render the modal only for "Available" events
+  const ModalComponent = () => {
+    if (!modalOpen || !selectedEvent) return null;
+
+    const eventDate = moment(selectedEvent.start).format('MMMM Do YYYY');
+    const eventTime = `${moment(selectedEvent.start).format('h:mm A')} - ${moment(selectedEvent.end).format('h:mm A')}`;
+
+    return ReactDOM.createPortal(
+      <div className="fixed inset-0 z-30 flex items-center justify-center overflow-y-auto text-black bg-black bg-opacity-50">
+        <div ref={wrapperRef} style={modalStyles.content}>
+          <h2 className="text-xl font-bold text-center">Confirm Reservation</h2>
+          <p className="mt-2 text-center">Are you sure you want to reserve this slot?</p>
+          <p className="mt-2 text-center">
+            <strong>Date:</strong> {eventDate}
+          </p>
+          <p className="mt-2 text-center">
+            <strong>Time:</strong> {eventTime}
+          </p>
+          <div className="flex justify-end space-x-4 mt-4">
+            <Button variant="contained" style={{ backgroundColor: '#88343B' }} onClick={closeModal}>
+              Cancel
+            </Button>
+            <Button variant="contained" style={{ backgroundColor: '#F7C301' }} onClick={handleReserve}>
+              Confirm
+            </Button>
+          </div>
+        </div>
+      </div>,
+      document.body
+    );
+  };
+
+  const handleReserve = () => {
+    // Handle reservation logic here
+    const updatedEvent = { ...selectedEvent, title: `Reserved Slot on ${moment(selectedEvent.start).format('MMMM Do YYYY')}` };
+
+    fetch(`http://localhost:8080/api/events/${selectedEvent.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedEvent),
+    })
+    .then(response => response.json())
+    .then(updatedEvent => {
+      setEvents(events.map(event => event.id === updatedEvent.id ? updatedEvent : event));
+      setModalOpen(false);
+    })
+    .catch(error => console.error('Error updating event:', error));
+  };
+
+  const eventStyleGetter = (event) => {
+    let style = {
+      backgroundColor: '#add8e6',
+      borderRadius: '5px',
+      color: '#000',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    };
+
+    if (event.type === 'Unavailable' || event.type === 'Holiday') {
+      style.backgroundColor = event.type === 'Unavailable' ? '#B0BEC5' : '#cc9999';
+      style.color = '#fff';
+      style.pointerEvents = 'none'; // Disable pointer events for unavailable/holiday events
+    } else if (event.type === 'Available') {
+      style.backgroundColor = '#FDE74C';
+    }
+
+    return { style };
+  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
-        setModalOpen(false);
-        setDeleteModalOpen(false);
+        closeModal(); // Close modal when clicked outside
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
-  const handleSelectSlot = ({ start, end }) => {
-    setCurrentSlot({ start, end });
-    setModalOpen(true);
-  };
-
-  const handleSelectEvent = (event) => {
-    setSelectedEvent(event);
-    setModalOpen(true); // Open the modal to confirm reservation for this event
-  };
-
-  const handleReserve = () => {
-    if (selectedEvent) {
-      // Update the selected event to mark it as reserved
-      const updatedEvent = {
-        ...selectedEvent,
-        title: `Reserved Slot on ${moment(selectedEvent.start).format('MMMM Do YYYY')}`,
-      };
-
-      // Save the updated event to the backend
-      fetch(`http://localhost:8080/api/events/${selectedEvent.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedEvent),
-      })
-        .then((response) => response.json())
-        .then((updatedEvent) => {
-          setEvents(
-            events.map((event) =>
-              event.id === updatedEvent.id ? { ...updatedEvent, start: new Date(updatedEvent.start), end: new Date(updatedEvent.end) } : event
-            )
-          );
-          setModalOpen(false);
-        })
-        .catch((error) => console.error('Error updating event:', error));
-    }
-  };
-
-  const handleDelete = () => {
-    if (eventToDelete) {
-      fetch(`http://localhost:8080/api/events/${eventToDelete.id}`, {
-        method: 'DELETE',
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('Failed to delete the event.');
-          }
-          setEvents(events.filter((event) => event.id !== eventToDelete.id));
-          setDeleteModalOpen(false);
-        })
-        .catch((error) => console.error('Error deleting event:', error));
-    }
-  };
-
-  const Modal = () => {
-    if (!modalOpen) return null;
-  
-    // Format the date and time for display
-    const eventDate = selectedEvent ? moment(selectedEvent.start).format('MMMM Do YYYY') : '';
-    const eventTime = selectedEvent ? `${moment(selectedEvent.start).format('h:mm A')} - ${moment(selectedEvent.end).format('h:mm A')}` : '';
-  
-    return ReactDOM.createPortal(
-      <div className="fixed inset-0 z-30 flex items-center justify-center overflow-y-auto text-black bg-black bg-opacity-50">
-        <div ref={wrapperRef} className="bg-white rounded shadow-lg max-w-md mx-auto p-4">
-          <h2 className="mt-1 text-xl font-bold text-center">Confirm Reservation</h2>
-          {selectedEvent ? (
-            <>
-              <p className="mt-2 text-center">Are you sure you want to reserve this slot?</p>
-              <p className="mt-2 text-center">
-                <strong>Date:</strong> {eventDate}
-              </p>
-              <p className="mt-2 text-center">
-                <strong>Time:</strong> {eventTime}
-              </p>
-            </>
-          ) : (
-            <p className="mt-2 text-center">Are you sure you want to create a new reservation?</p>
-          )}
-          <div className="flex justify-end space-x-4 mt-4">
-            <button className="bg-[#88343B] hover:bg-[#88343B] text-white font-bold py-2 px-4 rounded mb-1" onClick={() => setModalOpen(false)}>Cancel</button>
-            <button className="bg-[#F7C301] hover:bg-[#F7C301] text-white font-bold py-2 px-4 rounded mb-1" onClick={handleReserve}>Confirm</button>
-          </div>
-        </div>
-      </div>,
-      document.body
-    );
-  };
-  
-
-  const DeleteModal = () => {
-    if (!deleteModalOpen) return null;
-
-    return ReactDOM.createPortal(
-      <div className="fixed inset-0 z-30 flex items-center justify-center overflow-y-auto text-black bg-black bg-opacity-50">
-        <div ref={wrapperRef} className="bg-white rounded shadow-lg max-w-md mx-auto p-4">
-          <h2 className="mt-1 text-xl font-bold text-center">Delete Appointment</h2>
-          <p className="mt-2 text-center">Are you sure you want to delete this appointment?</p>
-          <div className="flex justify-end space-x-4 mt-4">
-            <button className="bg-[#88343B] hover:bg-[#88343B] text-white font-bold py-2 px-4 rounded mb-1" onClick={() => setDeleteModalOpen(false)}>Cancel</button>
-            <button className="bg-[#F7C301] hover:bg-[#F7C301] text-white font-bold py-2 px-4 rounded mb-1" onClick={handleDelete}>Delete</button>
-          </div>
-        </div>
-      </div>,
-      document.body
-    );
-  };
-
-  const CustomEvent = ({ event }) => {
-    const isDotText = event.title.toLowerCase().includes('.');
-    
-    return (
-      <span style={{ color: isDotText ? 'transparent' : 'inherit' }}>
-        {event.title}
-      </span>
-    );
-  };
-
-  
-  
-  
-
   return (
     <div>
       <Studnav />
-      <Modal />
-      <DeleteModal />
+      <ModalComponent />
 
       <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
         <div className="mx-auto max-w-7xl text-center">
-          <div className="mx-auto max-w-2xl py-10 text-center">
-            <p className="py-5 text-black">Articles</p>
-            <h1 className="text-4xl font-bold tracking-tight text-[#88343B] sm:text-5xl">Choose an Appointment</h1>
-            <p className="mt-6 text-lg leading-8 text-black">Choose an Appointment</p>
-          </div>
-          <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8 rounded-lg text-black ">
-            <p className="text-lg text-black">Choose an Appointment</p>
-            <Calendar
-              localizer={localizer}
-              events={events}
-              startAccessor="start"
-              endAccessor="end"
-              style={{ height: 500 }}
-              selectable
-              // onSelectSlot={handleSelectSlot}
-              onSelectEvent={handleSelectEvent} 
-              views={['month', 'week', 'day']}
-              defaultView="month"
-              min={new Date(2024, 8, 10, 8, 0)}
-              max={new Date(2024, 8, 10, 18, 0)}
-              eventPropGetter={(event) => {
-                const now = new Date();
-                let style = {
-                  backgroundColor: '#add8e6',
-                  color: '#000', 
-                  borderRadius: '5px', 
-                  border: 'none', 
-                  padding: '2px 5px' 
-                };
-              
-                if (new Date(event.end) < now) {
-                  style.backgroundColor = '#d3d3d3'; 
-                } else if (event.type === 'Available') {
-                  style.backgroundColor = '#fffacd'; 
-                } else if (event.type === 'Holiday') {
-                  style.backgroundColor = '#fde0e0';
-                }
-              
-                return { style };
-              }}
-              
-              components={{
-                event: CustomEvent, 
-              }}
-            />
-          </div>
+          <h1 className="text-4xl font-bold tracking-tight text-[#88343B] sm:text-5xl">Choose an Appointment</h1>
+        </div>
+
+        <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8 rounded-lg text-black">
+          <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+            <Box sx={{ flexGrow: 1, p: 3 }}>
+              {/* Color Legend */}
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, color: 'black' }}>
+                <Box sx={{ backgroundColor: '#FDE74C', width: 20, height: 20, mr: 1 }} />
+                <Typography variant="body2" sx={{ mr: 2 }}>Available Slot</Typography>
+                <Box sx={{ backgroundColor: '#b8bcc4', width: 20, height: 20, mr: 1 }} />
+                <Typography variant="body2" sx={{ mr: 2 }}>Unavailable Slot</Typography>
+                <Box sx={{ backgroundColor: '#cc9999', width: 20, height: 20, mr: 1 }} />
+                <Typography variant="body2">Holiday</Typography>
+              </Box>
+
+              {/* Calendar */}
+              <Calendar
+                localizer={localizer}
+                events={events}
+                startAccessor="start"
+                endAccessor="end"
+                style={{ color: 'black', backgroundColor: 'white' }}
+                selectable
+                onSelectEvent={handleEventClick}
+                views={['month', 'week', 'day']}
+                defaultView="month"
+                eventPropGetter={eventStyleGetter}
+              />
+            </Box>
+          </Box>
         </div>
       </div>
+
       <Studfooter />
     </div>
   );
-}
+};
 
 export default App;
