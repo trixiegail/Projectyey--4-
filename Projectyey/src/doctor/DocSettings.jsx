@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, Paper, Grid, Switch, FormControlLabel } from '@mui/material';
 import Sidebar from '../components/DocSidebar';
+import DocNavBar from '../components/DocNavBar';
 
 function Settings() {
   const [formData, setFormData] = useState({
@@ -37,13 +38,25 @@ function Settings() {
   };
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-      <Sidebar />
+    <Box sx={{ display: 'flex', minHeight: '100vh'}}>
+      <Sidebar /> 
       <Box sx={{ flexGrow: 1, p: 3 }}>
-        {/* Header */}
-        <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 3, color: '#90343c' }}>
-          Settings
-        </Typography>
+      <Box 
+          sx={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center', 
+            mb: 2 
+          }}
+        >
+          <Typography 
+            variant="h4" 
+            sx={{ fontWeight: 'bold', color: '#90343c' }} 
+          >
+            Settings
+          </Typography>
+          <DocNavBar />
+        </Box>
         <Paper sx={{ p: 3 }}>
           <form onSubmit={handleSubmit}>
             <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>

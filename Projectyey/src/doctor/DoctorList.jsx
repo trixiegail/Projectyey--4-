@@ -5,6 +5,7 @@ import Sidebar from '../components/DocSidebar';
 import { Email, Badge, Cake } from '@mui/icons-material';
 import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import DocNavBar from '../components/DocNavBar';
 
 function DoctorList() {
   const [doctors, setDoctors] = useState([]);
@@ -35,34 +36,21 @@ function DoctorList() {
     <Box sx={{ display: 'flex', minHeight: '100vh'}}>
       <Sidebar /> 
       <Box sx={{ flexGrow: 1, p: 3 }}>
-        {/* Header */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h4" sx={{ fontWeight: 'bold' }} style={{color:'#90343c'}}>Doctors</Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <TextField
-              variant="outlined"
-              placeholder="Search Here"
-              size="small"
-              InputProps={{
-                endAdornment: (
-                  <IconButton>
-                    <SearchIcon />
-                  </IconButton>
-                ),
-              }}
-              sx={{ mr: 2 }}
-            />
-            <IconButton>
-              <NotificationsIcon />
-            </IconButton>
-            <Box sx={{ ml: 2, display: 'flex', alignItems: 'center' }}>
-              <Avatar src="src/image/doctor-profile.png" alt="Profile" sx={{ width: 40, height: 40, mr: 1 }} />
-              <Box>
-                <Typography variant="body1">Dr. Maria Luz M. Lumayno</Typography>
-                <Typography variant="body2" color="textSecondary">Practical Dentist</Typography>
-              </Box>
-            </Box>
-          </Box>
+      <Box 
+          sx={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center', 
+            mb: 2 
+          }}
+        >
+          <Typography 
+            variant="h4" 
+            sx={{ fontWeight: 'bold', color: '#90343c' }} 
+          >
+            Doctors
+          </Typography>
+          <DocNavBar />
         </Box>
 
 
@@ -97,10 +85,7 @@ function DoctorList() {
                       </Avatar>
                       <Box>
                         <Typography variant="h6" gutterBottom>
-                          {doctor.firstname} {doctor.lastname}
-                        </Typography>
-                        <Typography variant="body2" color="textSecondary">
-                          {doctor.email}
+                          Dr. {doctor.firstname} {doctor.lastname}
                         </Typography>
                       </Box>
                     </Box>

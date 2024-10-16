@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import './index.css';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { AuthProvider } from './contexts/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute'; 
+
 import CreateDepartment from "./staffpages/CreateDepartment";
 import CreateProgram from "./staffpages/CreateProgram";
 import CreateStudent from "./staffpages/CreateStudentAccount";
@@ -69,6 +72,7 @@ export default function App() {
   return (
     <div>
       <BrowserRouter>
+      <AuthProvider>
         <MedicalHistoryProvider>
           <Routes>
             <Route path="/" exact element={<LoginAdmin />} />
@@ -106,6 +110,7 @@ export default function App() {
             <Route path='/checkupform' exact element={<ChckupForm />} />
             
             {/* Doctor */}
+            <Route element={<ProtectedRoute />}>
             <Route path='/dentalchartform' exact element={<DentalChartForm />} />
             <Route path='/intaoralexamination' exact element={<IntraoralExamination />} />
             <Route path='/docdashboard' exact element={<DocDashboard />} />
@@ -114,6 +119,7 @@ export default function App() {
             <Route path='/doctorlist' exact element={<DoctorList />} />
             <Route path='/docforms' exact element={<DocForms />} />
             <Route path='/docsettings' exact element={<DocSettings />} />
+            </Route>
 
             {/* Staff */}
             <Route path='/staffdashboard' exact element={<StaffDashboard />} />
@@ -140,6 +146,7 @@ export default function App() {
         
           </Routes>
         </MedicalHistoryProvider>
+        </AuthProvider>
       </BrowserRouter>
     </div>
   );

@@ -2,12 +2,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useAuth } from '../contexts/AuthContext';
 
 const LoginDoctor = () => {
   const [idNumber, setIdNumber] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
+  const { loginDoctor } = useAuth(); 
 
 
   const handleDoctorLogin = async (event) => { 
@@ -19,7 +21,8 @@ const LoginDoctor = () => {
   
       if (response.data) {
         console.log('Doctor Login successful:', response.data);
-        navigate('/dashboard');
+        loginDoctor(response.data);
+        navigate('/docdashboard');
       } else {
         setErrorMessage("Doctor login failed: Invalid username or password");
         console.error('Doctor Login failed: Response data is undefined');

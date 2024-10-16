@@ -7,40 +7,28 @@ import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
+import DocNavBar from '../components/DocNavBar';
 
 const Dashboard = () => {
   return (
-    <Box sx={{ display: 'flex' , minHeight: '100vh' }}>
-      <Sidebar /> {/* Add Sidebar Component */}
+    <Box sx={{ display: 'flex', minHeight: '100vh'}}>
+      <Sidebar /> 
       <Box sx={{ flexGrow: 1, p: 3 }}>
-        {/* Header */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, color:'#90343c' }}>
-          <Typography variant="h4" sx={{ fontWeight: 'bold' }}>Dashboard</Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <TextField
-              variant="outlined"
-              placeholder="Search Here"
-              size="small"
-              InputProps={{
-                endAdornment: (
-                  <IconButton>
-                    <SearchIcon />
-                  </IconButton>
-                ),
-              }}
-              sx={{ mr: 2 }}
-            />
-            <IconButton>
-              <NotificationsIcon />
-            </IconButton>
-            <Box sx={{ ml: 2, display: 'flex', alignItems: 'center' }}>
-              <Avatar src="src/image/doctor-profile.png" alt="Profile" sx={{ width: 40, height: 40, mr: 1 }} />
-              <Box>
-                <Typography variant="body1">Dr. Maria Luz M. Lumayno</Typography>
-                <Typography variant="body2" color="textSecondary">Practical Dentist</Typography>
-              </Box>
-            </Box>
-          </Box>
+      <Box 
+          sx={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center', 
+            mb: 2 
+          }}
+        >
+          <Typography 
+            variant="h4" 
+            sx={{ fontWeight: 'bold', color: '#90343c' }} 
+          >
+            Dashboard
+          </Typography>
+          <DocNavBar />
         </Box>
 
         {/* Statistic Cards */}
