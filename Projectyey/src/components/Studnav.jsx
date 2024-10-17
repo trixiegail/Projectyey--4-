@@ -23,21 +23,34 @@ export function Studnav() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const location = useLocation();
   const [studentName, setStudentName] = useState('Sign in');
+  const [studentIdNumber, setStudentIdNumber] = useState();
   const navigate = useNavigate(); // Initialize useNavigate for redirection
 
   // Fetch student name from localStorage when the component mounts
   useEffect(() => {
     const storedName = localStorage.getItem('studentName');
-    console.log('Fetched Student Name:', storedName); // Debug log
+    const storedIdNumber = localStorage.getItem('studentIdNumber'); // Fetch studentIdNumber
+    
+    console.log('Fetched Student Name:', storedName); // Debug log for studentName
+    console.log('Fetched Student ID Number:', storedIdNumber); // Debug log for studentIdNumber
+    
     if (storedName) {
       setStudentName(storedName);
+      setStudentIdNumber(studentIdNumber);
+    }
+  
+     else {
+      console.error('studentIdNumber not found in localStorage');
     }
   }, []);
+  
+  
 
   // Logout function to clear localStorage and navigate to the login page
   const handleLogout = () => {
     localStorage.removeItem('studentName'); // Remove stored name
-    navigate('/login-student', { replace: true }); // Prevent going back to previous page
+    localStorage.removeItem('studentIdNumber'); // Also remove stored ID number
+    navigate('/login-student', { replace: true }); // Prevent going back to the previous page
   };
   
   // Handle avatar or name click

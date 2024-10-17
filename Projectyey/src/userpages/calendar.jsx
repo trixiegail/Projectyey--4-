@@ -2,17 +2,19 @@ import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { useNavigate } from 'react-router-dom';
 import ReactDOM from 'react-dom';
 import Studfooter from '../components/Studfooter';
 import Studnav from '../components/Studnav';
 import Modal from 'react-modal';
 import { Box, Typography, Button } from '@mui/material';
+import StudentProtectedRoute from '../components/StudentProtectedRoute';
 
 const localizer = momentLocalizer(moment);
 
 const modalStyles = {
   overlay: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     animation: 'fadeInOverlay 0.3s ease-in-out',
   },
   content: {
@@ -23,7 +25,7 @@ const modalStyles = {
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
     width: '500px',
-    zIndex: 1000, 
+    zIndex: 1000,
     borderRadius: '10px',
     backgroundColor: '#f5f5f5',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
@@ -36,16 +38,29 @@ const App = () => {
   const [events, setEvents] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const wrapperRef = useRef(null); // Ref for modal click outside detection
+  const wrapperRef = useRef(null);
+  const navigate = useNavigate();
 
-  // Fetch events on initial load
+  useEffect(() => {
+    const studentName = localStorage.getItem('studentName');
+    const studentIdNumber = localStorage.getItem('studentIdNumber'); 
+
+    // Debugging logs to check values
+    console.log('Fetched studentName:', studentName); 
+    console.log('Fetched studentIdNumber:', studentIdNumber);
+
+}, []);
+
+
+  
+
   useEffect(() => {
     const now = new Date();
 
     fetch('http://localhost:8080/api/events')
-      .then(response => response.json())
-      .then(data => {
-        const formattedEvents = data.map(event => ({
+      .then((response) => response.json())
+      .then((data) => {
+        const formattedEvents = data.map((event) => ({
           ...event,
           start: new Date(event.start),
           end: new Date(event.end),
@@ -53,7 +68,7 @@ const App = () => {
         }));
         setEvents(formattedEvents);
       })
-      .catch(error => console.error('Error fetching events:', error));
+      .catch((error) => console.error('Error fetching events:', error));
   }, []);
 
   // Only open modal for "Available" events
@@ -71,7 +86,55 @@ const App = () => {
     setSelectedEvent(null);
   };
 
-  // Render the modal only for "Available" events
+  const handleReserve = () => {
+    const studentName = localStorage.getItem('studentName');
+    const studentIdNumber = localStorage.getItem('studentIdNumber'); // Fetch the ID number
+    
+    console.log("Fetched studentName:", studentName); 
+    console.log("Fetched studentIdNumber:", studentIdNumber); // Debug log for ID number
+
+    // Check if the values are retrieved correctly
+    if (!studentName) {
+      alert("You need to log in to reserve a slot.");
+      navigate('/login-student'); 
+      return;
+    }
+
+    const reservationRequest = { 
+      studentIdNumber: studentIdNumber,   // Pass student ID
+      fullName: studentName,   // Pass student name
+      course: 'Course Name',   // Replace with actual course
+      year: 'Year Level',      // Replace with actual year level
+      date: moment(selectedEvent.start).format('YYYY-MM-DD'), // Format the date
+      time: `${moment(selectedEvent.start).format('h:mm A')} - ${moment(selectedEvent.end).format('h:mm A')}`
+    };
+    
+    
+    console.log('Reservation Request:', reservationRequest); // Debug log
+
+    fetch('http://localhost:8080/api/reservations/reserve', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(reservationRequest), // Convert the object to JSON
+    })
+      .then(response => {
+        if (!response.ok) {
+          return response.text().then(text => {
+            throw new Error(text); // Handle non-JSON error response
+          });
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Reservation successful:', data);
+        setModalOpen(false); // Close modal after reservation
+      })
+      .catch(error => console.error('Error reserving slot:', error));
+  };
+
+  
+  
+
   const ModalComponent = () => {
     if (!modalOpen || !selectedEvent) return null;
 
@@ -103,26 +166,9 @@ const App = () => {
     );
   };
 
-  const handleReserve = () => {
-    // Handle reservation logic here
-    const updatedEvent = { ...selectedEvent, title: `Reserved Slot on ${moment(selectedEvent.start).format('MMMM Do YYYY')}` };
-
-    fetch(`http://localhost:8080/api/events/${selectedEvent.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updatedEvent),
-    })
-    .then(response => response.json())
-    .then(updatedEvent => {
-      setEvents(events.map(event => event.id === updatedEvent.id ? updatedEvent : event));
-      setModalOpen(false);
-    })
-    .catch(error => console.error('Error updating event:', error));
-  };
-
   const eventStyleGetter = (event) => {
     let style = {
-      backgroundColor: '#add8e6',
+      backgroundColor: '#add8e6', 
       borderRadius: '5px',
       color: '#000',
       display: 'flex',
@@ -133,9 +179,9 @@ const App = () => {
     if (event.type === 'Unavailable' || event.type === 'Holiday') {
       style.backgroundColor = event.type === 'Unavailable' ? '#B0BEC5' : '#cc9999';
       style.color = '#fff';
-      style.pointerEvents = 'none'; // Disable pointer events for unavailable/holiday events
+      style.pointerEvents = 'none'; 
     } else if (event.type === 'Available') {
-      style.backgroundColor = '#FDE74C';
+      style.backgroundColor = '#FDE74C'; 
     }
 
     return { style };
@@ -144,7 +190,7 @@ const App = () => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
-        closeModal(); // Close modal when clicked outside
+        closeModal(); 
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -152,6 +198,41 @@ const App = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+
+  const handleLogin = async () => {
+    const response = await fetch('http://localhost:8080/user/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            idNumber: idNumber, // The ID number input from the user
+            password: password,
+        }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+        console.log("Login response:", data); // Log the response to debug
+        localStorage.setItem('studentName', data.fullName); // Save student's full name
+        localStorage.setItem('studentIdNumber', data.idNumber); // Save student ID number
+        navigate('/dashboard'); // Redirect to dashboard after login
+    } else {
+        alert('Login failed. Please check your credentials.');
+    }
+};
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
   return (
     <div>

@@ -23,6 +23,10 @@ const LoginStudent = () => {
         localStorage.setItem('studentName', `${firstname} ${lastname}`);
         console.log(`Stored Student Name: ${firstname} ${lastname}`);  // Debugging log
 
+        // Store studentIdNumber in localStorage
+      localStorage.setItem('studentIdNumber', idNumber);
+      console.log(`Stored Student ID Number: ${idNumber}`);  // Debugging log
+        
         navigate('/home');
       } else {
         setErrorMessage('Invalid username or password');
