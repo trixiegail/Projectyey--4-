@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { createContext, useState } from 'react';
 import './index.css';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { AuthProvider } from './contexts/AuthContext';
@@ -57,6 +57,10 @@ import StaffCalendar from './staff/StaffCalendar';
 import StaffList from './staff/StaffList';
 import StaffForms from './staff/StaffForms';
 import StaffSettings from './staff/StaffSettings';
+import Patients from './doctor/Patients';
+import { PatientsContext } from './doctor/PatientsContext';
+import { PatientsProvider } from './doctor/PatientsContext';
+
 
 export default function App() {
   // State to manage events
@@ -69,8 +73,11 @@ export default function App() {
     alert(`You have booked: ${event.title}`);
     // Logic for handling booking can be added here
   };
+
+  
   return (
     <div>
+      <PatientsProvider>
       <BrowserRouter>
       <AuthProvider>
         <MedicalHistoryProvider>
@@ -119,6 +126,7 @@ export default function App() {
             <Route path='/doctorlist' exact element={<DoctorList />} />
             <Route path='/docforms' exact element={<DocForms />} />
             <Route path='/docsettings' exact element={<DocSettings />} />
+            <Route path='/patientlist' exact element={<Patients />} />
             </Route>
 
             {/* Staff */}
@@ -148,6 +156,7 @@ export default function App() {
         </MedicalHistoryProvider>
         </AuthProvider>
       </BrowserRouter>
+      </PatientsProvider>
     </div>
   );
 }

@@ -40,12 +40,12 @@ const Sidebar = () => {
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/docdashboard' },
     { text: 'Doctors', icon: <LocalHospitalIcon />, path: '/doctorlist' },
-    { text: 'Patients', icon: <PeopleIcon />, path: '/' },
+    { text: 'Patients', icon: <PeopleIcon />, path: '/patientlist' },
   ];
 
   const manageItems = [
     { text: 'Calendar', icon: <CalendarTodayIcon />, path: '/doccalendar' },
-    { text: 'Appointments', icon: <EventAvailableIcon />, path: '/CheckupApplicantList' },
+    { text: 'Applicants', icon: <EventAvailableIcon />, path: '/CheckupApplicantList' },
     { text: 'Forms', icon: <DescriptionIcon />, path: '/docforms' },
     { text: 'Settings', icon: <SettingsIcon />, path: '/docsettings' },
   ];

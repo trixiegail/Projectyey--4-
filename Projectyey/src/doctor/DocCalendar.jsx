@@ -11,10 +11,6 @@ import { Box, Typography, TextField, IconButton, Avatar, Switch, Button,
         RadioGroup, FormControlLabel, Radio} from '@mui/material';
 import Sidebar from '../components/DocSidebar';
 import DocNavBar from '../components/DocNavBar';
-import SearchIcon from '@mui/icons-material/Search';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import CalendarSchedule from '../pages/CalendarSchedule';
-
  
 const localizer = momentLocalizer(moment);
  
@@ -97,7 +93,7 @@ const DocCalendar = () => {
           ...event,
           start: new Date(event.start),
           end: new Date(event.end),
-          type: new Date(event.end) < now ? 'Unavailable' : event.type, 
+          type: event.isBooked || new Date(event.end) < now ? 'Unavailable' : event.type, 
         }));
   
         setEvents(formattedEvents);
@@ -186,12 +182,13 @@ const DocCalendar = () => {
   const handleSave = () => {
     if (selectedDate) {
       let start, end;
+  
       if (selectedEventType !== 'Available') {
         start = moment(selectedDate).startOf('day').toDate();
         end = moment(selectedDate).endOf('day').toDate();
       } else if (timeSlots[0].startTime && timeSlots[0].endTime) {
-        const startTime = moment(timeSlots[0].startTime, 'h:mm a').toDate();
-        const endTime = moment(timeSlots[0].endTime, 'h:mm a').toDate();
+        const startTime = moment(timeSlots[0].startTime, 'HH:mm').toDate();
+        const endTime = moment(timeSlots[0].endTime, 'HH:mm').toDate();
         
         start = new Date(selectedDate);
         start.setHours(startTime.getHours(), startTime.getMinutes());
@@ -199,62 +196,60 @@ const DocCalendar = () => {
         end = new Date(selectedDate);
         end.setHours(endTime.getHours(), endTime.getMinutes());
       } else {
-        setModalOpen(false);
-        alert("Set Time Slots")
+        alert("Set Time Slots");
         return;
       }
-
-      let title = note || ''; 
-    if (selectedEventType === 'Available' && timeSlots[0].startTime && timeSlots[0].endTime) {
-      const formattedStartTime = moment(start).format('h:mm a');
-      const formattedEndTime = moment(end).format('h:mm a');
-      title += title ? ` (${formattedStartTime} - ${formattedEndTime})` : `${formattedStartTime} - ${formattedEndTime}`;
-    }
-
+  
+      const date = moment(start).format('YYYY-MM-DD');
+      const formattedStartTime = moment(start).format('h:mm A');
+      const formattedEndTime = moment(end).format('h:mm A');
+  
+      let title = note || '';
+      if (selectedEventType === 'Available' && timeSlots[0].startTime && timeSlots[0].endTime) {
+        title += title ? ` (${formattedStartTime} - ${formattedEndTime})` : `${formattedStartTime} - ${formattedEndTime}`;
+      }
+  
       const newEvent = {
         title: title.trim(),
         start: start,
         end: end,
         isBooked: false,
         type: selectedEventType,
+        date: date, 
+        time: `${formattedStartTime} - ${formattedEndTime}`, 
+        count: 5, // Set the count field to default value (5 or any number you want)
       };
   
       if (editEvent) {
         fetch(`http://localhost:8080/api/events/${editEvent.id}`, {
           method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newEvent),
         })
           .then(response => response.json())
           .then(data => {
             setEvents(events.map(e => (e.id === editEvent.id ? data : e)));
-            setDayEvents(dayEvents.map(e => (e.id === editEvent.id ? data : e)));
-            setEditEvent(null);
             setModalOpen(false);
           })
           .catch(error => console.error('Error updating event:', error));
       } else {
         fetch('http://localhost:8080/api/events', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newEvent),
         })
           .then(response => response.json())
           .then(data => {
             setEvents([...events, data]);
-            setDayEvents([...dayEvents, data]);
             setModalOpen(false);
           })
           .catch(error => console.error('Error saving event:', error));
       }
-    } else {
-      setModalOpen(false);
     }
   };
+  
+  
+  
   
 
   const handleEventTypeChange = (event) => {

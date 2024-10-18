@@ -1,15 +1,15 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
-import { Box, Typography, Select, MenuItem, TextField, Table, TableHead, TableRow, TableCell, TableBody, 
-        FormControl, InputLabel, Button } from '@mui/material';
+import { Box, Typography, Select, MenuItem, TextField, Table, TableHead, TableRow, TableCell, TableBody,
+        FormControl, InputLabel, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/DocSidebar';
 import DocNavBar from '../components/DocNavBar';
+import Patients from '../doctor/Patients';
+import { PatientsContext } from '../doctor/PatientsContext';
 
 export const ApplicantsContext = createContext();
 
-const coursesByDepartment = {
-  // Same course data here
-};
+const coursesByDepartment = { /* Your course data here */ };
 
 const ApplicantList = () => {
   const [filterPriority, setFilterPriority] = useState('All');
@@ -17,10 +17,68 @@ const ApplicantList = () => {
   const [filterCourse, setFilterCourse] = useState('');
   const [filterYear, setFilterYear] = useState('');
   const [filterDate, setFilterDate] = useState('');
-  const { applicants } = useContext(ApplicantsContext);
+  const { applicants, setApplicants } = useContext(ApplicantsContext); // Need to access setApplicants here
   const navigate = useNavigate();
+  const { addPatient, removePatient } = useContext(PatientsContext);
+  const [openAcceptDialog, setOpenAcceptDialog] = useState(false);
+  const [selectedApplicant, setSelectedApplicant] = useState(null); 
 
-  const filteredApplicants = applicants.filter((applicant) => {
+  // Dialog state management
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+  const [selectedApplicantId, setSelectedApplicantId] = useState(null);
+
+  // Handle accept button click
+  const handleOpenAcceptDialog = (event, applicant) => {
+    event.stopPropagation(); // Prevent any row click event from firing
+    setSelectedApplicant(applicant); // Store the selected applicant
+    setOpenAcceptDialog(true); // Open the confirmation dialog
+  };
+
+  const handleCloseAcceptDialog = () => {
+    setOpenAcceptDialog(false); // Close the dialog without any action
+    setSelectedApplicant(null); // Clear the selected applicant
+  };
+
+   // Confirm acceptance of the patient
+   const handleConfirmAccept = () => {
+    if (selectedApplicant) {
+      // Call the backend API to accept the reservation
+      fetch(`http://localhost:8080/api/reservations/accept/${selectedApplicant.id}`, {
+        method: 'POST',
+      })
+      .then(response => {
+        if (response.ok) {
+          alert('Patient accepted and saved to the database');
+          // Remove the accepted patient from the local state
+          setApplicants((prevApplicants) => prevApplicants.filter(a => a.id !== selectedApplicant.id));
+        } else {
+          alert('Failed to accept the patient.');
+        }
+      });
+    }
+  
+    // Close the dialog after confirming
+    handleCloseAcceptDialog();
+  };
+
+  const handleOpenConfirmDialog = (applicantId) => {
+    setSelectedApplicantId(applicantId); // Store the ID of the applicant to delete
+    setOpenConfirmDialog(true); // Open the dialog
+  };
+
+  const handleCloseConfirmDialog = () => {
+    setOpenConfirmDialog(false); // Close the dialog
+  };
+
+  // Sorting applicants by date and time
+  const sortedApplicants = [...applicants].sort((a, b) => {
+    const dateA = new Date(a.date + ' ' + a.time.split(' - ')[0]); // Combine date and start time
+    const dateB = new Date(b.date + ' ' + b.time.split(' - ')[0]);
+    return dateA - dateB; // Sort in ascending order
+  });
+
+  // Filter applicants
+  const filteredApplicants = sortedApplicants.filter((applicant) => {
     if (filterPriority === 'Priority List' && applicant.year !== 4) {
       return false;
     }
@@ -48,23 +106,54 @@ const ApplicantList = () => {
     navigate(`/CheckupForm/${applicant.id}`, { state: { applicant } });
   };
 
-  const handleAccept = (applicantId) => {
-    alert(`Accepted appointment for applicant ID: ${applicantId}`);
+  const handleAccept = (applicant) => {
+    // Open confirmation modal before accepting
+    setSelectedApplicant(applicant); // Store the selected applicant
+    setOpenAcceptDialog(true); // Open the modal
+  };
+  
+
+  const handleConfirmRefusal = () => {
+    console.log('Attempting to delete reservation for applicant ID:', selectedApplicantId);  // Debug log
+  
+    fetch(`http://localhost:8080/api/reservations/${selectedApplicantId}`, {
+      method: 'DELETE',
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log('Reservation deleted successfully');
+          alert('Patient rejected successfully');
+          
+          // Remove applicant from the state
+          setApplicants((prevApplicants) =>
+            prevApplicants.filter((applicant) => applicant.id !== selectedApplicantId)
+          );
+        } else {
+          console.error('Failed to delete reservation:', response);
+          alert('Failed to reject patient. Please try again.');
+        }
+      })
+      .catch((error) => {
+        console.error('Error rejecting patient:', error);
+        alert('An error occurred while rejecting the patient.');
+      })
+      .finally(() => {
+        handleCloseConfirmDialog();  // Close the dialog after handling
+      });
   };
 
   const handleRefuse = (applicantId) => {
-    alert(`Refused appointment for applicant ID: ${applicantId}`);
-  };
+  setSelectedApplicantId(applicantId);  // Store the applicant ID to be refused
+  setOpenConfirmDialog(true);  // Open the confirmation dialog
+};
+
+
+  
 
   return (
-    <Box sx={{ flexGrow: 1, p: 3 }}> 
+    <Box sx={{ flexGrow: 1, p: 3 }}>
       <Box 
-        sx={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center', 
-          mb: 2 
-        }}
+        sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}
       >
         <Typography 
           variant="h4" 
@@ -75,6 +164,7 @@ const ApplicantList = () => {
         <DocNavBar />
       </Box>
 
+      {/* Filter Options */}
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3} width="100%">
         <FormControl variant="outlined" style={{ minWidth: 200 }}>
           <InputLabel>List</InputLabel>
@@ -103,6 +193,7 @@ const ApplicantList = () => {
         </FormControl>
       </Box>
 
+      {/* Applicant Table */}
       <Box display="flex" justifyContent="center" mt={3} sx={{ borderRadius: 2, overflow: 'hidden' }}>
         <Table>
           <TableHead>
@@ -155,24 +246,29 @@ const ApplicantList = () => {
           </TableHead>
           <TableBody>
             {filteredApplicants.map((applicant) => (
-              <TableRow key={applicant.id} onClick={() => handleRowClick(applicant)} style={{ cursor: 'pointer' }}>
-                <TableCell style={{ paddingLeft: 20 }}>{applicant.id}</TableCell>
-                <TableCell style={{ paddingLeft: 20 }}>{applicant.fullName}</TableCell>
-                <TableCell>{applicant.course}</TableCell>
-                <TableCell>{applicant.year}</TableCell>
-                <TableCell style={{ paddingLeft: 20 }}>{`${applicant.date} ${applicant.time}`}</TableCell>
+              <TableRow key={applicant.id} onClick={() => handleRowClick(applicant)} style={{ cursor: 'pointer', backgroundColor:'white' }}>
+                <TableCell style={{ paddingLeft: 15, fontSize: '16px' }}>{applicant.studentIdNumber}</TableCell>
+                <TableCell style={{ paddingLeft: 15, fontSize: '16px' }}>{applicant.fullName}</TableCell>
+                <TableCell style={{ paddingLeft: 30, fontSize: '16px' }}>{applicant.course}</TableCell>
+                <TableCell style={{ paddingLeft: 70, fontSize: '16px' }}>{applicant.year}</TableCell>
+                <TableCell style={{ paddingLeft: 25, fontSize: '16px' }}>
+                  {applicant.date} <strong>{applicant.time}</strong>
+                </TableCell>
                 <TableCell>
                   <Button
                     variant="contained"
-                    onClick={() => handleAccept(applicant.id)}
-                    style={{ backgroundColor: '#800000', color: '#FFFFFF', marginRight: 10 }}
+                    onClick={(event) => handleOpenAcceptDialog(event, applicant)} // Call to open the modal
+                    style={{ backgroundColor: '#90242c', color: '#FFFFFF', marginRight: 10 }}
                   >
                     Accept
                   </Button>
                   <Button
                     variant="contained"
-                    onClick={() => handleRefuse(applicant.id)}
-                    style={{ backgroundColor: '#800000', color: '#FFFFFF' }}
+                    onClick={(event) => {
+                      event.stopPropagation(); // Prevents triggering row click
+                      handleRefuse(applicant.id); // Handle refuse logic
+                    }}
+                    style={{ backgroundColor: '#90242c', color: '#FFFFFF' }}
                   >
                     Refuse
                   </Button>
@@ -182,31 +278,76 @@ const ApplicantList = () => {
           </TableBody>
         </Table>
       </Box>
+
+        {/* Confirmation Modal for Accept */}
+        <Dialog
+        open={openAcceptDialog} // Controlled by openAcceptDialog state
+        onClose={handleCloseAcceptDialog}
+        aria-labelledby="accept-dialog-title"
+        aria-describedby="accept-dialog-description"
+      >
+        <DialogTitle id="accept-dialog-title">Accept Patient</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="accept-dialog-description">
+            Are you sure you want to accept this patient?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseAcceptDialog} color="primary">Cancel</Button>
+          <Button onClick={handleConfirmAccept} color="primary" autoFocus>Yes, Accept</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Confirmation Dialog */}
+      <Dialog
+        open={openConfirmDialog}  // Controlled by openConfirmDialog state
+        onClose={handleCloseConfirmDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Reject Patient"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to reject this patient?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseConfirmDialog} style={{ color: '#88343B' }}>
+            Cancel
+          </Button>
+          <Button
+            onClick={handleConfirmRefusal}
+            style={{ color: '#cc9999' }}
+            autoFocus
+          >
+            Yes, Reject
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </Box>
   );
 };
 
 const CheckupApplicantList = () => {
   const [applicants, setApplicants] = useState([]);
-  
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/reservations')
+    fetch('http://localhost:8080/api/reservations/reservations')
       .then((response) => response.json())
       .then((data) => {
-        console.log('API Response:', data);
+        console.log('API Response:', data); // Check if the data is returned correctly
         if (Array.isArray(data)) {
-          setApplicants(data);
+          setApplicants(data); // This will include the new reservation
         } else {
           console.error('Expected an array but received:', data);
         }
       })
       .catch((error) => console.error('Error fetching reservations:', error));
   }, []);
-  
 
   return (
-    <ApplicantsContext.Provider value={{ applicants }}>
+    <ApplicantsContext.Provider value={{ applicants, setApplicants }}>
       <Box sx={{ display: 'flex', minHeight: '100vh' }}>
         <Sidebar /> 
         <ApplicantList />

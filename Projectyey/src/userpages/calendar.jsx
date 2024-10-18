@@ -8,7 +8,6 @@ import Studfooter from '../components/Studfooter';
 import Studnav from '../components/Studnav';
 import Modal from 'react-modal';
 import { Box, Typography, Button } from '@mui/material';
-import StudentProtectedRoute from '../components/StudentProtectedRoute';
 
 const localizer = momentLocalizer(moment);
 
@@ -37,7 +36,9 @@ const modalStyles = {
 const App = () => {
   const [events, setEvents] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
+  const [successModalOpen, setSuccessModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [studentData, setStudentData] = useState({});
   const wrapperRef = useRef(null);
   const navigate = useNavigate();
 
@@ -51,9 +52,6 @@ const App = () => {
 
 }, []);
 
-
-  
-
   useEffect(() => {
     const now = new Date();
 
@@ -64,7 +62,7 @@ const App = () => {
           ...event,
           start: new Date(event.start),
           end: new Date(event.end),
-          type: new Date(event.end) < now ? 'Unavailable' : event.type,
+          type: event.isBooked || new Date(event.end) < now ? 'Unavailable' : event.type,
         }));
         setEvents(formattedEvents);
       })
@@ -86,54 +84,81 @@ const App = () => {
     setSelectedEvent(null);
   };
 
+  const closeSuccessModal = () => {
+    setSuccessModalOpen(false);
+  };
+
   const handleReserve = () => {
     const studentName = localStorage.getItem('studentName');
-    const studentIdNumber = localStorage.getItem('studentIdNumber'); // Fetch the ID number
-    
-    console.log("Fetched studentName:", studentName); 
-    console.log("Fetched studentIdNumber:", studentIdNumber); // Debug log for ID number
-
-    // Check if the values are retrieved correctly
+    const studentIdNumber = localStorage.getItem('studentIdNumber');
+  
     if (!studentName) {
       alert("You need to log in to reserve a slot.");
-      navigate('/login-student'); 
+      navigate('/login-student');
       return;
     }
-
-    const reservationRequest = { 
-      studentIdNumber: studentIdNumber,   // Pass student ID
-      fullName: studentName,   // Pass student name
-      course: 'Course Name',   // Replace with actual course
-      year: 'Year Level',      // Replace with actual year level
-      date: moment(selectedEvent.start).format('YYYY-MM-DD'), // Format the date
-      time: `${moment(selectedEvent.start).format('h:mm A')} - ${moment(selectedEvent.end).format('h:mm A')}`
+  
+    const reservationRequest = {
+      studentIdNumber: studentIdNumber,
+      fullName: studentName,
+      course: 'BS Information Technology', //static - cannot fetch from student data
+      year: (10, 4), //static - cannot fetch from student data
+      date: moment(selectedEvent.start).format('YYYY-MM-DD'), 
+      time: `${moment(selectedEvent.start).format('h:mm A')} - ${moment(selectedEvent.end).format('h:mm A')}`,
     };
-    
-    
-    console.log('Reservation Request:', reservationRequest); // Debug log
-
+  
+    console.log('Reservation Request:', reservationRequest);
+  
     fetch('http://localhost:8080/api/reservations/reserve', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(reservationRequest), // Convert the object to JSON
+      body: JSON.stringify(reservationRequest),
     })
       .then(response => {
         if (!response.ok) {
-          return response.text().then(text => {
-            throw new Error(text); // Handle non-JSON error response
+          return response.json().then(text => {
+            throw new Error(text.error); 
           });
         }
         return response.json();
       })
       .then(data => {
-        console.log('Reservation successful:', data);
-        setModalOpen(false); // Close modal after reservation
+        console.log('Reservation successful:', data.message);  
+        setModalOpen(false);  
+        setSuccessModalOpen(true);
+
+        setEvents((prevEvents) =>
+          prevEvents.map((event) =>
+            event.id === selectedEvent.id
+              ? { ...event, type: 'Unavailable' } 
+              : event
+          )
+        );
       })
       .catch(error => console.error('Error reserving slot:', error));
   };
 
   
+
+  const SuccessModal = () => {
+    if (!successModalOpen) return null;
+
+    return ReactDOM.createPortal(
+      <div className="fixed inset-0 z-30 flex items-center justify-center overflow-y-auto text-black bg-black bg-opacity-50">
+        <div ref={wrapperRef} style={{ ...modalStyles.content, padding: '20px' }}>
+          <h2 className="text-xl font-bold text-center">Yeyy Reservation Successful!</h2>
+          <div className="flex justify-center space-x-4 mt-4">
+            <Button variant="contained" style={{ backgroundColor: '#F7C301' }} onClick={closeSuccessModal}>
+              Close
+            </Button>
+          </div>
+        </div>
+      </div>,
+      document.body
+    );
+  };
   
+
 
   const ModalComponent = () => {
     if (!modalOpen || !selectedEvent) return null;
@@ -142,8 +167,8 @@ const App = () => {
     const eventTime = `${moment(selectedEvent.start).format('h:mm A')} - ${moment(selectedEvent.end).format('h:mm A')}`;
 
     return ReactDOM.createPortal(
-      <div className="fixed inset-0 z-30 flex items-center justify-center overflow-y-auto text-black bg-black bg-opacity-50">
-        <div ref={wrapperRef} style={modalStyles.content}>
+      <div className="fixed inset-0 z-30 flex items-center justify-center overflow-y-auto text-black bg-black bg-opacity-50" >
+        <div ref={wrapperRef} style={{ ...modalStyles.content, padding: '20px' }}>
           <h2 className="text-xl font-bold text-center">Confirm Reservation</h2>
           <p className="mt-2 text-center">Are you sure you want to reserve this slot?</p>
           <p className="mt-2 text-center">
@@ -168,7 +193,7 @@ const App = () => {
 
   const eventStyleGetter = (event) => {
     let style = {
-      backgroundColor: '#add8e6', 
+      backgroundColor: '#add8e6',
       borderRadius: '5px',
       color: '#000',
       display: 'flex',
@@ -179,9 +204,9 @@ const App = () => {
     if (event.type === 'Unavailable' || event.type === 'Holiday') {
       style.backgroundColor = event.type === 'Unavailable' ? '#B0BEC5' : '#cc9999';
       style.color = '#fff';
-      style.pointerEvents = 'none'; 
+      style.pointerEvents = 'none';
     } else if (event.type === 'Available') {
-      style.backgroundColor = '#FDE74C'; 
+      style.backgroundColor = '#FDE74C';
     }
 
     return { style };
@@ -190,7 +215,7 @@ const App = () => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
-        closeModal(); 
+        closeModal();
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -199,45 +224,11 @@ const App = () => {
     };
   }, []);
 
-
-  const handleLogin = async () => {
-    const response = await fetch('http://localhost:8080/user/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            idNumber: idNumber, // The ID number input from the user
-            password: password,
-        }),
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-        console.log("Login response:", data); // Log the response to debug
-        localStorage.setItem('studentName', data.fullName); // Save student's full name
-        localStorage.setItem('studentIdNumber', data.idNumber); // Save student ID number
-        navigate('/dashboard'); // Redirect to dashboard after login
-    } else {
-        alert('Login failed. Please check your credentials.');
-    }
-};
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-
   return (
     <div>
       <Studnav />
       <ModalComponent />
+      <SuccessModal />
 
       <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
         <div className="mx-auto max-w-7xl text-center">
@@ -279,5 +270,6 @@ const App = () => {
     </div>
   );
 };
+
 
 export default App;
