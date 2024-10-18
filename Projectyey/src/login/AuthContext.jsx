@@ -1,18 +1,21 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-
+import { createContext, useState, useContext, useEffect } from 'react';
+import PropTypes from 'prop-types';
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  AuthProvider.propTypes = {
+    children: PropTypes.node.isRequired,
+  };
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
 
   const login = (userData) => {
     setIsLoggedIn(true);
-  
+
     if (userData) {
       const { id, first_name, last_name, department, program, yearLevel, birthdate, email } = userData;
-  
-      if (student_id && first_name && last_name) {
+
+      if (id && first_name && last_name) {
         setUser({
           studentId: id,
           firstName: first_name,
