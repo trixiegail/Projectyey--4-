@@ -1,8 +1,27 @@
-import React from 'react';
+import { useRef } from 'react';
 import Studfooter from "../components/Studfooter";
 import Studnav from '../components/Studnav';
+import emailjs from '@emailjs/browser';
  
 function Contact() {
+  const form = useRef();
+
+  const sendEmail = (e) => {
+    e.preventDefault();
+
+    emailjs
+        .sendForm('service_42kzvpa', 'template_oq327k3', form.current, {
+          publicKey: 'E0l0YjX0W9Dk-nXit',
+        })
+        .then(
+            () => {
+              console.log('SUCCESS!');
+            },
+            (error) => {
+              console.log('FAILED...', error.text);
+            },
+        );
+  };
   return (
     <div>
       <Studnav />
@@ -28,7 +47,7 @@ function Contact() {
               </p>
               <h3 className="text-2xl font-bold mt-6">Email</h3>
               <p className="mt-4">
-                contact@dentalclinic.com
+                dentalcapstone5@gmail.com
               </p>
             </div>
  
@@ -41,54 +60,56 @@ function Contact() {
               </p>
             </div>
           </div>
- 
+
           <div className="mt-20 text-center">
             <h2 className="text-3xl font-bold text-[#88343B]">Send Us a Message</h2>
-            <form className="mt-8 space-y-6 mx-auto max-w-lg">
+            <form className="mt-8 space-y-6 mx-auto max-w-lg" ref={form} onSubmit={sendEmail}>
               <div className="grid grid-cols-1 gap-6">
                 <div>
                   <label htmlFor="name" className="sr-only">Name</label>
                   <input
-                    type="text"
-                    name="name"
-                    id="name"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                    placeholder="Your Name"
+                      type="text"
+                      name="user_name"
+                      id="name"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                      placeholder="Your Name"
                   />
                 </div>
                 <div>
                   <label htmlFor="email" className="sr-only">Email</label>
                   <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                    placeholder="Your Email"
+                      type="email"
+                      name="user_email"
+                      id="email"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                      placeholder="Your Email"
                   />
                 </div>
                 <div>
                   <label htmlFor="message" className="sr-only">Message</label>
                   <textarea
-                    name="message"
-                    id="message"
-                    rows="4"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                    placeholder="Your Message"
+                      name="message"
+                      id="message"
+                      rows="4"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                      placeholder="Your Message"
                   ></textarea>
                 </div>
               </div>
               <button
-                type="submit"
-                className="w-full px-6 py-3 bg-[#F7C301] text-black font-bold rounded-lg hover:bg-yellow-600"
+                  type="submit"
+                  value={"Send"}
+                  className="w-full px-6 py-3 bg-[#F7C301] text-black font-bold rounded-lg hover:bg-yellow-600"
               >
                 Send Message
               </button>
             </form>
           </div>
         </div>
-      </div><Studfooter />
+      </div>
+      <Studfooter/>
     </div>
   );
 }
- 
+
 export default Contact;
