@@ -31,17 +31,80 @@ const Dashboard = () => {
           <DocNavBar />
         </Box>
 
-        {/* Statistic Cards */}
         <Grid container spacing={2} sx={{ mb: 3 }}>
-          {['Patients Today', 'Total Patients', 'For Recall', 'Requests'].map((title, index) => (
-            <Grid item xs={12} sm={6} md={3} key={index}>
-              <Card sx={{ p: 2, backgroundColor: '#8B232A', color: '#FFFFFF', textAlign: 'center' }}>
-                <Typography variant="subtitle1">{title}</Typography>
-                <Typography variant="h5">0</Typography>
-              </Card>
-            </Grid>
-          ))}
+        <Grid item xs={12} sm={6} md={3}>
+          <Button
+            fullWidth
+            variant="contained"
+            sx={{
+              p: 2,
+              backgroundColor: '#8B232A',
+              color: '#FFFFFF',
+              textAlign: 'center',
+              '&:hover': { backgroundColor: '#6E1D22' } // Darken on hover
+            }}
+            onClick={() => alert('Patients Today button clicked!')}
+          >
+            <Typography variant="subtitle1">Patients Today</Typography>
+            <Typography variant="h5">0</Typography>
+          </Button>
         </Grid>
+
+        <Grid item xs={12} sm={6} md={3}>
+          <Button
+            fullWidth
+            variant="contained"
+            sx={{
+              p: 2,
+              backgroundColor: '#8B232A',
+              color: '#FFFFFF',
+              textAlign: 'center',
+              '&:hover': { backgroundColor: '#6E1D22' } // Darken on hover
+            }}
+            onClick={() => alert('Total Patients button clicked!')}
+          >
+            <Typography variant="subtitle1">Total Patients</Typography>
+            <Typography variant="h5">0</Typography>
+          </Button>
+        </Grid>
+
+        <Grid item xs={12} sm={6} md={3}>
+          <Button
+            fullWidth
+            variant="contained"
+            sx={{
+              p: 2,
+              backgroundColor: '#8B232A',
+              color: '#FFFFFF',
+              textAlign: 'center',
+              '&:hover': { backgroundColor: '#6E1D22' } // Darken on hover
+            }}
+            onClick={() => alert('For Recall button clicked!')}
+          >
+            <Typography variant="subtitle1">For Recall</Typography>
+            <Typography variant="h5">0</Typography>
+          </Button>
+        </Grid>
+
+        <Grid item xs={12} sm={6} md={3}>
+          <Button
+            fullWidth
+            variant="contained"
+            sx={{
+              p: 2,
+              backgroundColor: '#8B232A',
+              color: '#FFFFFF',
+              textAlign: 'center',
+              '&:hover': { backgroundColor: '#6E1D22' } // Darken on hover
+            }}
+            onClick={() => alert('Requests button clicked!')}
+          >
+            <Typography variant="subtitle1">Requests</Typography>
+            <Typography variant="h5">0</Typography>
+          </Button>
+        </Grid>
+      </Grid>
+
 
         {/* Main Content */}
         <Grid container spacing={2}>
