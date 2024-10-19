@@ -12,7 +12,7 @@ function Archive() {
 
   const fetchArchivedAccounts = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/user/students/archived');
+      const response = await axios.get('http://localhost:8080/student/archivedStudents');
 
       if (response.status === 200) {
         setArchivedAccounts(response.data);
@@ -27,7 +27,7 @@ function Archive() {
 
   const handleSearch = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/user/students/search/archived?keyword=${searchTerm}`);
+      const response = await axios.get(`http://localhost:8080/student/search/archivedStudents?keyword=${searchTerm}`);
       if (response.status === 200) {
         setArchivedAccounts(response.data);
         console.log('Archived accounts searched successfully:', response.data);
@@ -41,7 +41,7 @@ function Archive() {
 
   const handleUnarchive = async (id) => {
     try {
-      const response = await axios.post(`http://localhost:8080/user/students/unarchiveStudent/${id}`);
+      const response = await axios.post(`http://localhost:8080/student/unarchiveStudent/${id}`);
       if (response.status === 200) {
         console.log('Account unarchived successfully');
         fetchArchivedAccounts(); // Refresh the list
@@ -60,7 +60,7 @@ function Archive() {
 
       <div className="w-50 ml-10 mt-[120px] relative">
         <h1 className="text-2xl font-bold mb-5">Archived Student Accounts</h1>
-        
+
         <div className="flex items-center mb-5">
           <input
             type="text"
@@ -76,7 +76,7 @@ function Archive() {
             Search
           </button>
         </div>
-        
+
         <div className="overflow-auto h-96 mt-2">
           <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
             <thead className="bg-[#88343B] text-white">
