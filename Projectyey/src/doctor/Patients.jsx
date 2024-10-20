@@ -1,13 +1,13 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 import { Box, Typography, Select, MenuItem, TextField, Table, TableHead, TableRow, TableCell, TableBody,
-        FormControl, InputLabel, Button } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+        FormControl, InputLabel, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import Sidebar from '../components/DocSidebar';
 import DocNavBar from '../components/DocNavBar';
+import { useNavigate } from 'react-router-dom';
 
 export const ApplicantsContext = createContext();
 
-const coursesByDepartment = {
+const programsByDepartment = {
   'COLLEGE OF ENGINEERING AND ARCHITECTURE': [
     'BS Architecture',
     'BS Chemical Engineering',
@@ -55,23 +55,25 @@ const coursesByDepartment = {
 const PatientList = () => {
   const [filterPriority, setFilterPriority] = useState('All');
   const [filterDepartment, setFilterDepartment] = useState('');
-  const [filterCourse, setFilterCourse] = useState('');
+  const [filterProgram, setFilterProgram] = useState('');
   const [filterYear, setFilterYear] = useState('');
   const [filterDate, setFilterDate] = useState('');
-  const { applicants } = useContext(ApplicantsContext);
+  const { applicants, setApplicants } = useContext(ApplicantsContext);
   const navigate = useNavigate();
 
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+  const [selectedApplicantId, setSelectedApplicantId] = useState(null);
+
+  // Sorting and filtering logic
   const sortedApplicants = [...applicants].sort((a, b) => {
-    // Ensure both date and time are available before performing split
     const timeA = a.time ? a.time.split(' - ')[0] : '';
     const timeB = b.time ? b.time.split(' - ')[0] : '';
   
-    const dateA = new Date(a.date + ' ' + timeA); // Combine date and start time
+    const dateA = new Date(a.date + ' ' + timeA);
     const dateB = new Date(b.date + ' ' + timeB);
   
     return dateA - dateB; // Sort in ascending order
   });
-  
 
   const filteredApplicants = sortedApplicants.filter((applicant) => {
     if (filterPriority === 'Priority List' && applicant.year !== 4) {
@@ -80,7 +82,7 @@ const PatientList = () => {
     if (filterDepartment && filterDepartment !== applicant.department) {
       return false;
     }
-    if (filterCourse && filterCourse !== applicant.course) {
+    if (filterProgram && filterProgram !== applicant.program) {
       return false;
     }
     if (filterYear && filterYear !== '' && filterYear !== applicant.year.toString()) {
@@ -94,11 +96,46 @@ const PatientList = () => {
 
   const handleDepartmentChange = (department) => {
     setFilterDepartment(department);
-    setFilterCourse(''); // Reset course filter when department changes
+    setFilterProgram(''); 
   };
 
   const handleRowClick = (applicant) => {
-    navigate(`/CheckupForm/${applicant.id}`, { state: { applicant } });
+    navigate(`/CheckupForm/${applicant.studentIdNumber}`, { state: { applicant } });
+  };
+
+  // This prevents navigation to the CheckupForm when clicking the "Done" button
+  const handleDone = (event, applicantId) => {
+    event.stopPropagation(); // Prevents row click event
+    setSelectedApplicantId(applicantId);  // Store the applicant ID to be deleted
+    setOpenConfirmDialog(true);  // Open the confirmation dialog
+  };
+
+  const handleDelete = () => {
+    fetch(`http://localhost:8080/api/patients/${studentIdNumber}`, {
+      method: 'DELETE',
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log('Patient deleted successfully');
+          
+          // Remove patient from the local state after deletion
+          setApplicants((prevApplicants) =>
+            prevApplicants.filter((applicant) => applicant.id !== selectedApplicantId)
+          );
+        } else {
+          console.error('Failed to delete patient:', response);
+        }
+      })
+      .catch((error) => {
+        console.error('Error completing patient:', error);
+      })
+      .finally(() => {
+        setOpenConfirmDialog(false);  // Close the confirmation dialog
+      });
+  };
+
+  const handleCloseConfirmDialog = () => {
+    setOpenConfirmDialog(false);  // Close the confirmation dialog
   };
 
   return (
@@ -115,7 +152,7 @@ const PatientList = () => {
           variant="h4" 
           sx={{ fontWeight: 'bold', color: '#90343c', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }} 
         >
-          Applicants For Check Up
+          Patients
         </Typography>
         <DocNavBar />
       </Box>
@@ -141,7 +178,7 @@ const PatientList = () => {
             label="Department"
           >
             <MenuItem value="">All</MenuItem>
-            {Object.keys(coursesByDepartment).map((department) => (
+            {Object.keys(programsByDepartment).map((department) => (
               <MenuItem key={department} value={department}>{department}</MenuItem>
             ))}
           </Select>
@@ -150,21 +187,21 @@ const PatientList = () => {
 
       <Box display="flex" justifyContent="center" mt={3} sx={{ borderRadius: 2, overflow: 'hidden' }}>
         <Table>
-          <TableHead>
+        <TableHead>
             <TableRow style={{ backgroundColor: '#90242c', color: '#FFFFFF' }}>
               <TableCell style={{ color: '#FFFFFF', paddingLeft: 20 }}>ID Number</TableCell>
               <TableCell style={{ color: '#FFFFFF', paddingLeft: 20 }}>Full Name</TableCell>
               <TableCell>
                 <FormControl variant="outlined" size="small" style={{ minWidth: 150, marginLeft: 10 }}>
-                  <InputLabel style={{ color: '#FFFFFF' }}>Course</InputLabel>
+                  <InputLabel style={{ color: '#FFFFFF' }}>Program</InputLabel>
                   <Select
-                    value={filterCourse}
-                    onChange={(e) => setFilterCourse(e.target.value)}
-                    label="Course"
+                    value={filterProgram}
+                    onChange={(e) => setFilterProgram(e.target.value)}
+                    label="Program"
                   >
                     <MenuItem value="">All</MenuItem>
-                    {filterDepartment && coursesByDepartment[filterDepartment].map((course) => (
-                      <MenuItem key={course} value={course}>{course}</MenuItem>
+                    {filterDepartment && programByDepartment[filterDepartment].map((program) => (
+                      <MenuItem key={program} value={program}>{program}</MenuItem>
                     ))}
                   </Select>
                 </FormControl>
@@ -201,22 +238,49 @@ const PatientList = () => {
           <TableBody>
             {filteredApplicants.map((applicant) => (
               <TableRow key={applicant.id} onClick={() => handleRowClick(applicant)} style={{ cursor: 'pointer', backgroundColor:'white' }}>
-                <TableCell style={{ paddingLeft: 15 , fontSize:'16px'}}>{applicant.studentIdNumber}</TableCell>
-                <TableCell style={{ paddingLeft: 15 , fontSize:'16px'}}>{applicant.fullName}</TableCell>
-                <TableCell style={{ paddingLeft: 30, fontSize:'16px'}}>{applicant.course}</TableCell>
-                <TableCell style={{ paddingLeft: 70 , fontSize:'16px'}}>{applicant.year}</TableCell>
-                <TableCell style={{ paddingLeft: 25, fontSize: '16px' }}>
-                  {applicant.date} <strong>{applicant.time}</strong>
-                </TableCell>
-
+              <TableCell style={{ paddingLeft: 15, fontSize: '16px' }}>{applicant.studentIdNumber}</TableCell>
+              <TableCell style={{ paddingLeft: 15, fontSize: '16px' }}>{applicant.fullName}</TableCell>
+              <TableCell style={{ paddingLeft: 30, fontSize: '16px' }}>{applicant.program}</TableCell>
+              <TableCell style={{ paddingLeft: 70, fontSize: '16px' }}>{applicant.yearLevel}</TableCell>
+              <TableCell style={{ paddingLeft: 25, fontSize: '16px' }}>
+                {applicant.date} <strong>{applicant.time}</strong>
+              </TableCell>
                 <TableCell>
-                  
+                  <Button
+                    variant="contained"
+                    onClick={(event) => handleDone(event, applicant.id)}
+                    style={{ backgroundColor: '#90242c', color: '#FFFFFF' }}
+                  >
+                    Done
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </Box>
+
+      {/* Confirmation Dialog */}
+      <Dialog
+        open={openConfirmDialog}
+        onClose={handleCloseConfirmDialog}
+      >
+        <DialogTitle>{"Complete Patient"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to mark this patient as Done?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseConfirmDialog} style={{ color: '#88343B' }}>
+            Cancel
+          </Button>
+          <Button onClick={handleDelete} style={{ color: '#cc9999' }} autoFocus>
+            Yes, Complete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </Box>
   );
 };
@@ -228,9 +292,8 @@ const Patients = () => {
     fetch('http://localhost:8080/api/patients/')
       .then((response) => response.json())
       .then((data) => {
-        console.log('API Response:', data); // Check if the data is returned correctly
         if (Array.isArray(data)) {
-          setApplicants(data); // This will include the new reservation
+          setApplicants(data); // Set the applicants in state
         } else {
           console.error('Expected an array but received:', data);
         }
@@ -239,7 +302,7 @@ const Patients = () => {
   }, []);
 
   return (
-    <ApplicantsContext.Provider value={{ applicants }}>
+    <ApplicantsContext.Provider value={{ applicants, setApplicants }}>
       <Box sx={{ display: 'flex', minHeight: '100vh' }}>
         <Sidebar /> 
         <PatientList />

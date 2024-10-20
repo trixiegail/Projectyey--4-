@@ -88,7 +88,7 @@ const App = () => {
     setSuccessModalOpen(false);
   };
 
-  const handleReserve = () => {
+  const handleReserve = async () => {
     const studentName = localStorage.getItem('studentName');
     const studentIdNumber = localStorage.getItem('studentIdNumber');
   
@@ -98,45 +98,59 @@ const App = () => {
       return;
     }
   
-    const reservationRequest = {
-      studentIdNumber: studentIdNumber,
-      fullName: studentName,
-      course: 'BS Information Technology', //static - cannot fetch from student data
-      year: (10, 4), //static - cannot fetch from student data
-      date: moment(selectedEvent.start).format('YYYY-MM-DD'), 
-      time: `${moment(selectedEvent.start).format('h:mm A')} - ${moment(selectedEvent.end).format('h:mm A')}`,
-    };
+    try {
+      // Fetch student data using studentIdNumber
+      const response = await fetch(`http://localhost:8080/student/students/${studentIdNumber}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch student data');
+      }
   
-    console.log('Reservation Request:', reservationRequest);
+      const studentData = await response.json();
   
-    fetch('http://localhost:8080/api/reservations/reserve', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(reservationRequest),
-    })
-      .then(response => {
-        if (!response.ok) {
-          return response.json().then(text => {
-            throw new Error(text.error); 
-          });
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log('Reservation successful:', data.message);  
-        setModalOpen(false);  
-        setSuccessModalOpen(true);
-
-        setEvents((prevEvents) =>
-          prevEvents.map((event) =>
-            event.id === selectedEvent.id
-              ? { ...event, type: 'Unavailable' } 
-              : event
-          )
-        );
-      })
-      .catch(error => console.error('Error reserving slot:', error));
+      // Create the reservation request with fetched data
+      const reservationRequest = {
+        studentIdNumber: studentData.idNumber,
+        fullName: `${studentData.firstname} ${studentData.lastname}`,
+        department: studentData.department, // Fetched from student data
+        program: studentData.program, // Fetched from student data
+        yearLevel: studentData.yearLevel, // Fetched from student data
+        date: moment(selectedEvent.start).format('YYYY-MM-DD'),
+        time: `${moment(selectedEvent.start).format('h:mm A')} - ${moment(selectedEvent.end).format('h:mm A')}`,
+      };
+  
+      console.log('Reservation Request:', reservationRequest);
+  
+      // Post reservation
+      const reserveResponse = await fetch('http://localhost:8080/api/reservations/reserve', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reservationRequest),
+      });
+  
+      if (!reserveResponse.ok) {
+        const errorData = await reserveResponse.json();
+        throw new Error(errorData.error); 
+      }
+  
+      const data = await reserveResponse.json();
+      console.log('Reservation successful:', data.message);
+      setModalOpen(false);  // Close the reservation modal
+      setSuccessModalOpen(true);  // Open the success modal
+  
+      // Update the event list to mark the event as unavailable
+      setEvents((prevEvents) =>
+        prevEvents.map((event) =>
+          event.id === selectedEvent.id
+            ? { ...event, type: 'Unavailable' } // Mark the reserved event as unavailable
+            : event
+        )
+      );
+  
+    } catch (error) {
+      console.error('Error reserving slot:', error.message || error);
+    }
   };
+  
 
   
 

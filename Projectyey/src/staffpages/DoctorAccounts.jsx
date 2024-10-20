@@ -16,10 +16,10 @@ function DoctorAccounts() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/user/doctors?archived=false');
+      const response = await axios.get('http://localhost:8080/doctor/getDoctors?archived=false');
       if (response.status === 200) {
         setData(response.data);
-        console.log('Student accounts fetched successfully:', response.data);
+        console.log('Doctor accounts fetched successfully:', response.data);
       } else {
         throw new Error('Failed to fetch student accounts');
       }
@@ -30,7 +30,7 @@ function DoctorAccounts() {
 
   const handleSearch = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/user/doctors/search?keyword=${searchTerm}`);
+      const response = await axios.get(`http://localhost:8080/doctor/searchDoctor?keyword=${searchTerm}`);
       if (response.status === 200) {
         setData(response.data);
         console.log('Student accounts fetched successfully:', response.data);
@@ -50,7 +50,7 @@ function DoctorAccounts() {
   const handleArchiveConfirm = async () => {
     try {
       console.log(`Attempting to archive user with ID: ${selectedUser.id}`);
-      const response = await axios.post(`http://localhost:8080/user/archive/${selectedUser.id}`);
+      const response = await axios.post(`http://localhost:8080/doctor/archiveDoctor/${selectedUser.id}`);
       console.log('Archive response:', response);
       if (response.status === 200) {
         console.log('Student account archived successfully');
@@ -96,7 +96,7 @@ function DoctorAccounts() {
     if (selectedUser && selectedUser.id) {
       try {
         console.log('Updating user with ID:', selectedUser.id);
-        const response = await axios.put(`http://localhost:8080/user/update/doctors/${selectedUser.id}`, selectedUser);
+        const response = await axios.put(`http://localhost:8080/doctor/update/doctors/${selectedUser.id}`, selectedUser);
         if (response.status === 200) {
           console.log('Student account updated successfully');
           fetchData();
