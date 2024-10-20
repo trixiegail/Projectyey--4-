@@ -60,6 +60,7 @@ import StaffSettings from './staff/StaffSettings';
 import Patients from './doctor/Patients';
 import { PatientsContext } from './doctor/PatientsContext';
 import { PatientsProvider } from './doctor/PatientsContext';
+import StudentProfile from "@/userpages/studentprofile.jsx";
 
 
 export default function App() {
@@ -113,6 +114,7 @@ export default function App() {
             <Route path="/NurseSchedule" exact element={<NurseSchedule />} />
             <Route path="/CalendarSchedule" exact element={<CalendarSchedule />} />
             <Route path='/printview' exact element={<PrintView />} />
+            <Route path='/sidebar' exact element={<StudentProfile />} />
             
 
             <Route path="/CheckupForm/:studentIdNumber" exact element={<ChckupForm />} />

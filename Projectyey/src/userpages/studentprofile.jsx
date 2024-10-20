@@ -2,7 +2,7 @@ import React from "react";
 import Studfooter from "../components/Studfooter";
 import Studnav from "../components/Studnav";
 
-export function Home() {
+export function StudentProfile() {
   const [open, setOpen] = React.useState(1);
   const handleOpen = (value) => setOpen(open === value ? 0 : value);
 
@@ -275,4 +275,4 @@ export function Home() {
   );
 }
 
-export default Home;
+export default StudentProfile;
