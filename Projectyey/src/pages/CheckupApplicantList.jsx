@@ -9,12 +9,57 @@ import { PatientsContext } from '../doctor/PatientsContext';
 
 export const ApplicantsContext = createContext();
 
-const coursesByDepartment = { /* Your course data here */ };
+const programByDepartment = {
+  'COLLEGE OF ENGINEERING AND ARCHITECTURE': [
+    'BS Architecture',
+    'BS Chemical Engineering',
+    'BS Civil Engineering',
+    'BS Computer Engineering',
+    'BS Electrical Engineering',
+    'BS Electronics Engineering',
+    'BS Industrial Engineering',
+    'BS Mechanical Engineering',
+    'BS Mining Engineering',
+  ],
+  'COLLEGE OF MANAGEMENT, BUSINESS & ACCOUNTANCY': [
+    'BS Accountancy',
+    'BS Accounting Information Systems',
+    'BS Management Accounting',
+    'BS Business Administration',
+    'BS Hospitality Management',
+    'BS Tourism Management',
+    'BS Office Administration',
+    'Bachelor in Public Administration',
+  ],
+  'COLLEGE OF ARTS, SCIENCES, & EDUCATION': [
+    'AB Communication',
+    'AB English with Applied Linguistics',
+    'Bachelor of Elementary Education',
+    'Bachelor of Secondary Education',
+    'Bachelor of Multimedia Arts',
+    'BS Biology',
+    'BS Math with Applied Industrial Mathematics',
+    'BS Psychology',
+  ],
+  'COLLEGE OF NURSING & ALLIED HEALTH SCIENCES': [
+    'BS Nursing',
+    'BS Pharmacy',
+  ],
+  'COLLEGE OF COMPUTER STUDIES': [
+    'BS Computer Science',
+    'BS Information Technology',
+  ],
+  'COLLEGE OF CRIMINAL JUSTICE': [
+    'BS Criminology',
+  ],
+};
+
+const programsByDepartment = {  };
 
 const ApplicantList = () => {
   const [filterPriority, setFilterPriority] = useState('All');
   const [filterDepartment, setFilterDepartment] = useState('');
-  const [filterCourse, setFilterCourse] = useState('');
+  const [filterProgram, setFilterProgram] = useState('');
   const [filterYear, setFilterYear] = useState('');
   const [filterDate, setFilterDate] = useState('');
   const { applicants, setApplicants } = useContext(ApplicantsContext); // Need to access setApplicants here
@@ -48,11 +93,10 @@ const ApplicantList = () => {
       })
       .then(response => {
         if (response.ok) {
-          alert('Patient accepted and saved to the database');
           // Remove the accepted patient from the local state
           setApplicants((prevApplicants) => prevApplicants.filter(a => a.id !== selectedApplicant.id));
         } else {
-          alert('Failed to accept the patient.');
+          console.log('Failed to accept the patient.');
         }
       });
     }
@@ -85,7 +129,7 @@ const ApplicantList = () => {
     if (filterDepartment && filterDepartment !== applicant.department) {
       return false;
     }
-    if (filterCourse && filterCourse !== applicant.course) {
+    if (filterProgram && filterProgram !== applicant.program) {
       return false;
     }
     if (filterYear && filterYear !== '' && filterYear !== applicant.year.toString()) {
@@ -99,11 +143,11 @@ const ApplicantList = () => {
 
   const handleDepartmentChange = (department) => {
     setFilterDepartment(department);
-    setFilterCourse(''); // Reset course filter when department changes
+    setFilterProgram(''); 
   };
 
   const handleRowClick = (applicant) => {
-    navigate(`/CheckupForm/${applicant.id}`, { state: { applicant } });
+    navigate(`/CheckupForm/${applicant.studentIdNumber}`, { state: { applicant } });
   };
 
   const handleAccept = (applicant) => {
@@ -122,7 +166,6 @@ const ApplicantList = () => {
       .then((response) => {
         if (response.ok) {
           console.log('Reservation deleted successfully');
-          alert('Patient rejected successfully');
           
           // Remove applicant from the state
           setApplicants((prevApplicants) =>
@@ -130,12 +173,10 @@ const ApplicantList = () => {
           );
         } else {
           console.error('Failed to delete reservation:', response);
-          alert('Failed to reject patient. Please try again.');
         }
       })
       .catch((error) => {
         console.error('Error rejecting patient:', error);
-        alert('An error occurred while rejecting the patient.');
       })
       .finally(() => {
         handleCloseConfirmDialog();  // Close the dialog after handling
@@ -143,8 +184,8 @@ const ApplicantList = () => {
   };
 
   const handleRefuse = (applicantId) => {
-  setSelectedApplicantId(applicantId);  // Store the applicant ID to be refused
-  setOpenConfirmDialog(true);  // Open the confirmation dialog
+  setSelectedApplicantId(applicantId);  
+  setOpenConfirmDialog(true);  
 };
 
 
@@ -186,7 +227,7 @@ const ApplicantList = () => {
             label="Department"
           >
             <MenuItem value="">All</MenuItem>
-            {Object.keys(coursesByDepartment).map((department) => (
+            {Object.keys(programByDepartment).map((department) => (
               <MenuItem key={department} value={department}>{department}</MenuItem>
             ))}
           </Select>
@@ -202,15 +243,15 @@ const ApplicantList = () => {
               <TableCell style={{ color: '#FFFFFF', paddingLeft: 20 }}>Full Name</TableCell>
               <TableCell>
                 <FormControl variant="outlined" size="small" style={{ minWidth: 150, marginLeft: 10 }}>
-                  <InputLabel style={{ color: '#FFFFFF' }}>Course</InputLabel>
+                  <InputLabel style={{ color: '#FFFFFF' }}>Program</InputLabel>
                   <Select
-                    value={filterCourse}
-                    onChange={(e) => setFilterCourse(e.target.value)}
-                    label="Course"
+                    value={filterProgram}
+                    onChange={(e) => setFilterProgram(e.target.value)}
+                    label="Program"
                   >
                     <MenuItem value="">All</MenuItem>
-                    {filterDepartment && coursesByDepartment[filterDepartment].map((course) => (
-                      <MenuItem key={course} value={course}>{course}</MenuItem>
+                    {filterDepartment && programByDepartment[filterDepartment].map((program) => (
+                      <MenuItem key={program} value={program}>{program}</MenuItem>
                     ))}
                   </Select>
                 </FormControl>
@@ -249,8 +290,8 @@ const ApplicantList = () => {
               <TableRow key={applicant.id} onClick={() => handleRowClick(applicant)} style={{ cursor: 'pointer', backgroundColor:'white' }}>
                 <TableCell style={{ paddingLeft: 15, fontSize: '16px' }}>{applicant.studentIdNumber}</TableCell>
                 <TableCell style={{ paddingLeft: 15, fontSize: '16px' }}>{applicant.fullName}</TableCell>
-                <TableCell style={{ paddingLeft: 30, fontSize: '16px' }}>{applicant.course}</TableCell>
-                <TableCell style={{ paddingLeft: 70, fontSize: '16px' }}>{applicant.year}</TableCell>
+                <TableCell style={{ paddingLeft: 30, fontSize: '16px' }}>{applicant.program}</TableCell>
+                <TableCell style={{ paddingLeft: 70, fontSize: '16px' }}>{applicant.yearLevel}</TableCell>
                 <TableCell style={{ paddingLeft: 25, fontSize: '16px' }}>
                   {applicant.date} <strong>{applicant.time}</strong>
                 </TableCell>
@@ -265,8 +306,8 @@ const ApplicantList = () => {
                   <Button
                     variant="contained"
                     onClick={(event) => {
-                      event.stopPropagation(); // Prevents triggering row click
-                      handleRefuse(applicant.id); // Handle refuse logic
+                      event.stopPropagation(); 
+                      handleRefuse(applicant.id); 
                     }}
                     style={{ backgroundColor: '#90242c', color: '#FFFFFF' }}
                   >

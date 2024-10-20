@@ -52,7 +52,7 @@ function RegisterForCheckup() {
   const [course, setCourse] = useState('Information Technology');
   const [year, setYear] = useState('3');
   const [dateOfBirth, setDateOfBirth] = useState('10-05-2002');
-  const [phoneNumber, setPhoneNumber] = useState('xx-xxxx-xxxx');
+  const [email, setEmail] = useState('xx-xxxx-xxxx');
 
   const handleRegister = () => {
     // Alert message

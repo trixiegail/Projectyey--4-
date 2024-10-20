@@ -16,7 +16,7 @@ const LoginDoctor = () => {
     event.preventDefault(); // Prevent the default form submission behavior
 
     try {
-      const endpoint = 'http://localhost:8080/user/login-doctor';
+      const endpoint = 'http://localhost:8080/doctor/login';
       const response = await axios.post(endpoint, { idNumber, password });
   
       if (response.data) {

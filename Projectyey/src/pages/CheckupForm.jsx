@@ -1,475 +1,306 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import {
-  Box,
-  Typography,
-  Grid,
-  TextField,
-  Button,
-  Collapse,
-  Card,
-  CardContent,
-  CardActions,
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Tabs,
-  Tab,
+import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { 
+  Box, Button, Collapse, Card, CardContent, CardActions, TextField, Typography, Drawer, 
+  Tabs, Tab, List, ListItem, ListItemText, Grid, Dialog, DialogTitle, DialogContent, DialogActions 
 } from '@mui/material';
-import { MedicalHistoryContext } from './MedicalHistoryProvider';
-import NavNurseDentist from '../components/NavNurseDentist';
- 
-const CheckupForm = () => {
+import Sidebar from '../components/DocSidebar';
+import DocNavBar from '../components/DocNavBar';
+
+
+const MedicalForm = () => {
   const [showForm, setShowForm] = useState(false);
+  const location = useLocation();
+  const applicant = location.state?.applicant || {};
+
   const [formValues, setFormValues] = useState({
     bloodPressure: '',
     heartRate: '',
     respiratoryRate: '',
     temperature: '',
     oralHealthStatus: '',
-    cavities: '',
+    presenceOfCavities: '',
     gumHealth: '',
-    generalHealth: '',
-    healthConcerns: '',
+    generalHealthCondition: '',
+    specificHealthConcerns: ''
   });
-  const [initialFormValues, setInitialFormValues] = useState({});
-  const [isEditing, setIsEditing] = useState(true);
-  const [medicalRecords, setMedicalRecords] = useState([]);
-  const [showMedicalRecords, setShowMedicalRecords] = useState(false);
-  const [selectedRecord, setSelectedRecord] = useState(null);
-  const [studentInfo, setStudentInfo] = useState({
+
+  const [formData, setFormData] = useState({
     fullName: '',
-    id: '',
+    idNumber: '',
     department: '',
     course: '',
     year: '',
     dateOfBirth: '',
-    phoneNumber: '',
+    email: ''
   });
+
+  const [medicalRecords, setMedicalRecords] = useState([]); 
+  const [selectedRecord, setSelectedRecord] = useState(null); 
+  const [formChanged, setFormChanged] = useState(false);
+  const [showMedicalRecords, setShowMedicalRecords] = useState(false); 
+  const [activeTab, setActiveTab] = useState('checkup'); 
   const [showIncompleteFieldsDialog, setShowIncompleteFieldsDialog] = useState(false);
-  const { addMedicalRecord } = useContext(MedicalHistoryContext);
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { applicant } = location.state || {};
- 
-  // State for tabs and form data
-  const [activeTab, setActiveTab] = useState('checkup'); // 'checkup' or 'dental'
-  const [checkupFormData, setCheckupFormData] = useState({});
-  const [dentalFormData, setDentalFormData] = useState({});
- 
-  // Function to handle form field changes
-  const handleFormChange = (e) => {
-    const { name, value } = e.target;
-    setFormValues({
-      ...formValues,
-      [name]: value,
-    });
+  const [openSuccessModal, setOpenSuccessModal] = useState(false);
+  const [openConfirmModal, setOpenConfirmModal] = useState(false); // State for confirmation modal
+
+  const handleCloseSuccessModal = () => {
+    setOpenSuccessModal(false);
   };
- 
-  // Function to save the form values
-  const handleSaveCheckup = () => {
-    if (isFormEmpty()) {
-      setShowIncompleteFieldsDialog(true); // Show warning dialog if fields are not filled
+
+  const handleCloseConfirmModal = () => {
+    setOpenConfirmModal(false);
+  };
+
+  useEffect(() => {
+    const fetchStudentData = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/student/students/${applicant.studentIdNumber}`);
+  
+        if (!response.ok) {
+          throw new Error(`Error fetching student data: ${response.statusText}`);
+        }
+  
+        const rawResponse = await response.text();
+        console.log('Raw Response from Server:', rawResponse); // Debug the raw response
+  
+        const studentData = JSON.parse(rawResponse);
+        setFormData({
+          fullName: `${studentData.firstname} ${studentData.lastname}`,
+          idNumber: studentData.idNumber || '',
+          department: studentData.department || '',
+          course: studentData.program || '',
+          year: studentData.yearLevel || '',
+          dateOfBirth: studentData.birthdate || '',
+          email: studentData.email || ''
+        });
+      } catch (error) {
+        console.error('Error fetching student data:', error);
+      }
+    };
+  
+    if (applicant.studentIdNumber) {
+      fetchStudentData();
+    }
+  }, [applicant.studentIdNumber]);
+  
+
+  const handleFormChange = (event) => {
+    const { name, value } = event.target;
+    setFormValues({ ...formValues, [name]: value });
+    setFormChanged(true);
+  };
+
+  const isFormChanged = () => Object.values(formValues).some(value => value !== '');
+  const isFormEmpty = () => Object.values(formValues).every(value => value === '');
+
+  // Triggered when Save button is clicked, opens confirmation modal
+  const handleSaveButtonClick = () => {
+    setOpenConfirmModal(true); // Open confirmation modal
+  };
+
+  // Handles the save operation after confirmation
+  const handleConfirmSave = async () => {
+    setOpenConfirmModal(false); // Close confirmation modal after confirming
+
+    if (!isFormChanged()) {
+      setShowIncompleteFieldsDialog(true);
     } else {
-      setIsEditing(false);
-      addMedicalRecord(formValues); // Save the form values in the context
-      const updatedRecords = [...medicalRecords, { ...formValues, date: new Date() }];
-      setMedicalRecords(updatedRecords); // Add the form values to the medical records with the current date
-      clearForm(); // Clear the form after saving
-      setCheckupFormData(formValues); // Save form values to checkup tab data
+      const checkupData = {
+        bloodPressure: formValues.bloodPressure,
+        heartRate: formValues.heartRate,
+        respiratoryRate: formValues.respiratoryRate,
+        temperature: formValues.temperature,
+        oralHealthStatus: formValues.oralHealthStatus,
+        presenceOfCavities: formValues.presenceOfCavities,
+        gumHealth: formValues.gumHealth,
+        generalHealthCondition: formValues.generalHealthCondition,
+        specificHealthConcerns: formValues.specificHealthConcerns,
+        date: new Date().toISOString(),
+        studentIdNumber: applicant.studentIdNumber 
+      };
+
+      try {
+        const response = await fetch(`http://localhost:8080/api/checkups/save?idNumber=${applicant.studentIdNumber}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(checkupData)
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to save checkup');
+        }
+
+        const newRecord = await response.json();
+
+        setMedicalRecords([...medicalRecords, newRecord]);
+        setFormChanged(false);
+        setOpenSuccessModal(true); 
+        console.log('Checkup saved successfully');
+      } catch (error) {
+        console.error('Error saving checkup:', error);
+      }
     }
   };
- 
-  const handleSaveDental = () => {
-    if (isFormEmpty()) {
-      setShowIncompleteFieldsDialog(true); // Show warning dialog if fields are not filled
-    } else {
-      setIsEditing(false);
-      // Save dental form data similarly if needed
-      setDentalFormData(formValues); // Example placeholder
-      clearForm(); // Clear the form after saving
+
+  // Toggle the medical records drawer
+  const handleMedicalRecords = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/checkups/student/${applicant.studentIdNumber}`);
+      if (response.ok) {
+        const records = await response.json(); // Parse the JSON response
+        // Sort the records by date (newest first)
+        const sortedRecords = records.sort((a, b) => new Date(b.date) - new Date(a.date));
+        setMedicalRecords(sortedRecords); // Set the sorted records
+        setShowMedicalRecords(true); // Open the drawer
+      } else {
+        console.error('Failed to fetch medical records');
+      }
+    } catch (error) {
+      console.error('Error fetching medical records:', error);
     }
   };
- 
-  // Function to open medical records drawer
-  const handleMedicalRecords = () => {
-    setShowMedicalRecords(true);
-  };
- 
-  // Function to close medical records drawer
-  const closeMedicalRecords = () => {
-    setShowMedicalRecords(false);
-  };
- 
-  // Function to handle click on a medical record item
+
+  // Handle record click from the Checkup tab
   const handleRecordClick = (record) => {
     setSelectedRecord(record);
-    setFormValues(record); // Populate the form fields with the selected record's data
-    setIsEditing(false); // Disable editing mode when selecting a record
   };
- 
-  // Function to handle "Done" button click
-  const handleDone = () => {
-    clearForm(); // Clear the form fields
-    setIsEditing(true); // Enable editing mode
-    setSelectedRecord(null); // Deselect the selected record
-    setShowMedicalRecords(false); // Close the medical records drawer
-  };
- 
-  // Function to clear the form fields
-  const clearForm = () => {
-    setFormValues({
-      bloodPressure: '',
-      heartRate: '',
-      respiratoryRate: '',
-      temperature: '',
-      oralHealthStatus: '',
-      cavities: '',
-      gumHealth: '',
-      generalHealth: '',
-      healthConcerns: '',
-    });
-    setIsEditing(true); // Ensure editing mode is enabled after clearing the form
-  };
- 
-  const handlePrint = () => {
-    window.print();
-  };
- 
-  // Set default form values to the selected applicant's information
-  useEffect(() => {
-    if (applicant) {
-      setStudentInfo(applicant); // Set student information from applicant
-      setFormValues((prevValues) => ({
-        ...prevValues,
-        ...applicant, // Merge the applicant's details
-      }));
-    }
-  }, [applicant]);
- 
-  // Track initial form values when component mounts
-  useEffect(() => {
-    setInitialFormValues(formValues);
-  }, []);
- 
-  // Check if the form values have changed
-  const isFormChanged = () => {
-    return Object.keys(formValues).some((key) => formValues[key] !== initialFormValues[key]);
-  };
- 
-  // Check if all the fields are empty to disable the Save button
-  const isFormEmpty = () => {
-    return Object.values(formValues).every((value) => value === '');
-  };
- 
-  // Function to close incomplete fields warning dialog
-  const handleCloseIncompleteFieldsDialog = () => {
-    setShowIncompleteFieldsDialog(false);
-  };
- 
+
   return (
-    <Box>
-      <NavNurseDentist /> {/* Include NavNurseDentist navigation bar */}
-      <Box sx={{ backgroundColor: 'white', padding: 4, borderRadius: 2 }}>
-        <Typography variant="h6" gutterBottom align="center">
-          STUDENT INFORMATION
-        </Typography>
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={9}>
-            {/* Render the applicant's details */}
-            <Grid container spacing={2}>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  label="Full Name"
-                  name="fullName"
-                  value={studentInfo.fullName || ''}
-                  fullWidth
-                  variant="outlined"
-                  disabled
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  label="Id Number"
-                  name="id"
-                  value={studentInfo.id || ''}
-                  fullWidth
-                  variant="outlined"
-                  disabled
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  label="Department"
-                  name="department"
-                  value={studentInfo.department || ''}
-                  fullWidth
-                  variant="outlined"
-                  disabled
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  label="Course"
-                  name="course"
-                  value={studentInfo.course || ''}
-                  fullWidth
-                  variant="outlined"
-                  disabled
-                />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <TextField
-                  label="Year"
-                  name="year"
-                  value={studentInfo.year || ''}
-                  fullWidth
-                  variant="outlined"
-                  disabled
-                />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <TextField
-                  label="Date of Birth"
-                  name="dateOfBirth"
-                  value={studentInfo.dateOfBirth || ''}
-                  fullWidth
-                  variant="outlined"
-                  disabled
-                />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <TextField
-                  label="Phone Number"
-                  name="phoneNumber"
-                  value={studentInfo.phoneNumber || ''}
-                  fullWidth
-                  variant="outlined"
-                  disabled
-                />
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item xs={12} md={3}>
-            {/* Placeholder for student image */}
-            <img
-              className="h-40 w-auto"
-              src="src/image/student.png"
-              sx={{
-                width: 120,
-                height: 120,
-                borderRadius: 2,
-                marginLeft: 'auto',
-                marginRight: 'auto',
-                display: 'block',
-              }}
-              alt="Student"
-            />
-          </Grid>
-        </Grid>
-        <Box sx={{ marginTop: 2, display: 'flex', gap: 2 }}>
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: '#a52a2a',
-              '&:hover': {
-                backgroundColor: '#F7C301',
-              },
-            }}
-            onClick={() => setShowForm(!showForm)}
+    <Box sx={{ display: 'flex', minHeight: '100vh'}}>
+      <Sidebar /> 
+      <Box sx={{ flexGrow: 1, p: 3 }}>
+      <Box 
+          sx={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center', 
+            mb: 2 
+          }}
+        >
+          <Typography 
+            variant="h4" 
+            sx={{ fontWeight: 'bold', color: '#90343c' }} 
           >
+            Medical Checkup and Records
+          </Typography>
+          <DocNavBar />
+        </Box>
+
+        <Box display="grid" gridTemplateColumns="repeat(2, 1fr)" gap={2} backgroundColor="white" padding={2} borderRadius={1}>
+          <TextField label="Full Name" value={formData.fullName} fullWidth variant="outlined" InputProps={{ readOnly: true }} />
+          <TextField label="ID Number" value={formData.idNumber} fullWidth variant="outlined" InputProps={{ readOnly: true }} />
+          <TextField label="Department" value={formData.department} fullWidth variant="outlined" InputProps={{ readOnly: true }} />
+          <TextField label="Course" value={formData.course} fullWidth variant="outlined" InputProps={{ readOnly: true }} />
+          <TextField label="Year" value={formData.year} fullWidth variant="outlined" InputProps={{ readOnly: true }} />
+          <TextField label="Date of Birth" value={formData.dateOfBirth} fullWidth variant="outlined" InputProps={{ readOnly: true }} />
+          <TextField label="Email" value={formData.email} fullWidth variant="outlined" InputProps={{ readOnly: true }} />
+        </Box> 
+        <br/>
+
+        {/* Buttons to toggle form and records */}
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <Button variant="contained" sx={{ backgroundColor: '#a52a2a', '&:hover': { backgroundColor: '#F7C301' }}} onClick={() => setShowForm(!showForm)}>
             Check Student
           </Button>
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: '#a52a2a',
-              '&:hover': {
-                backgroundColor: '#F7C301',
-              },
-            }}
-            onClick={handleMedicalRecords}
-          >
+          <Button variant="contained" sx={{ backgroundColor: '#a52a2a', '&:hover': { backgroundColor: '#F7C301' }}} onClick={handleMedicalRecords}>
             Medical Records
           </Button>
         </Box>
+
+        {/* Collapsible Checkup Form */}
         <Collapse in={showForm} unmountOnExit>
           <Card sx={{ marginTop: 2 }}>
             <CardContent>
               <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>
-                  <TextField
-                    label="Blood Pressure"
-                    name="bloodPressure"
-                    value={formValues.bloodPressure}
-                    onChange={handleFormChange}
-                    disabled={!isEditing}
-                    fullWidth
-                    variant="outlined"
-                  />
+                  <TextField label="Blood Pressure" name="bloodPressure" value={formValues.bloodPressure} onChange={handleFormChange} fullWidth variant="outlined" />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <TextField
-                    label="Heart Rate"
-                    name="heartRate"
-                    value={formValues.heartRate}
-                    onChange={handleFormChange}
-                    disabled={!isEditing}
-                    fullWidth
-                    variant="outlined"
-                  />
+                  <TextField label="Heart Rate" name="heartRate" value={formValues.heartRate} onChange={handleFormChange} fullWidth variant="outlined" />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <TextField
-                    label="Respiratory Rate"
-                    name="respiratoryRate"
-                    value={formValues.respiratoryRate}
-                    onChange={handleFormChange}
-                    disabled={!isEditing}
-                    fullWidth
-                    variant="outlined"
-                  />
+                  <TextField label="Respiratory Rate" name="respiratoryRate" value={formValues.respiratoryRate} onChange={handleFormChange} fullWidth variant="outlined" />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <TextField
-                    label="Temperature"
-                    name="temperature"
-                    value={formValues.temperature}
-                    onChange={handleFormChange}
-                    disabled={!isEditing}
-                    fullWidth
-                    variant="outlined"
-                  />
+                  <TextField label="Temperature" name="temperature" value={formValues.temperature} onChange={handleFormChange} fullWidth variant="outlined" />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <TextField
-                    label="Oral Health Status"
-                    name="oralHealthStatus"
-                    value={formValues.oralHealthStatus}
-                    onChange={handleFormChange}
-                    disabled={!isEditing}
-                    fullWidth
-                    variant="outlined"
-                  />
+                  <TextField label="Oral Health Status" name="oralHealthStatus" value={formValues.oralHealthStatus} onChange={handleFormChange} fullWidth variant="outlined" />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <TextField
-                    label="Presence of Cavities"
-                    name="cavities"
-                    value={formValues.cavities}
-                    onChange={handleFormChange}
-                    disabled={!isEditing}
-                    fullWidth
-                    variant="outlined"
-                  />
+                  <TextField label="Presece of Cavities" name="presenceOfCavities" value={formValues.presenceOfCavities} onChange={handleFormChange} fullWidth variant="outlined" />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <TextField
-                    label="Gum Health"
-                    name="gumHealth"
-                    value={formValues.gumHealth}
-                    onChange={handleFormChange}
-                    disabled={!isEditing}
-                    fullWidth
-                    variant="outlined"
-                  />
+                  <TextField label="Gum Health" name="gumHealth" value={formValues.gumHealth} onChange={handleFormChange} fullWidth variant="outlined" />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <TextField
-                    label="General Health Condition"
-                    name="generalHealth"
-                    value={formValues.generalHealth}
-                    onChange={handleFormChange}
-                    disabled={!isEditing}
-                    fullWidth
-                    variant="outlined"
-                  />
+                  <TextField label="General Health Condition" name="generalHealthCondition" value={formValues.generalHealthCondition} onChange={handleFormChange}  fullWidth variant="outlined" />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <TextField
-                    label="Any specific health concerns"
-                    name="healthConcerns"
-                    value={formValues.healthConcerns}
-                    onChange={handleFormChange}
-                    disabled={!isEditing}
-                    fullWidth
-                    variant="outlined"
-                  />
+                  <TextField label="Specific Health Condition" name="specificHealthConcerns" value={formValues.specificHealthConcerns} onChange={handleFormChange}  fullWidth variant="outlined" />
                 </Grid>
+                {/* Other form fields */}
               </Grid>
             </CardContent>
             <CardActions>
-              <Button
-                variant="contained"
-                sx={{
-                  backgroundColor: '#a52a2a',
-                  '&:hover': {
-                    backgroundColor: '#F7C301',
-                  },
-                }}
-                onClick={() => setIsEditing(true)}
-                disabled={isEditing || !isFormChanged() || !Object.values(formValues).some((value) => value !== '')}
-              >
-                Edit
-              </Button>
-              <Button
-                variant="contained"
-                sx={{
-                  backgroundColor: '#a52a2a',
-                  '&:hover': {
-                    backgroundColor: '#F7C301',
-                  },
-                }}
-                onClick={handleSaveCheckup}
-                disabled={!isFormChanged() || isFormEmpty()}
-              >
+              <Button variant="contained" sx={{ backgroundColor: '#a52a2a', '&:hover': { backgroundColor: '#F7C301' }}} onClick={handleSaveButtonClick} disabled={!isFormChanged() || isFormEmpty()}>
                 Save
               </Button>
             </CardActions>
           </Card>
         </Collapse>
-        <Drawer
-          anchor="right"
-          open={showMedicalRecords}
-          onClose={closeMedicalRecords}
-        >
-          <Box sx={{ width: 400, padding: 2 }}>
-            <Typography variant="h6" gutterBottom align="center">
-              Medical Records
-            </Typography>
-            <Tabs
-              value={activeTab}
-              onChange={(event, newValue) => setActiveTab(newValue)}
-              indicatorColor="primary"
-              textColor="primary"
-              variant="fullWidth"
-              aria-label="medical records tabs"
-            >
-              <Tab label="Checkup" value="checkup" />
-              <Tab label="Dental Treatment" value="dental" />
-            </Tabs>
-            {activeTab === 'checkup' && (
-              <List>
-                {medicalRecords.map((record, index) => (
-                  <ListItem key={index} button onClick={() => handleRecordClick(record)}>
-                    <ListItemText primary={`${new Date(record.date).toDateString()} - ${new Date(record.date).toLocaleTimeString()}`} />
-                  </ListItem>
-                ))}
-              </List>
-            )}
-            {activeTab === 'dental' && (
-              <List>
-                {/* Placeholder for dental treatment records */}
-                <ListItem>
-                  <ListItemText primary="Dental treatment records go here" />
+
+         {/* Confirmation Modal */}
+         <Dialog open={openConfirmModal} onClose={handleCloseConfirmModal}>
+          <DialogTitle>Confirm Save</DialogTitle>
+          <DialogContent>
+            <Typography>Are you sure you want to save this medical checkup?</Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseConfirmModal} color="secondary">Cancel</Button>
+            <Button onClick={handleConfirmSave} color="primary">Yes, Save</Button>
+          </DialogActions>
+        </Dialog>
+
+         {/* Success Modal */}
+         <Dialog open={openSuccessModal} onClose={handleCloseSuccessModal}>
+          <DialogTitle>Success</DialogTitle>
+          <DialogContent>
+            <Typography>Checkup Successfully Saved!</Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseSuccessModal} color="primary">OK</Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Drawer for Medical Records */}
+        <Drawer anchor="right" open={showMedicalRecords} onClose={() => setShowMedicalRecords(false)}>
+        <Box sx={{ width: 400, padding: 2 }}>
+          <Typography variant="h6" gutterBottom align="center">
+            Medical Records
+          </Typography>
+          <Tabs value={activeTab} onChange={(event, newValue) => setActiveTab(newValue)} aria-label="medical records tabs">
+            <Tab label="Checkup" value="checkup" />
+            {/* <Tab label="Dental Treatment" value="dental" /> */}
+          </Tabs>
+
+          {/* Checkup Tab */}
+          {activeTab === 'checkup' && (
+            <List>
+              {medicalRecords.map((record, index) => (
+                <ListItem key={index} button onClick={() => handleRecordClick(record)}>
+                  <ListItemText primary={`${new Date(record.date).toDateString()} - ${new Date(record.date).toLocaleTimeString()}`} />
                 </ListItem>
-              </List>
-            )}
+              ))}
+            </List>
+          )}
+            
+            
+
+            {/* Display selected record */}
             {selectedRecord && (
               <div>
                 <Typography variant="h6" gutterBottom>
@@ -477,87 +308,30 @@ const CheckupForm = () => {
                 </Typography>
                 <Card sx={{ marginBottom: 2 }}>
                   <CardContent>
-                    <Typography variant="body2">
-                      Blood Pressure: {selectedRecord.bloodPressure}
-                    </Typography>
-                    <Typography variant="body2">
-                      Heart Rate: {selectedRecord.heartRate}
-                    </Typography>
-                    <Typography variant="body2">
-                      Respiratory Rate: {selectedRecord.respiratoryRate}
-                    </Typography>
-                    <Typography variant="body2">
-                      Temperature: {selectedRecord.temperature}
-                    </Typography>
-                    <Typography variant="body2">
-                      Oral Health Status: {selectedRecord.oralHealthStatus}
-                    </Typography>
-                    <Typography variant="body2">
-                      Presence of Cavities: {selectedRecord.cavities}
-                    </Typography>
-                    <Typography variant="body2">
-                      Gum Health: {selectedRecord.gumHealth}
-                    </Typography>
-                    <Typography variant="body2">
-                      General Health Condition: {selectedRecord.generalHealth}
-                    </Typography>
-                    <Typography variant="body2">
-                      Any specific health concerns: {selectedRecord.healthConcerns}
-                    </Typography>
+                    <Typography variant="body2">Blood Pressure: {selectedRecord.bloodPressure}</Typography>
+                    <Typography variant="body2">Heart Rate: {selectedRecord.heartRate}</Typography>
+                    <Typography variant="body2">Respiratory Rate: {selectedRecord.respiratoryRate}</Typography>
+                    <Typography variant="body2">Temperature: {selectedRecord.temperature}</Typography>
+                    <Typography variant="body2">Oral Health Status: {selectedRecord.oralHealthStatus}</Typography>
+                    <Typography variant="body2">Gum Health: {selectedRecord.gumHealth}</Typography>
+                    <Typography variant="body2">Cavities: {selectedRecord.presenceOfCavities}</Typography>
+                    <Typography variant="body2">General Health Condition: {selectedRecord.generalHealthCondition}</Typography>
+                    <Typography variant="body2">Specific Health Condition: {selectedRecord.specificHealthConcerns}</Typography>
                   </CardContent>
                 </Card>
-                <Button
-  variant="contained"
-  sx={{
-    backgroundColor: '#a52a2a',
-    '&:hover': {
-      backgroundColor: '#F7C301',
-    },
-    marginTop: 2,
-  }}
-  onClick={() => window.print()}
->
-  Print View
-</Button>
- 
               </div>
             )}
           </Box>
         </Drawer>
-        {selectedRecord && (
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: '#a52a2a',
-              '&:hover': {
-                backgroundColor: '#F7C301',
-              },
-              marginTop: 2,
-            }}
-            onClick={handleDone}
-          >
-            Done
-          </Button>
-        )}
+
         {/* Incomplete Fields Dialog */}
-        <Dialog open={showIncompleteFieldsDialog} onClose={handleCloseIncompleteFieldsDialog}>
+        <Dialog open={showIncompleteFieldsDialog} onClose={() => setShowIncompleteFieldsDialog(false)}>
           <DialogTitle>Incomplete Fields</DialogTitle>
           <DialogContent>
-            <Typography>
-              Please fill in all fields before saving the form.
-            </Typography>
+            <Typography>Please fill in all fields before saving the form.</Typography>
           </DialogContent>
           <DialogActions>
-            <Button
-              sx={{
-                backgroundColor: '#a52a2a',
-                '&:hover': {
-                  backgroundColor: '#F7C301',
-                },
-              }}
-              onClick={handleCloseIncompleteFieldsDialog}
-              color="primary"
-            >
+            <Button sx={{ backgroundColor: '#a52a2a', '&:hover': { backgroundColor: '#F7C301' }}} onClick={() => setShowIncompleteFieldsDialog(false)}>
               OK
             </Button>
           </DialogActions>
@@ -566,5 +340,5 @@ const CheckupForm = () => {
     </Box>
   );
 };
- 
-export default CheckupForm;
+
+export default MedicalForm;

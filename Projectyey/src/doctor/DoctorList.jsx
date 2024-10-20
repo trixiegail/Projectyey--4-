@@ -18,7 +18,7 @@ function DoctorList() {
 
   const fetchDoctors = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/user/doctors?archived=false');
+      const response = await axios.get('http://localhost:8080/doctor/getDoctors?archived=false');
       if (response.status === 200) {
         setDoctors(response.data);
       } else {

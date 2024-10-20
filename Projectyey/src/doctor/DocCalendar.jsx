@@ -119,7 +119,7 @@ const DocCalendar = () => {
     } 
 
     if (start < now) {
-      alert('You cannot select a past date.');
+      // alert('You cannot select a past date.');
       return;
     }
     
@@ -196,7 +196,7 @@ const DocCalendar = () => {
         end = new Date(selectedDate);
         end.setHours(endTime.getHours(), endTime.getMinutes());
       } else {
-        alert("Set Time Slots");
+        // alert("Set Time Slots");
         return;
       }
   
@@ -352,7 +352,7 @@ const addMultiTimeSlot = () => {
 
 const handleCreateMultipleEvents = () => {
   if (selectedDays.length === 0 || multiTimeSlots.some(slot => !slot.startTime || !slot.endTime)) {
-    alert('Please select at least one day and provide valid time slots.');
+    // alert('Please select at least one day and provide valid time slots.');
     return;
   }
 
@@ -775,7 +775,7 @@ const handleDeleteEvent = (event) => {
                         variant="body1"
                         style={{
                           flex: 1,
-                          whiteSpace: 'nowrap',
+                          // whiteSpace: 'nowrap',
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
                         }}

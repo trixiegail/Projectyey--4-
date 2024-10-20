@@ -16,7 +16,11 @@ function StudentAccounts() {
 
   const fetchData = async () => {
     try {
+<<<<<<< HEAD
       const response = await axios.get('http://localhost:8080/student/nonArchivedStudents');
+=======
+      const response = await axios.get('http://localhost:8080/student/getAllStudents?archived=false');
+>>>>>>> 588579affdc35cdb9df7a38f79d82b055136251d
       if (response.status === 200) {
         setData(response.data);
         console.log('Student accounts fetched successfully:', response.data);
@@ -96,7 +100,7 @@ function StudentAccounts() {
     if (selectedUser && selectedUser.id) {
       try {
         console.log('Updating user with ID:', selectedUser.id);
-        const response = await axios.put(`http://localhost:8080/user/updateStudent/${selectedUser.id}`, selectedUser);
+        const response = await axios.put(`http://localhost:8080/studenty/updateStudent/${selectedUser.id}`, selectedUser);
         if (response.status === 200) {
           console.log('Student account updated successfully');
           fetchData();

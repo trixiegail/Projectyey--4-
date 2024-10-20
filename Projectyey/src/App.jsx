@@ -106,7 +106,6 @@ export default function App() {
             <Route path="/docinfo" exact element={<Docinfo />} />
             <Route path="/staffinfo" exact element={<Staffinfo />} />
             <Route path="/RegisterForCheckup" exact element={<RgstrForCheckup />} />
-            <Route path="/CheckupForm/:id" exact element={<ChckupForm />} />
             <Route path="/CheckupApplicantList" exact element={<CheckupApplicantList />} />
             <Route path="/StudentMedicalHistory" exact element={<StudentMedicalHistory />} />
             <Route path="/AfterLogin" exact element={<AfterLogin />} />
@@ -114,6 +113,9 @@ export default function App() {
             <Route path="/NurseSchedule" exact element={<NurseSchedule />} />
             <Route path="/CalendarSchedule" exact element={<CalendarSchedule />} />
             <Route path='/printview' exact element={<PrintView />} />
+            
+
+            <Route path="/CheckupForm/:studentIdNumber" exact element={<ChckupForm />} />
             <Route path='/checkupform' exact element={<ChckupForm />} />
             
             {/* Doctor */}

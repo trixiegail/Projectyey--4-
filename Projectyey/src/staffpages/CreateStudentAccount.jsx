@@ -200,10 +200,10 @@ function CreateStudentAccount() {
             className='w-full px-3 py-2 border border-gray-300 rounded-lg'
           >
             <option value="">Year...</option>
-            <option value="firstyear">First Year</option>
-            <option value="secondyear">Second Year</option>
-            <option value="thirdyear">Third Year</option>
-            <option value="fourthyear">Fourth Year</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
           </select>
           <div className="col-span-2 grid grid-cols-2 gap-4">
           <input
