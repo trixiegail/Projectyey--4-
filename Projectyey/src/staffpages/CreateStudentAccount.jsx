@@ -87,7 +87,7 @@ function CreateStudentAccount() {
       password: studentPassword
     }
     try {
-      const response = await axios.post("http://localhost:8080/user/insertStudent", student_data);
+      const response = await axios.post("http://localhost:8080/student/insertStudent", student_data);
       console.log(response.data);
       console.log("Submitted!");
       showModal("Success", "Data submitted successfully!");
