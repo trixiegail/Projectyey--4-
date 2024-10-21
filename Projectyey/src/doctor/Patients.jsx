@@ -76,7 +76,7 @@ const PatientList = () => {
   });
 
   const filteredApplicants = sortedApplicants.filter((applicant) => {
-    if (filterPriority === 'Priority List' && applicant.year !== 4) {
+    if (filterPriority === 'Priority List' && applicant.yearLevel !== 4) {
       return false;
     }
     if (filterDepartment && filterDepartment !== applicant.department) {
@@ -85,7 +85,7 @@ const PatientList = () => {
     if (filterProgram && filterProgram !== applicant.program) {
       return false;
     }
-    if (filterYear && filterYear !== '' && filterYear !== applicant.year.toString()) {
+    if (filterYear && filterYear !== '' && filterYear !== (applicant.yearLevel ? applicant.yearLevel.toString() : '')) {
       return false;
     }
     if (filterDate && filterDate !== '' && filterDate !== applicant.date) {
@@ -107,11 +107,11 @@ const PatientList = () => {
   const handleDone = (event, applicantId) => {
     event.stopPropagation(); // Prevents row click event
     setSelectedApplicantId(applicantId);  // Store the applicant ID to be deleted
-    setOpenConfirmDialog(true);  // Open the confirmation dialog
+    setOpenConfirmDialog(true);  
   };
 
   const handleDelete = () => {
-    fetch(`http://localhost:8080/api/patients/${studentIdNumber}`, {
+    fetch(`http://localhost:8080/api/patients/${selectedApplicantId}`, {
       method: 'DELETE',
     })
       .then((response) => {
@@ -130,12 +130,12 @@ const PatientList = () => {
         console.error('Error completing patient:', error);
       })
       .finally(() => {
-        setOpenConfirmDialog(false);  // Close the confirmation dialog
+        setOpenConfirmDialog(false); 
       });
   };
 
   const handleCloseConfirmDialog = () => {
-    setOpenConfirmDialog(false);  // Close the confirmation dialog
+    setOpenConfirmDialog(false);  
   };
 
   return (

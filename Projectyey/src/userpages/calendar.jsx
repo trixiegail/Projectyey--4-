@@ -8,6 +8,7 @@ import Studfooter from '../components/Studfooter';
 import Studnav from '../components/Studnav';
 import Modal from 'react-modal';
 import { Box, Typography, Button } from '@mui/material';
+import './cancel.css'
 
 const localizer = momentLocalizer(moment);
 
@@ -41,6 +42,10 @@ const App = () => {
   const [studentData, setStudentData] = useState({});
   const wrapperRef = useRef(null);
   const navigate = useNavigate();
+  const [limitModalOpen, setLimitModalOpen] = useState(false);
+  const [reservationDetails, setReservationDetails] = useState(null); 
+
+
 
   useEffect(() => {
     const studentName = localStorage.getItem('studentName');
@@ -106,6 +111,16 @@ const App = () => {
       }
   
       const studentData = await response.json();
+
+      // Fetch the student's existing reservations
+      const reservationCheckResponse = await fetch(`http://localhost:8080/api/reservations?studentId=${studentIdNumber}`);
+      const reservations = await reservationCheckResponse.json();
+
+      if (reservations.length > 0) {
+        setLimitModalOpen(true);
+        return; 
+      }
+  
   
       // Create the reservation request with fetched data
       const reservationRequest = {
@@ -134,20 +149,28 @@ const App = () => {
   
       const data = await reserveResponse.json();
       console.log('Reservation successful:', data.message);
-      setModalOpen(false);  // Close the reservation modal
-      setSuccessModalOpen(true);  // Open the success modal
+      setModalOpen(false); 
+      setSuccessModalOpen(true);  
+
+      setReservationDetails({
+        date: moment(selectedEvent.start).format('MMMM Do YYYY'),
+        time: `${moment(selectedEvent.start).format('h:mm A')} - ${moment(selectedEvent.end).format('h:mm A')}`,
+        status: 'Reserved',
+      });
   
       // Update the event list to mark the event as unavailable
       setEvents((prevEvents) =>
         prevEvents.map((event) =>
           event.id === selectedEvent.id
-            ? { ...event, type: 'Unavailable' } // Mark the reserved event as unavailable
+            ? { ...event, type: 'Unavailable' } 
             : event
         )
       );
   
     } catch (error) {
       console.error('Error reserving slot:', error.message || error);
+      setModalOpen(false); 
+      setLimitModalOpen(true);  
     }
   };
   
@@ -192,7 +215,8 @@ const App = () => {
             <strong>Time:</strong> {eventTime}
           </p>
           <div className="flex justify-end space-x-4 mt-4">
-            <Button variant="contained" style={{ backgroundColor: '#88343B' }} onClick={closeModal}>
+            <Button 
+            variant="contained" style={{ backgroundColor: '#88343B' }} onClick={closeModal}>
               Cancel
             </Button>
             <Button variant="contained" style={{ backgroundColor: '#F7C301' }} onClick={handleReserve}>
@@ -238,16 +262,60 @@ const App = () => {
     };
   }, []);
 
+  const LimitModal = () => {
+    if (!limitModalOpen) return null;
+  
+    return ReactDOM.createPortal(
+      <div className="fixed inset-0 z-30 flex items-center justify-center overflow-y-auto text-black bg-black bg-opacity-50">
+        <div ref={wrapperRef} style={{ ...modalStyles.content, padding: '20px' }}>
+          <h2 className="text-xl font-bold text-center">Reservation Limit Reached</h2>
+          <p className="mt-2 text-center">You are limited to 1 available reservation slot only!</p>
+          <div className="flex justify-center space-x-4 mt-4">
+            <Button variant="contained" style={{ backgroundColor: '#90242c' }} onClick={() => setLimitModalOpen(false)}>
+              Close
+            </Button>
+          </div>
+        </div>
+      </div>,
+      document.body
+    );
+  };
+  
+
   return (
     <div>
       <Studnav />
       <ModalComponent />
       <SuccessModal />
+      <LimitModal />
 
       <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
         <div className="mx-auto max-w-7xl text-center">
           <h1 className="text-4xl font-bold tracking-tight text-[#88343B] sm:text-5xl">Choose an Appointment</h1>
         </div>
+
+        {reservationDetails && (
+        <div className="mx-auto max-w-xl mt-10 p-6 rounded-lg text-white" style={{ backgroundColor: '#88343b' }}>
+          <h2 className="text-2xl font-bold">Your Reservation</h2>
+          <div className="mt-4">
+            <p><strong>Date and Time: </strong>{reservationDetails.date} at {reservationDetails.time}</p>
+            <p><strong>Status: </strong>{reservationDetails.status}</p>
+          </div>
+        </div>
+      )}
+
+        <div class="button_cont" align="center">
+          <a class="example_f" href="add-website-here" target="_blank" rel="nofollow">
+            <span
+             variant="contained"
+                    onClick={(event) => {
+                      event.stopPropagation(); 
+                      handleRefuse(applicant.id); 
+                    }}
+            >Cancel Reservation</span>
+          </a>
+        </div>
+
 
         <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8 rounded-lg text-black">
           <Box sx={{ display: 'flex', minHeight: '100vh' }}>

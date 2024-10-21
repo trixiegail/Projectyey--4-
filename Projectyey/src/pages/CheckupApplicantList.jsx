@@ -301,7 +301,7 @@ const ApplicantList = () => {
                     onClick={(event) => handleOpenAcceptDialog(event, applicant)} // Call to open the modal
                     style={{ backgroundColor: '#90242c', color: '#FFFFFF', marginRight: 10 }}
                   >
-                    Accept
+                    Approve
                   </Button>
                   <Button
                     variant="contained"
@@ -311,7 +311,7 @@ const ApplicantList = () => {
                     }}
                     style={{ backgroundColor: '#90242c', color: '#FFFFFF' }}
                   >
-                    Refuse
+                    Decline
                   </Button>
                 </TableCell>
               </TableRow>
