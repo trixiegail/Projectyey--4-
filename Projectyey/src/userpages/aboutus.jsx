@@ -93,7 +93,7 @@ function AboutUs() {
             </p>
             <div className="mt-10">
  
-              <a className="px-6 py-3 bg-[#F7C301] text-white font-bold rounded-lg hover:bg-yellow-600 "
+              <a className="px-6 py-3 bg-[#F7C301] text-[rgb(136,52,59)] font-bold rounded-lg hover:bg-yellow-600 "
               href="/contact">Get in Touch</a>
             </div>
           </div>

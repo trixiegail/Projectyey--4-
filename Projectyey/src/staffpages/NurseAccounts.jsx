@@ -16,7 +16,7 @@ function NurseAccounts() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/user/nurses?archived=false');
+      const response = await axios.get('http://localhost:8080/nurse/nurses?archived=false');
       if (response.status === 200) {
         setData(response.data);
         console.log('Staff accounts fetched successfully:', response.data);
@@ -50,7 +50,7 @@ function NurseAccounts() {
   const handleArchiveConfirm = async () => {
     try {
       console.log(`Attempting to archive user with ID: ${selectedUser.id}`);
-      const response = await axios.post(`http://localhost:8080/user/nurses/archiveNurse/${selectedUser.id}`);
+      const response = await axios.post(`http://localhost:8080/nurse/nurses/archiveNurse/${selectedUser.id}`);
       console.log('Archive response:', response);
       if (response.status === 200) {
         console.log('Staff account archived successfully');
@@ -96,7 +96,7 @@ function NurseAccounts() {
     if (selectedUser && selectedUser.id) {
       try {
         console.log('Updating user with ID:', selectedUser.id);
-        const response = await axios.put(`http://localhost:8080/user/updateStaff/${selectedUser.id}`, selectedUser);
+        const response = await axios.put(`http://localhost:8080/nurse/updateStaff/${selectedUser.id}`, selectedUser);
         if (response.status === 200) {
           console.log('Staff account updated successfully');
           fetchData(); // Refresh the data
