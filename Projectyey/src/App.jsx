@@ -99,8 +99,8 @@ export default function App() {
             <Route path="/home" exact element={<Home />} />
             <Route path="/aboutus" exact element={<AboutUs />} />
             <Route path="/services" exact element={<Services />} />
-            <Route path="/contact" exact element={<Contact />} />
-            <Route path="/student-calendar" exact element={<StudentCalendar />} />
+            <Route path="/contact/*" exact element={<Contact />} />
+            <Route path="/student-calendar/*" exact element={<StudentCalendar />} />
             <Route path="/home-personnel" exact element={<AfterLogin />} />
             <Route path="/studinfo" exact element={<Studinfo />} />
             <Route path="/nurseinfo" exact element={<Nurseinfo />} />
@@ -115,6 +115,7 @@ export default function App() {
             <Route path="/CalendarSchedule" exact element={<CalendarSchedule />} />
             <Route path='/printview' exact element={<PrintView />} />
             <Route path='/sidebar' exact element={<StudentProfile />} />
+            <Route path='/student-profile' exact element={<StudentProfile />} />
             
 
             <Route path="/CheckupForm/:studentIdNumber" exact element={<ChckupForm />} />
