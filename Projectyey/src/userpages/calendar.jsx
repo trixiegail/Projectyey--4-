@@ -45,8 +45,7 @@ const App = () => {
   const [limitModalOpen, setLimitModalOpen] = useState(false);
   const [reservationDetails, setReservationDetails] = useState(null); 
   const [reservedEvent, setReservedEvent] = useState(null);
-
-
+  const [openCancelConfirmModal, setOpenCancelConfirmModal] = useState(false); 
 
   useEffect(() => {
     const studentName = localStorage.getItem('studentName');
@@ -345,7 +344,6 @@ const App = () => {
   
         // Clear the reserved event from state
         setReservedEvent(null);
-        alert('Reservation cancelled successfully');
       } catch (error) {
         console.error('Error cancelling reservation:', error);
         alert('Failed to cancel the reservation.');
@@ -355,6 +353,40 @@ const App = () => {
       alert('No reservation to cancel.');
     }
   };
+///////////////////////////////////////
+  const CancelConfirmationModal = () => {
+    if (!openCancelConfirmModal) return null;
+
+    return ReactDOM.createPortal(
+      <div className="fixed inset-0 z-30 flex items-center justify-center overflow-y-auto text-black bg-black bg-opacity-50">
+        <div ref={wrapperRef} style={{ ...modalStyles.content, padding: '20px' }}>
+          <h2 className="text-xl font-bold text-center">Confirm Cancellation</h2>
+          <p className="mt-2 text-center">Are you sure you want to cancel your reservation?</p>
+          <div className="flex justify-end space-x-4 mt-4">
+            <Button 
+              variant="contained" 
+              style={{ backgroundColor: '#88343B' }} 
+              onClick={() => setOpenCancelConfirmModal(false)} // Close the modal
+            >
+              No, Keep Reservation
+            </Button>
+            <Button 
+              variant="contained" 
+              style={{ backgroundColor: '#F7C301' }} 
+              onClick={() => {
+                handleCancelReservation(); // Call the existing cancellation function
+                setOpenCancelConfirmModal(false); // Close the modal
+              }}
+            >
+              Yes, Cancel Reservation
+            </Button>
+          </div>
+        </div>
+      </div>,
+      document.body
+    );
+};
+
   
 
   return (
@@ -363,6 +395,7 @@ const App = () => {
       <ModalComponent />
       <SuccessModal />
       <LimitModal />
+      <CancelConfirmationModal />
 
       <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
         <div className="mx-auto max-w-7xl text-center">
@@ -388,7 +421,7 @@ const App = () => {
               <Button
                 variant="contained"
                 style={{ marginTop: '20px', backgroundColor: '#F7C301' }}
-                onClick={handleCancelReservation}
+                onClick={() => setOpenCancelConfirmModal(true)}
               >
                 Cancel Reservation
               </Button>
