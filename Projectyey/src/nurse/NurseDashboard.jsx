@@ -10,7 +10,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
  
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF1493', '#6A5ACD'];
- 
+
 const NurseDashboard = () => {
   const [patientData, setPatientData] = useState({
     totalPatients: 150,
@@ -30,7 +30,7 @@ const NurseDashboard = () => {
       { year: 2023, patients: 140 },
     ],
   });
- 
+
   useEffect(() => {
     const totalConditionCount =
       patientData.withNoMedicalCondition +
@@ -39,12 +39,12 @@ const NurseDashboard = () => {
       patientData.withHeartRateIssues +
       patientData.withRespiratoryRateIssues +
       patientData.withAbnormalBodyTemperature;
- 
+
     if (totalConditionCount !== patientData.totalPatients) {
       console.warn("Mismatch between total patients and patient categories!");
     }
   }, [patientData]);
- 
+
   const pieData = [
     { name: 'No Medical Condition', value: patientData.withNoMedicalCondition },
     { name: 'High Blood Pressure', value: patientData.withHighBloodPressure },
@@ -53,7 +53,7 @@ const NurseDashboard = () => {
     { name: 'Respiratory Rate Issues', value: patientData.withRespiratoryRateIssues },
     { name: 'Abnormal Body Temperature', value: patientData.withAbnormalBodyTemperature },
   ];
- 
+
   return (
     <>
       <Nav />    
@@ -88,7 +88,7 @@ const NurseDashboard = () => {
               </Box>
             </Box>
           </Box>
- 
+
           {/* Statistic Cards */}
           <Grid container spacing={2} sx={{ mb: 3 }}>
             {['Patients Today', 'Total Patients', 'For Recall', 'Requests'].map((title, index) => (
@@ -100,7 +100,7 @@ const NurseDashboard = () => {
               </Grid>
             ))}
           </Grid>
- 
+
           {/* Main Content */}
           <Grid container spacing={2}>
             {/* Appointments Statistics with Linear Chart */}
@@ -118,62 +118,66 @@ const NurseDashboard = () => {
                   </LineChart>
                 </Box>
               </Card>
- 
-              {/* Patient Categories with Pie Chart */}
+
+              {/* Patient Categories with Pie Chart and Counters Side by Side */}
               <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>Patients with Medical Conditions</Typography>
-<Card sx={{ p: 3, mb: 3 }}>
-  <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
-    <PieChart width={400} height={400}>
-      <Pie
-        data={pieData}
-        cx="50%"
-        cy="50%"
-        outerRadius={120}
-        fill="#8884d8"
-        dataKey="value"
-        label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`} // Custom label format
-        labelStyle={{ fill: 'black' }} // Set label text color to black
-      >
-        {pieData.map((entry, index) => (
-          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-        ))}
-      </Pie>
-      <Tooltip />
-      <Legend />
-    </PieChart>
-  </Box>
+              <Card sx={{ p: 3, mb: 3 }}>
+                <Grid container spacing={2}>
+                  <Grid item xs={6}>
+                    {/* Patient Counters */}
+                    <Grid container spacing={2}>
+                      <Grid item xs={6}>
+                        <Typography sx={{ color: 'black' }}>No Medical Condition</Typography>
+                        <Typography variant="h5">{patientData.withNoMedicalCondition}</Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Typography sx={{ color: 'black' }}>High Blood Pressure</Typography>
+                        <Typography variant="h5">{patientData.withHighBloodPressure}</Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Typography sx={{ color: 'black' }}>Allergies</Typography>
+                        <Typography variant="h5">{patientData.withAllergies}</Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Typography sx={{ color: 'black' }}>Heart Rate Issues</Typography>
+                        <Typography variant="h5">{patientData.withHeartRateIssues}</Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Typography sx={{ color: 'black' }}>Respiratory Rate Issues</Typography>
+                        <Typography variant="h5">{patientData.withRespiratoryRateIssues}</Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Typography sx={{ color: 'black' }}>Abnormal Body Temperature</Typography>
+                        <Typography variant="h5">{patientData.withAbnormalBodyTemperature}</Typography>
+                      </Grid>
+                    </Grid>
+                  </Grid>
 
-  {/* Updated Grid for Patient Labels */}
-  <Grid container spacing={2}>
-    <Grid item xs={4}>
-      <Typography sx={{ color: 'black' }}>No Medical Condition</Typography>
-      <Typography variant="h5">{patientData.withNoMedicalCondition}</Typography>
-    </Grid>
-    <Grid item xs={4}>
-      <Typography sx={{ color: 'black' }}>High Blood Pressure</Typography>
-      <Typography variant="h5">{patientData.withHighBloodPressure}</Typography>
-    </Grid>
-    <Grid item xs={4}>
-      <Typography sx={{ color: 'black' }}>Allergies</Typography>
-      <Typography variant="h5">{patientData.withAllergies}</Typography>
-    </Grid>
-    <Grid item xs={4}>
-      <Typography sx={{ color: 'black' }}>Heart Rate Issues</Typography>
-      <Typography variant="h5">{patientData.withHeartRateIssues}</Typography>
-    </Grid>
-    <Grid item xs={4}>
-      <Typography sx={{ color: 'black' }}>Respiratory Rate Issues</Typography>
-      <Typography variant="h5">{patientData.withRespiratoryRateIssues}</Typography>
-    </Grid>
-    <Grid item xs={4}>
-      <Typography sx={{ color: 'black' }}>Abnormal Body Temperature</Typography>
-      <Typography variant="h5">{patientData.withAbnormalBodyTemperature}</Typography>
-    </Grid>
-  </Grid>
-</Card>
-
+                  <Grid item xs={6}>
+                    {/* Pie Chart */}
+                    <PieChart width={400} height={400}>
+                      <Pie
+                        data={pieData}
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={120}
+                        fill="#8884d8"
+                        dataKey="value"
+                        label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`} // Custom label format
+                        labelStyle={{ fill: 'black' }} // Set label text color to black
+                      >
+                        {pieData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                      <Legend />
+                    </PieChart>
+                  </Grid>
+                </Grid>
+              </Card>
             </Grid>
- 
+
             {/* Right Sidebar */}
             <Grid item xs={12} md={4}>
               <Card sx={{ p: 2, mb: 3 }}>
@@ -192,12 +196,12 @@ const NurseDashboard = () => {
                   </Button>
                 </Box>
               </Card>
- 
+
               <Card sx={{ p: 2, mb: 3 }}>
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>October 2021</Typography>
                 <Typography variant="body2" color="textSecondary">[Calendar Placeholder]</Typography>
               </Card>
- 
+
               <Card sx={{ p: 2, mb: 3 }}>
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Upcoming Appointments</Typography>
                 <List>
@@ -214,7 +218,7 @@ const NurseDashboard = () => {
                   ))}
                 </List>
               </Card>
- 
+
               <Card sx={{ p: 2 }}>
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Tomorrow's Appointment</Typography>
                 <List>
@@ -238,6 +242,5 @@ const NurseDashboard = () => {
     </>
   );
 };
- 
+
 export default NurseDashboard;
- 
