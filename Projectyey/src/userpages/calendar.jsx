@@ -44,6 +44,7 @@ const App = () => {
   const navigate = useNavigate();
   const [limitModalOpen, setLimitModalOpen] = useState(false);
   const [reservationDetails, setReservationDetails] = useState(null); 
+  const [reservedEvent, setReservedEvent] = useState(null);
 
 
 
@@ -158,14 +159,20 @@ const App = () => {
         status: 'Reserved',
       });
   
-      // Update the event list to mark the event as unavailable
-      setEvents((prevEvents) =>
-        prevEvents.map((event) =>
-          event.id === selectedEvent.id
-            ? { ...event, type: 'Unavailable' } 
-            : event
-        )
-      );
+     // Update the event status on the backend
+     await fetch(`http://localhost:8080/api/events/book/${selectedEvent.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    // Update the event list to mark the event as unavailable
+    setEvents((prevEvents) =>
+      prevEvents.map((event) =>
+        event.id === selectedEvent.id
+          ? { ...event, type: 'Unavailable' } // Set to 'Unavailable'
+          : event
+      )
+    );
   
     } catch (error) {
       console.error('Error reserving slot:', error.message || error);
@@ -173,7 +180,7 @@ const App = () => {
       setLimitModalOpen(true);  
     }
   };
-  
+
 
   
 
@@ -280,6 +287,74 @@ const App = () => {
       document.body
     );
   };
+
+   // Fetch student data and reserved event
+   useEffect(() => {
+    const fetchReservedEvent = async () => {
+      const studentIdNumber = localStorage.getItem('studentIdNumber'); // Retrieve student ID from localStorage
+      console.log("Fetched studentIdNumber:", studentIdNumber); // Debugging
+      
+      if (studentIdNumber) {
+        try {
+          // Fetch the reservation from the backend
+          const response = await fetch(`http://localhost:8080/api/reservations/reservations/${studentIdNumber}`);
+          if (response.ok) {
+            const reservationData = await response.json();
+            console.log("Fetched reservation data:", reservationData); // Debugging
+  
+            if (reservationData && reservationData.length > 0) {
+              const latestReservation = reservationData[0]; // Assuming the latest reservation
+              console.log("Latest Reservation ID:", latestReservation.id); // Debugging
+  
+              // Set reserved event with the correct field names
+              setReservedEvent({
+                id: latestReservation.id, // Ensure this matches what you're checking in handleCancelReservation
+                eventId: latestReservation.event.id, // Include event ID to make it available again
+                date: moment(latestReservation.event.start).format('MMMM Do YYYY'),
+                time: `${moment(latestReservation.event.start).format('h:mm A')} - ${moment(latestReservation.event.end).format('h:mm A')}`,
+                status: 'Reserved'
+              });
+            } else {
+              console.log('No reservation found for the student.');
+            }
+          } else {
+            console.error('Failed to fetch reservation details.');
+          }
+        } catch (error) {
+          console.error('Error fetching reservation details:', error);
+        }
+      }
+    };
+  
+    fetchReservedEvent(); // Call the function on mount
+  }, []);
+  
+  
+
+
+  const handleCancelReservation = async () => {
+    console.log('Reserved Event:', reservedEvent); // Debugging the reservation data
+  
+    if (reservedEvent && reservedEvent.id) {
+      try {
+        // DELETE request to cancel the reservation using reservation ID
+        await fetch(`http://localhost:8080/api/reservations/delete/${reservedEvent.id}`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+        });
+  
+        // Clear the reserved event from state
+        setReservedEvent(null);
+        alert('Reservation cancelled successfully');
+      } catch (error) {
+        console.error('Error cancelling reservation:', error);
+        alert('Failed to cancel the reservation.');
+      }
+    } else {
+      console.error('No reservation ID found');
+      alert('No reservation to cancel.');
+    }
+  };
   
 
   return (
@@ -294,27 +369,35 @@ const App = () => {
           <h1 className="text-4xl font-bold tracking-tight text-[#88343B] sm:text-5xl">Choose an Appointment</h1>
         </div>
 
-        {reservationDetails && (
+        {/* Reserved Event Display */}
         <div className="mx-auto max-w-xl mt-10 p-6 rounded-lg text-white" style={{ backgroundColor: '#88343b' }}>
-          <h2 className="text-2xl font-bold">Your Reservation</h2>
-          <div className="mt-4">
-            <p><strong>Date and Time: </strong>{reservationDetails.date} at {reservationDetails.time}</p>
-            <p><strong>Status: </strong>{reservationDetails.status}</p>
-          </div>
+          {reservedEvent ? (
+            <Box>
+              <Typography variant="h5" component="h2" gutterBottom>
+                Reserved Event Details
+              </Typography>
+              <Typography>
+                <strong>Date:</strong> {reservedEvent.date} 
+              </Typography>
+              <Typography>
+                <strong>Time:</strong> {reservedEvent.time}
+              </Typography>
+              <Typography>
+                <strong>Status:</strong> {reservedEvent.status}
+              </Typography>
+              <Button
+                variant="contained"
+                style={{ marginTop: '20px', backgroundColor: '#F7C301' }}
+                onClick={handleCancelReservation}
+              >
+                Cancel Reservation
+              </Button>
+            </Box>
+          ) : (
+            <Typography>No reservation found for this student.</Typography>
+          )}
         </div>
-      )}
-
-        <div class="button_cont" align="center">
-          <a class="example_f" href="add-website-here" target="_blank" rel="nofollow">
-            <span
-             variant="contained"
-                    onClick={(event) => {
-                      event.stopPropagation(); 
-                      handleRefuse(applicant.id); 
-                    }}
-            >Cancel Reservation</span>
-          </a>
-        </div>
+        
 
 
         <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8 rounded-lg text-black">
