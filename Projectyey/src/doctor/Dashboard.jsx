@@ -39,11 +39,11 @@ const Dashboard = () => {
                     </Typography>
 
                     {/* Notification Icon with Badge */}
-                    <IconButton color="inherit">
-                        <Badge badgeContent={notifications.length} color="error">
-                            <NotificationsIcon />
-                        </Badge>
-                    </IconButton>
+                    {/*<IconButton color="inherit">*/}
+                    {/*    <Badge badgeContent={notifications.length} color="error">*/}
+                    {/*        <NotificationsIcon />*/}
+                    {/*    </Badge>*/}
+                    {/*</IconButton>*/}
 
                     <DocNavBar />
                 </Box>
