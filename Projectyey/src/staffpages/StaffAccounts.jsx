@@ -16,7 +16,7 @@ function StaffAccounts() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/user/staffs?archived=false');
+      const response = await axios.get('http://localhost:8080/staff/staffs?archived=false');
       if (response.status === 200) {
         setData(response.data);
         console.log('Staff accounts fetched successfully:', response.data);
@@ -30,7 +30,7 @@ function StaffAccounts() {
 
   const handleSearch = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/user/staffs/search?keyword=${searchTerm}`);
+      const response = await axios.get(`http://localhost:8080/staff/staffs/search?keyword=${searchTerm}`);
       if (response.status === 200) {
         setData(response.data);
         console.log('Staff accounts fetched successfully:', response.data);
@@ -50,7 +50,7 @@ function StaffAccounts() {
   const handleArchiveConfirm = async () => {
     try {
       console.log(`Attempting to archive user with ID: ${selectedUser.id}`);
-      const response = await axios.post(`http://localhost:8080/user/staffs/archiveStaff/${selectedUser.id}`);
+      const response = await axios.post(`http://localhost:8080/staff/staffs/archiveStaff/${selectedUser.id}`);
       console.log('Archive response:', response);
       if (response.status === 200) {
         console.log('Staff account archived successfully');
@@ -96,7 +96,7 @@ function StaffAccounts() {
     if (selectedUser && selectedUser.id) {
       try {
         console.log('Updating user with ID:', selectedUser.id);
-        const response = await axios.put(`http://localhost:8080/user/updateStaff/${selectedUser.id}`, selectedUser);
+        const response = await axios.put(`http://localhost:8080/staff/updateStaff/${selectedUser.id}`, selectedUser);
         if (response.status === 200) {
           console.log('Staff account updated successfully');
           fetchData(); // Refresh the data

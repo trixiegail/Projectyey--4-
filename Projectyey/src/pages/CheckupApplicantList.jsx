@@ -71,6 +71,9 @@ const ApplicantList = () => {
   // Dialog state management
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
   const [selectedApplicantId, setSelectedApplicantId] = useState(null);
+  const [selectedEventId, setSelectedEventId] = useState(null); // New state for tracking event ID
+  const [openDeleteEventDialog, setOpenDeleteEventDialog] = useState(false); // New state for delete confirmation
+
 
   // Handle accept button click
   const handleOpenAcceptDialog = (event, applicant) => {
@@ -93,20 +96,44 @@ const ApplicantList = () => {
       })
       .then(response => {
         if (response.ok) {
-          // Remove the accepted patient from the local state
           setApplicants((prevApplicants) => prevApplicants.filter(a => a.id !== selectedApplicant.id));
-        } else {
-          console.log('Failed to accept the patient.');
-        }
-      });
-    }
+
+        const eventId = selectedApplicant.event.id; 
+
+        fetch(`http://localhost:8080/api/events/${eventId}`, {
+          method: 'DELETE',
+        })
+        .then(eventResponse => {
+          if (eventResponse.ok) {
+            console.log('Event deleted successfully');
+
+            setApplicants((prevApplicants) => prevApplicants.filter(a => a.id !== selectedApplicant.id));
+
+            handleCloseAcceptDialog();
+          } else {
+            console.error('Failed to delete event:', eventResponse);
+          }
+        })
+        .catch((error) => {
+          console.error('Error deleting event:', error);
+        });
+      } else {
+        console.error('Failed to accept the patient.');
+      }
+    })
+    .catch(error => {
+      console.error('Error accepting reservation:', error);
+    });
+  }
+
   
     // Close the dialog after confirming
     handleCloseAcceptDialog();
   };
 
-  const handleOpenConfirmDialog = (applicantId) => {
+  const handleOpenConfirmDialog = (applicantId, eventId) => {
     setSelectedApplicantId(applicantId); // Store the ID of the applicant to delete
+    setSelectedEventId(eventId);
     setOpenConfirmDialog(true); // Open the dialog
   };
 
@@ -150,44 +177,55 @@ const ApplicantList = () => {
     navigate(`/CheckupForm/${applicant.studentIdNumber}`, { state: { applicant } });
   };
 
-  const handleAccept = (applicant) => {
-    // Open confirmation modal before accepting
-    setSelectedApplicant(applicant); // Store the selected applicant
-    setOpenAcceptDialog(true); // Open the modal
-  };
   
 
   const handleConfirmRefusal = () => {
-    console.log('Attempting to delete reservation for applicant ID:', selectedApplicantId);  // Debug log
-  
+    console.log('Attempting to reject applicant ID:', selectedApplicantId);
+    
+    // Automatically delete the reservation
     fetch(`http://localhost:8080/api/reservations/${selectedApplicantId}`, {
       method: 'DELETE',
     })
       .then((response) => {
         if (response.ok) {
           console.log('Reservation deleted successfully');
-          
-          // Remove applicant from the state
-          setApplicants((prevApplicants) =>
-            prevApplicants.filter((applicant) => applicant.id !== selectedApplicantId)
-          );
+          setOpenDeleteEventDialog(true); 
+          handleCloseConfirmDialog();
         } else {
           console.error('Failed to delete reservation:', response);
         }
       })
       .catch((error) => {
         console.error('Error rejecting patient:', error);
-      })
-      .finally(() => {
-        handleCloseConfirmDialog();  // Close the dialog after handling
       });
   };
+  
+  
+  
+  const handleDeclineAndDeleteEvent = () => {
+    if (selectedEventId) {
+      fetch(`http://localhost:8080/api/events/${selectedEventId}`, {
+        method: 'DELETE',
+      })
+        .then((eventResponse) => {
+          if (eventResponse.ok) {
+            console.log('Event deleted successfully');
+          } else {
+            console.error('Failed to delete event:', eventResponse);
+          }
+        })
+        .catch((error) => {
+          console.error('Error deleting event:', error);
+        });
+    }
+    setOpenDeleteEventDialog(false);
+  };
+  
 
-  const handleRefuse = (applicantId) => {
-  setSelectedApplicantId(applicantId);  
-  setOpenConfirmDialog(true);  
-};
-
+  const handleDeclineWithoutDeletingEvent = () => {
+    // Close the delete confirmation modal (after the reservation has already been deleted)
+    setOpenDeleteEventDialog(false); 
+  };
 
   
 
@@ -307,7 +345,7 @@ const ApplicantList = () => {
                     variant="contained"
                     onClick={(event) => {
                       event.stopPropagation(); 
-                      handleRefuse(applicant.id); 
+                      handleOpenConfirmDialog(applicant.id, applicant.event.id)
                     }}
                     style={{ backgroundColor: '#90242c', color: '#FFFFFF' }}
                   >
@@ -339,7 +377,7 @@ const ApplicantList = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Confirmation Dialog */}
+      {/* Confirmation Dialog for Rejection */}
       <Dialog
         open={openConfirmDialog}  // Controlled by openConfirmDialog state
         onClose={handleCloseConfirmDialog}
@@ -357,7 +395,7 @@ const ApplicantList = () => {
             Cancel
           </Button>
           <Button
-            onClick={handleConfirmRefusal}
+            onClick={handleConfirmRefusal} // Calls the function to confirm refusal
             style={{ color: '#cc9999' }}
             autoFocus
           >
@@ -365,6 +403,30 @@ const ApplicantList = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Delete Event Confirmation Dialog */}
+      <Dialog
+        open={openDeleteEventDialog} // Controlled by openDeleteEventDialog state
+        onClose={() => setOpenDeleteEventDialog(false)}
+        aria-labelledby="confirm-delete-event-title"
+        aria-describedby="confirm-delete-event-description"
+      >
+        <DialogTitle id="confirm-delete-event-title">Delete Associated Event</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="confirm-delete-event-description">
+          Do you want to delete the associated event for this rejected patient?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeclineWithoutDeletingEvent} style={{ color: '#88343B' }}>
+            No, Keep Event
+          </Button>
+          <Button onClick={handleDeclineAndDeleteEvent} style={{ color: '#cc9999' }} autoFocus>
+            Yes, Delete Event
+          </Button>
+        </DialogActions>
+      </Dialog>
+
 
     </Box>
   );

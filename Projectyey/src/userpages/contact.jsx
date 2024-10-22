@@ -117,7 +117,7 @@ function Contact() {
                 <button
                     type="submit"
                     value={"Send"}
-                    className="w-full px-6 py-3 bg-[#F7C301] text-black font-bold rounded-lg hover:bg-yellow-600"
+                    className="w-full px-6 py-3 bg-[#F7C301] text-[rgb(136,52,59)] font-bold rounded-lg hover:bg-yellow-600"
                 >
                   Send Message
                 </button>
@@ -133,7 +133,7 @@ function Contact() {
                 <h2 className="text-2xl font-bold text-green-600">Message Sent Successfully!</h2>
                 <p className="mt-4">Thank you for reaching out to us. We'll get back to you shortly.</p>
                 <button
-                    className="mt-6 px-4 py-2 bg-[#F7C301] text-black font-bold rounded-lg hover:bg-yellow-600"
+                    className="mt-6 px-4 py-2 bg-[#F7C301] text-[rgb(136,52,59)] font-bold rounded-lg hover:bg-yellow-600"
                     onClick={closeModal}
                 >
                   Close

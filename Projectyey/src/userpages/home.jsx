@@ -114,7 +114,7 @@ export function Home() {
       </div>
     </div>
     <div className="mt-10">
-    <a className=" bg-[#F7C301] text-white font-bold  rounded-lg shadow-lg hover:bg-yellow-600 transition duration-300 w-full px-6 py-3"
+    <a className=" bg-[#F7C301] text-[rgb(136,52,59)] font-bold rounded-lg shadow-lg hover:bg-yellow-600 transition duration-300 w-full px-6 py-3"
     href="/student-calendar">
       Make Appointment
     </a>
