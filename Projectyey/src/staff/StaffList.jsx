@@ -1,25 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Card, CardContent, Typography, CircularProgress, Grid, Box, Avatar, Divider , TextField , IconButton } from '@mui/material';
-import Sidebar from '../components/DocSidebar';
+import Sidebar from '../components/StaffSidebar';
 import { Email, Badge, Cake } from '@mui/icons-material';
 import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import StaffNavBar from '../components/StaffNavBar';
 
 function StaffList() {
-  const [staff, setStaff] = useState([]);
+  const [staff, setStaffs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchStaff();
+    fetchStaffs();
   }, []);
 
-  const fetchStaff = async () => {
+  const fetchStaffs = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/user/staff?archived=false');
+      const response = await axios.get('http://localhost:8080/staff/getStaff?archived=false');
       if (response.status === 200) {
-        setStaff(response.data);
+        setStaffs(response.data);
       } else {
         throw new Error('Failed to fetch staff accounts');
       }
@@ -35,34 +36,21 @@ function StaffList() {
     <Box sx={{ display: 'flex', minHeight: '100vh'}}>
       <Sidebar /> 
       <Box sx={{ flexGrow: 1, p: 3 }}>
-        {/* Header */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h4" sx={{ fontWeight: 'bold' }} style={{color:'#90343c'}}>Staff</Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <TextField
-              variant="outlined"
-              placeholder="Search Here"
-              size="small"
-              InputProps={{
-                endAdornment: (
-                  <IconButton>
-                    <SearchIcon />
-                  </IconButton>
-                ),
-              }}
-              sx={{ mr: 2 }}
-            />
-            <IconButton>
-              <NotificationsIcon />
-            </IconButton>
-            <Box sx={{ ml: 2, display: 'flex', alignItems: 'center' }}>
-              <Avatar src="src/image/staff-profile.png" alt="Profile" sx={{ width: 40, height: 40, mr: 1 }} />
-              <Box>
-                <Typography variant="body1">Jane Smith</Typography>
-                <Typography variant="body2" color="textSecondary">Staff</Typography>
-              </Box>
-            </Box>
-          </Box>
+      <Box 
+          sx={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center', 
+            mb: 2 
+          }}
+        >
+          <Typography 
+            variant="h4" 
+            sx={{ fontWeight: 'bold', color: '#90343c' }} 
+          >
+            Staff
+          </Typography>
+          <StaffNavBar />
         </Box>
 
 
@@ -76,7 +64,7 @@ function StaffList() {
           </Typography>
         ) : (
           <Grid container spacing={3} justifyContent="left">
-            {staff.map((staff) => (
+            {staffs.map((staff) => (
               <Grid item xs={12} sm={6} md={4} key={staff.id}>
                 <Card
                   sx={{
@@ -97,10 +85,7 @@ function StaffList() {
                       </Avatar>
                       <Box>
                         <Typography variant="h6" gutterBottom>
-                          {staff.firstname} {staff.lastname}
-                        </Typography>
-                        <Typography variant="body2" color="textSecondary">
-                          {staff.email}
+                        {staff.firstname} {staff.lastname}
                         </Typography>
                       </Box>
                     </Box>

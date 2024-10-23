@@ -46,6 +46,7 @@ import IntraoralExamination from './doctor/IntraoralExam';
 import DocDashboard from './doctor/Dashboard';
 import BookingPage from './pages/BookingPage';
 import Sidebar from './components/DocSidebar';
+import StaffSidebar from './components/StaffSidebar';
 import NurseDashboard from './nurse/NurseDashboard';
 import DocCalendar from './doctor/DocCalendar';
 import FormManagement from './doctor/FormManagement';
@@ -60,6 +61,8 @@ import StaffSettings from './staff/StaffSettings';
 import Patients from './doctor/Patients';
 import { PatientsContext } from './doctor/PatientsContext';
 import { PatientsProvider } from './doctor/PatientsContext';
+import StaffPatients from './staff/StaffPatients';
+import { StaffPatientsProvider } from './staff/StaffPatientsContext';
 import StudentProfile from "@/userpages/studentprofile.jsx";
 
 
@@ -140,6 +143,7 @@ export default function App() {
             <Route path='/stafflist' exact element={<StaffList />} />
             <Route path='/staffforms' exact element={<StaffForms />} />
             <Route path='/staffsettings' exact element={<StaffSettings />} />
+            <Route path='/staffpatientlist' exact element={<StaffPatients />} />
 
             {/* Login */}
             <Route path="/login-student" exact element={<LoginStudent />} />
