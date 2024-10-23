@@ -12,7 +12,7 @@ const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF1493', '#6A5ACD'
 const Dashboard = () => {
   const [notifications, setNotifications] = useState([]);
   const [patientData, setPatientData] = useState({
-    totalPatients: 150,
+    totalPatients: 10,
     withCavities: 40,
     withGumDisease: 30,
     withFilledTeeth: 20,

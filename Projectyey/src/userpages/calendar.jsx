@@ -155,7 +155,7 @@ const App = () => {
       setReservationDetails({
         date: moment(selectedEvent.start).format('MMMM Do YYYY'),
         time: `${moment(selectedEvent.start).format('h:mm A')} - ${moment(selectedEvent.end).format('h:mm A')}`,
-        status: 'Reserved',
+        // status: 'Reserved', // will update function later
       });
   
      // Update the event status on the backend
@@ -210,8 +210,8 @@ const App = () => {
     const eventTime = `${moment(selectedEvent.start).format('h:mm A')} - ${moment(selectedEvent.end).format('h:mm A')}`;
 
     return ReactDOM.createPortal(
-      <div className="fixed inset-0 z-30 flex items-center justify-center overflow-y-auto text-black bg-black bg-opacity-50" >
-        <div ref={wrapperRef} style={{ ...modalStyles.content, padding: '20px' }}>
+      <div className="fixed inset-0 z-30 flex items-center justify-center overflow-y-auto text-black bg-black bg-opacity-50 " >
+        <div ref={wrapperRef} className="bg-white py-10 px-10 rounded-xl">
           <h2 className="text-xl font-bold text-center">Confirm Reservation</h2>
           <p className="mt-2 text-center">Are you sure you want to reserve this slot?</p>
           <p className="mt-2 text-center">
@@ -220,9 +220,9 @@ const App = () => {
           <p className="mt-2 text-center">
             <strong>Time:</strong> {eventTime}
           </p>
-          <div className="flex justify-end space-x-4 mt-4">
+          <div className="flex items-center justify-center space-x-4 mt-4">
             <Button 
-            variant="contained" style={{ backgroundColor: '#88343B' }} onClick={closeModal}>
+            variant="contained" style={{ backgroundColor: '#88343B' }} onClick={closeModal} >
               Cancel
             </Button>
             <Button variant="contained" style={{ backgroundColor: '#F7C301' }} onClick={handleReserve}>
@@ -239,10 +239,18 @@ const App = () => {
     let style = {
       backgroundColor: '#add8e6',
       borderRadius: '5px',
-      color: '#000',
+      border: 'none',
+      height: 'auto', 
+      whiteSpace: 'normal',
+      lineHeight: '25px',
+      margin: 'auto', 
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      marginBottom:'1px',
     };
 
     if (event.type === 'Unavailable' || event.type === 'Holiday') {
@@ -311,7 +319,7 @@ const App = () => {
                 eventId: latestReservation.event.id, // Include event ID to make it available again
                 date: moment(latestReservation.event.start).format('MMMM Do YYYY'),
                 time: `${moment(latestReservation.event.start).format('h:mm A')} - ${moment(latestReservation.event.end).format('h:mm A')}`,
-                status: 'Reserved'
+                // status: 'Reserved'   // will update function later
               });
             } else {
               console.log('No reservation found for the student.');
@@ -359,10 +367,10 @@ const App = () => {
 
     return ReactDOM.createPortal(
       <div className="fixed inset-0 z-30 flex items-center justify-center overflow-y-auto text-black bg-black bg-opacity-50">
-        <div ref={wrapperRef} style={{ ...modalStyles.content, padding: '20px' }}>
+        <div ref={wrapperRef} className="bg-white py-10 px-10 rounded-xl">
           <h2 className="text-xl font-bold text-center">Confirm Cancellation</h2>
           <p className="mt-2 text-center">Are you sure you want to cancel your reservation?</p>
-          <div className="flex justify-end space-x-4 mt-4">
+          <div className="flex items-center justify-center space-x-4 mt-4 ">
             <Button 
               variant="contained" 
               style={{ backgroundColor: '#88343B' }} 
@@ -415,12 +423,12 @@ const App = () => {
               <Typography>
                 <strong>Time:</strong> {reservedEvent.time}
               </Typography>
-              <Typography>
-                <strong>Status:</strong> {reservedEvent.status}
-              </Typography>
+              {/* <Typography>
+                <strong>Status:</strong> {reservedEvent.status}   
+              </Typography> */}
               <Button
                 variant="contained"
-                style={{ marginTop: '20px', backgroundColor: '#F7C301' }}
+                style={{ marginTop: '20px', backgroundColor: '#88343B', marginLeft:'320px'}}
                 onClick={() => setOpenCancelConfirmModal(true)}
               >
                 Cancel Reservation
