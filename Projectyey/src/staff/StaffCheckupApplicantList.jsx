@@ -1,13 +1,13 @@
-import React, { useState, createContext, useContext, useEffect , useRef } from 'react';
+import React, { useState, createContext, useContext, useEffect } from 'react';
 import { Box, Typography, Select, MenuItem, TextField, Table, TableHead, TableRow, TableCell, TableBody,
         FormControl, InputLabel, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import Sidebar from '../components/DocSidebar';
-import DocNavBar from '../components/DocNavBar';
-import Patients from '../doctor/Patients';
-import { PatientsContext } from '../doctor/PatientsContext';
+import StaffSidebar from '../components/StaffSidebar';
+import StaffNavBar from '../components/StaffNavBar';
+import StaffPatients from '../staff/StaffPatients';
+import { StaffPatientsContext } from '../staff/StaffPatientsContext';
 
-export const ApplicantsContext = createContext();
+export const StaffApplicantsContext = createContext();
 
 const programByDepartment = {
   'COLLEGE OF ENGINEERING AND ARCHITECTURE': [
@@ -56,15 +56,15 @@ const programByDepartment = {
 
 const programsByDepartment = {  };
 
-const ApplicantList = () => {
+const StaffApplicantList = () => {
   const [filterPriority, setFilterPriority] = useState('All');
   const [filterDepartment, setFilterDepartment] = useState('');
   const [filterProgram, setFilterProgram] = useState('');
   const [filterYear, setFilterYear] = useState('');
   const [filterDate, setFilterDate] = useState('');
-  const { applicants, setApplicants } = useContext(ApplicantsContext); // Need to access setApplicants here
+  const { applicants, setApplicants } = useContext(StaffApplicantsContext); // Need to access setApplicants here
   const navigate = useNavigate();
-  const { addPatient, removePatient } = useContext(PatientsContext);
+  const { addPatient, removePatient } = useContext(StaffPatientsContext);
   const [openAcceptDialog, setOpenAcceptDialog] = useState(false);
   const [selectedApplicant, setSelectedApplicant] = useState(null); 
 
@@ -178,52 +178,27 @@ const ApplicantList = () => {
   };
 
   
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const handleConfirmRefusal = () => {
-    if (isSubmitting) return; // Prevent further requests while the current one is processing
-    setIsSubmitting(true);
-    
     console.log('Attempting to reject applicant ID:', selectedApplicantId);
-  
-    // Move the reservation to the Declined Appointments History first
-    fetch(`http://localhost:8080/api/declined-appointments/move/${selectedApplicantId}`, {
-      method: 'POST',
+    
+    // Automatically delete the reservation
+    fetch(`http://localhost:8080/api/reservations/${selectedApplicantId}`, {
+      method: 'DELETE',
     })
       .then((response) => {
         if (response.ok) {
-          console.log('Successfully moved to Declined Appointments History');
-  
-          // Now delete the reservation
-          fetch(`http://localhost:8080/api/reservations/${selectedApplicantId}`, {
-            method: 'DELETE',
-          })
-            .then((deleteResponse) => {
-              if (deleteResponse.ok) {
-                console.log('Reservation deleted successfully');
-                setOpenDeleteEventDialog(true); 
-                handleCloseConfirmDialog();
-              } else {
-                console.error('Failed to delete reservation:', deleteResponse);
-              }
-            })
-            .catch((error) => {
-              console.error('Error deleting reservation:', error);
-            })
-            .finally(() => {
-              setIsSubmitting(false); // Reset the submitting state
-            });
+          console.log('Reservation deleted successfully');
+          setOpenDeleteEventDialog(true); 
+          handleCloseConfirmDialog();
         } else {
-          console.error('Failed to move to Declined Appointments History:', response);
-          setIsSubmitting(false); // Reset the submitting state in case of failure
+          console.error('Failed to delete reservation:', response);
         }
       })
       .catch((error) => {
-        console.error('Error moving to Declined Appointments History:', error);
-        setIsSubmitting(false); // Reset the submitting state in case of failure
+        console.error('Error rejecting patient:', error);
       });
   };
-  
   
   
   
@@ -265,7 +240,7 @@ const ApplicantList = () => {
         >
           Applicants For Check Up
         </Typography>
-        <DocNavBar />
+        <StaffNavBar />
       </Box>
 
       {/* Filter Options */}
@@ -355,8 +330,8 @@ const ApplicantList = () => {
                 <TableCell style={{ paddingLeft: 15, fontSize: '16px' }}>{applicant.fullName}</TableCell>
                 <TableCell style={{ paddingLeft: 30, fontSize: '16px' }}>{applicant.program}</TableCell>
                 <TableCell style={{ paddingLeft: 70, fontSize: '16px' }}>{applicant.yearLevel}</TableCell>
-                <TableCell style={{ paddingLeft: 20, fontSize: '16px' }}>
-                  {applicant.date} <strong>&emsp;&emsp;{applicant.time}</strong>
+                <TableCell style={{ paddingLeft: 25, fontSize: '16px' }}>
+                  {applicant.date} <strong>{applicant.time}</strong>
                 </TableCell>
                 <TableCell>
                   <Button
@@ -421,7 +396,6 @@ const ApplicantList = () => {
           </Button>
           <Button
             onClick={handleConfirmRefusal} // Calls the function to confirm refusal
-            disabled={isSubmitting}
             style={{ color: '#cc9999' }}
             autoFocus
           >
@@ -458,26 +432,16 @@ const ApplicantList = () => {
   );
 };
 
-const CheckupApplicantList = () => {
+const StaffCheckupApplicantList = () => {
   const [applicants, setApplicants] = useState([]);
-  const hasFetchedData = useRef(false);
 
   useEffect(() => {
-    console.log("Fetching applicants...");
-  
     fetch('http://localhost:8080/api/reservations/reservations')
       .then((response) => response.json())
       .then((data) => {
-        console.log('API Response:', data);
+        console.log('API Response:', data); // Check if the data is returned correctly
         if (Array.isArray(data)) {
-          // Remove duplicate entries in the frontend based on unique identifiers like studentIdNumber
-          const uniqueApplicants = data.reduce((acc, applicant) => {
-            const found = acc.find(a => a.studentIdNumber === applicant.studentIdNumber && a.date === applicant.date && a.time === applicant.time);
-            if (!found) acc.push(applicant);
-            return acc;
-          }, []);
-          
-          setApplicants(uniqueApplicants); // Set only unique applicants
+          setApplicants(data); // This will include the new reservation
         } else {
           console.error('Expected an array but received:', data);
         }
@@ -486,13 +450,13 @@ const CheckupApplicantList = () => {
   }, []);
 
   return (
-    <ApplicantsContext.Provider value={{ applicants, setApplicants }}>
+    <StaffApplicantsContext.Provider value={{ applicants, setApplicants }}>
       <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-        <Sidebar /> 
-        <ApplicantList />
+        <StaffSidebar /> 
+        <StaffApplicantList />
       </Box>
-    </ApplicantsContext.Provider>
+    </StaffApplicantsContext.Provider>
   );
 };
 
-export default CheckupApplicantList;
+export default StaffCheckupApplicantList;

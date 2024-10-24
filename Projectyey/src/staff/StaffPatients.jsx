@@ -1,8 +1,8 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 import { Box, Typography, Select, MenuItem, TextField, Table, TableHead, TableRow, TableCell, TableBody,
         FormControl, InputLabel, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
-import Sidebar from '../components/DocSidebar';
-import DocNavBar from '../components/DocNavBar';
+import Sidebar from '../components/StaffSidebar';
+import StaffNavBar from '../components/StaffNavBar';
 import { useNavigate } from 'react-router-dom';
 
 export const ApplicantsContext = createContext();
@@ -52,7 +52,7 @@ const programsByDepartment = {
   ],
 };
 
-const PatientList = () => {
+const StaffPatientList = () => {
   const [filterPriority, setFilterPriority] = useState('All');
   const [filterDepartment, setFilterDepartment] = useState('');
   const [filterProgram, setFilterProgram] = useState('');
@@ -100,7 +100,7 @@ const PatientList = () => {
   };
 
   const handleRowClick = (applicant) => {
-    navigate(`/PatientForm/${applicant.studentIdNumber}`, { state: { applicant } });
+    navigate(`/CheckupForm/${applicant.studentIdNumber}`, { state: { applicant } });
   };
 
   // This prevents navigation to the CheckupForm when clicking the "Done" button
@@ -108,42 +108,26 @@ const PatientList = () => {
     event.stopPropagation(); // Prevents row click event
     setSelectedApplicantId(applicantId);  // Store the applicant ID to be deleted
     setOpenConfirmDialog(true);  
-    handleDeleteEvent();
   };
 
   const handleDelete = () => {
-    console.log('Attempting to completed applicant ID:', selectedApplicantId);
-  
-    fetch(`http://localhost:8080/api/completed-appointments/move/${selectedApplicantId}`, {
-      method: 'POST',
+    fetch(`http://localhost:8080/api/patients/${selectedApplicantId}`, {
+      method: 'DELETE',
     })
       .then((response) => {
         if (response.ok) {
-          console.log('Successfully moved to Completed Appointments History');
-  
-          return fetch(`http://localhost:8080/api/patients/${selectedApplicantId}`, {
-            method: 'DELETE',
-          });
-        } else {
-          throw new Error('Failed to move to Completed Appointments History');
-        }
-      })
-      .then((response) => {
-        if (response.ok) {
           console.log('Patient deleted successfully');
-          navigate('/patientlist');
-  
-          if (typeof setApplicants === 'function') {
-            setApplicants((prevApplicants) =>
-              prevApplicants.filter((applicant) => applicant.id !== selectedApplicantId)
-            );
-          }
+          
+          // Remove patient from the local state after deletion
+          setApplicants((prevApplicants) =>
+            prevApplicants.filter((applicant) => applicant.id !== selectedApplicantId)
+          );
         } else {
           console.error('Failed to delete patient:', response);
         }
       })
       .catch((error) => {
-        console.error('Error:', error);
+        console.error('Error completing patient:', error);
       })
       .finally(() => {
         setOpenConfirmDialog(false); 
@@ -152,24 +136,6 @@ const PatientList = () => {
 
   const handleCloseConfirmDialog = () => {
     setOpenConfirmDialog(false);  
-  };
-
-  const handleDeleteEvent = () => {
-    if (selectedApplicantId) {
-      fetch(`http://localhost:8080/api/events/${selectedApplicantId}`, {
-        method: 'DELETE',
-      })
-        .then((eventResponse) => {
-          if (eventResponse.ok) {
-            console.log('Event deleted successfully');
-          } else {
-            console.error('Failed to delete event:', eventResponse);
-          }
-        })
-        .catch((error) => {
-          console.error('Error deleting event:', error);
-        });
-    }
   };
 
   return (
@@ -188,7 +154,7 @@ const PatientList = () => {
         >
           Patients
         </Typography>
-        <DocNavBar />
+        <StaffNavBar />
       </Box>
 
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3} width="100%">
@@ -276,8 +242,8 @@ const PatientList = () => {
               <TableCell style={{ paddingLeft: 15, fontSize: '16px' }}>{applicant.fullName}</TableCell>
               <TableCell style={{ paddingLeft: 30, fontSize: '16px' }}>{applicant.program}</TableCell>
               <TableCell style={{ paddingLeft: 70, fontSize: '16px' }}>{applicant.yearLevel}</TableCell>
-              <TableCell style={{ paddingLeft: 20, fontSize: '16px' }}>
-                {applicant.date} <strong>&emsp;&emsp;{applicant.time}</strong>
+              <TableCell style={{ paddingLeft: 25, fontSize: '16px' }}>
+                {applicant.date} <strong>{applicant.time}</strong>
               </TableCell>
                 <TableCell>
                   <Button
@@ -319,7 +285,7 @@ const PatientList = () => {
   );
 };
 
-const Patients = () => {
+const StaffPatients = () => {
   const [applicants, setApplicants] = useState([]);
 
   useEffect(() => {
@@ -339,10 +305,10 @@ const Patients = () => {
     <ApplicantsContext.Provider value={{ applicants, setApplicants }}>
       <Box sx={{ display: 'flex', minHeight: '100vh' }}>
         <Sidebar /> 
-        <PatientList />
+        <StaffPatientList />
       </Box>
     </ApplicantsContext.Provider>
   );
 };
 
-export default Patients;
+export default StaffPatients;
