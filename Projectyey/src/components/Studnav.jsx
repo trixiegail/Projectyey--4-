@@ -6,7 +6,6 @@ import {
   MenuItem,
   MenuList,
   Typography,
-  Button,
 } from "@material-tailwind/react";
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useEffect, useState, useRef } from "react";
@@ -21,12 +20,12 @@ import StudentProtectedRoute from './StudentProtectedRoute';
 
 export function Studnav() {
   const [isToggleOpen, setIsToggleOpen] = useState(false);
-  const [isNotificationOpen, setIsNotificationOpen] = useState(false); // State for managing notification dropdown visibility
-  const [notifications, setNotifications] = useState([]); // State to store notifications
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false); 
+  const [notifications, setNotifications] = useState([]); 
   const location = useLocation();
   const [studentName, setStudentName] = useState('Sign in');
   const navigate = useNavigate();
-  const notificationRef = useRef(null); // To handle closing the dropdown when clicking outside
+  const notificationRef = useRef(null); 
 
   useEffect(() => {
     const storedName = localStorage.getItem('studentName');
@@ -34,7 +33,6 @@ export function Studnav() {
       setStudentName(storedName);
     }
 
-    // Simulating fetching notifications from an API
     const fetchNotifications = () => {
       const exampleNotifications = [
         { id: 1, date: '2024-10-22', summary: 'New message from Dr. Smith', details: 'You have a dental checkup scheduled.' },
@@ -44,7 +42,7 @@ export function Studnav() {
       setNotifications(exampleNotifications);
     };
 
-    fetchNotifications(); // Simulate fetching notifications
+    fetchNotifications(); 
   }, []);
 
   const handleLogout = () => {
@@ -59,10 +57,9 @@ export function Studnav() {
   };
 
   const toggleNotification = () => {
-    setIsNotificationOpen((prev) => !prev); // Toggle notification dropdown
+    setIsNotificationOpen((prev) => !prev); 
   };
 
-  // Close dropdown when clicked outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (notificationRef.current && !notificationRef.current.contains(event.target)) {
@@ -101,90 +98,29 @@ export function Studnav() {
             </a>
 
             <div>
-              {/* Navigation */}
               <nav className="items-center justify-center hidden lg:flex space-x-8">
-                <Link to="/home" className="text-gray-700 hover:text-black">
-                  Home
-                </Link>
-                <Link to="/aboutus" className="text-gray-700 hover:text-black">
-                  About Us
-                </Link>
-                <Link to="/services" className="text-gray-700 hover:text-black">
-                  Services
-                </Link>
-                <Link to="/student-calendar" className="text-gray-700 hover:text-black">
-                  Book now
-                </Link>
-                <Link to="/contact" className="text-gray-700 hover:text-black">
-                  Contact Us
-                </Link>
+                <Link to="/home" className="text-gray-700">Home</Link>
+                <Link to="/aboutus" className="text-gray-700">About Us</Link>
+                <Link to="/services" className="text-gray-700">Services</Link>
+                <Link to="/student-calendar" className="text-gray-700">Book now</Link>
+                <Link to="/contact" className="text-gray-700">Contact Us</Link>
               </nav>
 
-              {/* Route transitions */}
               <AnimatePresence mode="wait">
                 <Routes location={location} key={location.pathname}>
-                  <Route
-                    path="/home"
-                    element={
-                      <StudentProtectedRoute>
-                        <PageWrapper>
-                          <Home />
-                        </PageWrapper>
-                      </StudentProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/aboutus"
-                    element={
-                      <StudentProtectedRoute>
-                        <PageWrapper>
-                          <AboutUs />
-                        </PageWrapper>
-                      </StudentProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/services"
-                    element={
-                      <StudentProtectedRoute>
-                        <PageWrapper>
-                          <Services />
-                        </PageWrapper>
-                      </StudentProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/student-calendar"
-                    element={
-                      <StudentProtectedRoute>
-                        <PageWrapper>
-                          <StudentCalendar />
-                        </PageWrapper>
-                      </StudentProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/contact"
-                    element={
-                      <StudentProtectedRoute>
-                        <PageWrapper>
-                          <Contact />
-                        </PageWrapper>
-                      </StudentProtectedRoute>
-                    }
-                  />
+                  <Route path="/home" element={<StudentProtectedRoute><PageWrapper><Home /></PageWrapper></StudentProtectedRoute>} />
+                  <Route path="/aboutus" element={<StudentProtectedRoute><PageWrapper><AboutUs /></PageWrapper></StudentProtectedRoute>} />
+                  <Route path="/services" element={<StudentProtectedRoute><PageWrapper><Services /></PageWrapper></StudentProtectedRoute>} />
+                  <Route path="/student-calendar" element={<StudentProtectedRoute><PageWrapper><StudentCalendar /></PageWrapper></StudentProtectedRoute>} />
+                  <Route path="/contact" element={<StudentProtectedRoute><PageWrapper><Contact /></PageWrapper></StudentProtectedRoute>} />
                   <Route path="/login-student" element={<PageWrapper><LoginStudent /></PageWrapper>} />
                 </Routes>
               </AnimatePresence>
             </div>
 
-            {/* Right side with Notification and Avatar */}
             <div className="flex items-center space-x-4">
-              {/* Notification Icon */}
               <div className="relative" ref={notificationRef}>
-                <BellIcon className="h-6 w-6 text-gray-800 hover:text-black cursor-pointer" onClick={toggleNotification} />
-                
-                {/* Notification Dropdown */}
+                <BellIcon className="h-6 w-6 text-gray-800 cursor-pointer" onClick={toggleNotification} />
                 {isNotificationOpen && (
                   <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-300 rounded-lg shadow-lg z-50">
                     <div className="p-2">
@@ -192,7 +128,7 @@ export function Studnav() {
                       <ul className="space-y-2">
                         {notifications.length > 0 ? (
                           notifications.map((notification) => (
-                            <li key={notification.id} className="border p-2 rounded cursor-pointer hover:bg-gray-100">
+                            <li key={notification.id} className="border p-2 rounded cursor-pointer">
                               <div className="flex justify-between">
                                 <span>{notification.summary}</span>
                                 <span className="text-xs text-gray-500">{notification.date}</span>
@@ -208,68 +144,40 @@ export function Studnav() {
                 )}
               </div>
 
-              {/* Avatar and Menu */}
               {studentName === 'Sign in' ? (
                 <div className="flex items-center space-x-2 cursor-pointer" onClick={handleAvatarClick}>
-                  <Avatar
-                    variant="circular"
-                    alt="student avatar"
-                    src="src/image/student.png"
-                  />
-                  <Typography variant="h6" className="font-medium text-gray-800">
-                    {studentName}
-                  </Typography>
+                  <Avatar variant="circular" alt="student avatar" src="src/image/student.png" />
+                  <Typography variant="h6" className="font-medium text-gray-800">{studentName}</Typography>
                 </div>
               ) : (
                 <Menu className="shadow-2xl">
                   <MenuHandler>
                     <div className="flex items-center space-x-2 cursor-pointer">
-                      <Avatar
-                        variant="circular"
-                        alt="student avatar"
-                        src="src/image/student.png"
-                      />
-                      <Typography variant="h6" className="font-medium text-black">
-                        {studentName}
-                      </Typography>
+                      <Avatar variant="circular" alt="student avatar" src="src/image/student.png" />
+                      <Typography variant="h6" className="font-medium text-black">{studentName}</Typography>
                     </div>
                   </MenuHandler>
 
-                  <MenuList>
-                    <MenuItem>
-                      <a
-                        href="/student-profile"
-                        className="text-white hover:text-[rgb(136,52,59)] transition-colors duration-300"
-                      >
-                        My Profile
-                      </a>
+                  <MenuList className="bg-[rgb(136,52,59)]">
+                    <MenuItem className="bg-[rgb(136,52,59)] hover:bg-gradient-to-b from-[#F0E1A6] !hover:text-black">
+                      <a href="/student-profile" className="text-white">My Profile</a>
                     </MenuItem>
-                    <MenuItem>
-                      <a
-                        href="/contact"
-                        className="font-medium text-white hover:text-[rgb(136,52,59)] transition-colors duration-300"
-                      >
-                        Help
-                      </a>
+                    <MenuItem className="bg-[rgb(136,52,59)] hover:bg-gradient-to-b from-[#F0E1A6] !hover:text-black">
+                      <a href="/settings" className="text-white">Settings</a>
+                    </MenuItem>
+                    <MenuItem className="bg-[rgb(136,52,59)] hover:bg-gradient-to-b from-[#F0E1A6] !hover:text-black">
+                      <a href="/contact" className="font-medium text-white">Help</a>
                     </MenuItem>
                     <hr className="my-2 bg-[#F7C301]" />
-                    <MenuItem onClick={handleLogout}>
-                      <Typography
-                        variant="small"
-                        className="font-medium text-white hover:text-[rgb(136,52,59)] transition-colors duration-300"
-                      >
-                        Sign Out
-                      </Typography>
+                    <MenuItem className="bg-[rgb(136,52,59)] hover:bg-gradient-to-b from-[#F0E1A6] !hover:text-black" onClick={handleLogout}>
+                      <Typography variant="small" className="font-medium text-white">Sign Out</Typography>
                     </MenuItem>
                   </MenuList>
                 </Menu>
               )}
             </div>
 
-            <button
-              className="lg:hidden flex items-center px-3 py-2 border rounded"
-              onClick={() => setIsToggleOpen(!isToggleOpen)}
-            >
+            <button className="lg:hidden flex items-center px-3 py-2 border rounded" onClick={() => setIsToggleOpen(!isToggleOpen)}>
               {isToggleOpen ? <XMarkIcon className="h-6 w-6" /> : <Bars3Icon className="h-6 w-6" />}
             </button>
           </div>
@@ -280,12 +188,7 @@ export function Studnav() {
 }
 
 const PageWrapper = ({ children }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, y: -20 }}
-    transition={{ duration: 0.5, ease: 'easeInOut' }}
-  >
+  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.5, ease: 'easeInOut' }}>
     {children}
   </motion.div>
 );

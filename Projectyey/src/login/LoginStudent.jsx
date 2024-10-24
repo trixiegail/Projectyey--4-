@@ -70,7 +70,7 @@ const LoginStudent = () => {
             />
           </div>
           <div className="mb-6">
-            <p className="text-sm font-medium text-[#fff]">Forgot your password? <Link to="/change-password">Click here</Link></p>
+            <p className="text-sm font-medium text-[#fff]">Forgot your password? <Link to="/forgot-password">Click here</Link></p>
           </div>
           <button
             type="submit"

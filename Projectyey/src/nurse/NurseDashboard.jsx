@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Nav from '../components/NavNurseDentist';
 import { Box, Grid, Card, Typography, Button, TextField, IconButton, List, ListItem, Avatar } from '@mui/material';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
-import DashboardIcon from '@mui/icons-material/Dashboard';
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
- 
+
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF1493', '#6A5ACD'];
 
 const NurseDashboard = () => {
@@ -56,7 +55,7 @@ const NurseDashboard = () => {
 
   return (
     <>
-      <Nav />    
+      <Nav />
       <Box sx={{ display: 'flex' }}>
         <Box sx={{ flexGrow: 1, p: 3 }}>
           {/* Header */}
@@ -108,22 +107,24 @@ const NurseDashboard = () => {
               <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>Appointments Statistics (Patients per Year)</Typography>
               <Card sx={{ p: 3, mb: 3 }}>
                 <Box sx={{ textAlign: 'center', mb: 2 }}>
-                  <LineChart width={500} height={300} data={patientData.patientsPerYear} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="year" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Line type="monotone" dataKey="patients" stroke="#8884d8" />
-                  </LineChart>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={patientData.patientsPerYear}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="year" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Line type="monotone" dataKey="patients" stroke="#8884d8" />
+                    </LineChart>
+                  </ResponsiveContainer>
                 </Box>
               </Card>
 
-              {/* Patient Categories with Pie Chart and Counters Side by Side */}
+              {/* Patient Categories with Pie Chart and Counters */}
               <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>Patients with Medical Conditions</Typography>
               <Card sx={{ p: 3, mb: 3 }}>
                 <Grid container spacing={2}>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} md={6}>
                     {/* Patient Counters */}
                     <Grid container spacing={2}>
                       <Grid item xs={6}>
@@ -153,26 +154,26 @@ const NurseDashboard = () => {
                     </Grid>
                   </Grid>
 
-                  <Grid item xs={6}>
-                    {/* Pie Chart */}
-                    <PieChart width={400} height={400}>
-                      <Pie
-                        data={pieData}
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={120}
-                        fill="#8884d8"
-                        dataKey="value"
-                        label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`} // Custom label format
-                        labelStyle={{ fill: 'black' }} // Set label text color to black
-                      >
-                        {pieData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                      <Legend />
-                    </PieChart>
+                  <Grid item xs={12} md={6}>
+                    {/* Responsive Pie Chart */}
+                    <ResponsiveContainer width="100%" height={300}>
+                      <PieChart>
+                        <Pie
+                          data={pieData}
+                          cx="50%"
+                          cy="50%"
+                          outerRadius="80%"
+                          fill="#8884d8"
+                          dataKey="value"
+                        >
+                          {pieData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                        <Legend />
+                      </PieChart>
+                    </ResponsiveContainer>
                   </Grid>
                 </Grid>
               </Card>
@@ -182,18 +183,8 @@ const NurseDashboard = () => {
             <Grid item xs={12} md={4}>
               <Card sx={{ p: 2, mb: 3 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 1 }}>
-                  <Button
-                    variant="contained"
-                    sx={{ flex: 1, backgroundColor: '#1976d2' }}
-                  >
-                    Make an Appointment
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    sx={{ flex: 1 }}
-                  >
-                    Add Patient
-                  </Button>
+                  <Button variant="contained" sx={{ flex: 1, backgroundColor: '#1976d2' }}>Make an Appointment</Button>
+                  <Button variant="outlined" sx={{ flex: 1 }}>Add Patient</Button>
                 </Box>
               </Card>
 

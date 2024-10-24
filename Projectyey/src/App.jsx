@@ -61,6 +61,8 @@ import Patients from './doctor/Patients';
 import { PatientsContext } from './doctor/PatientsContext';
 import { PatientsProvider } from './doctor/PatientsContext';
 import StudentProfile from "@/userpages/studentprofile.jsx";
+import ChangePassword from './login/ChangePassword';
+// import ForgotPassword from './login/ForgotPassword';
 
 
 export default function App() {
@@ -147,8 +149,9 @@ export default function App() {
             <Route path="/login-nurse" exact element={<LoginNurse />} />
             <Route path="/login-admin" exact element={<LoginAdmin />} />
             <Route path="/login-doctor" exact element={<LoginDoctor />} />
-            <Route path="/change-password" exact element={<ForgotPassword />} />
-            
+            <Route path="/change-password" exact element={<ChangePassword />} />
+            <Route path="/forgot-password" exact element={<ForgotPassword />} />
+
             
             
             {/* Booking Page */}
