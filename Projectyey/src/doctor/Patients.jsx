@@ -100,7 +100,7 @@ const PatientList = () => {
   };
 
   const handleRowClick = (applicant) => {
-    navigate(`/CheckupForm/${applicant.studentIdNumber}`, { state: { applicant } });
+    navigate(`/PatientForm/${applicant.studentIdNumber}`, { state: { applicant } });
   };
 
   // This prevents navigation to the CheckupForm when clicking the "Done" button
@@ -108,26 +108,42 @@ const PatientList = () => {
     event.stopPropagation(); // Prevents row click event
     setSelectedApplicantId(applicantId);  // Store the applicant ID to be deleted
     setOpenConfirmDialog(true);  
+    handleDeleteEvent();
   };
 
   const handleDelete = () => {
-    fetch(`http://localhost:8080/api/patients/${selectedApplicantId}`, {
-      method: 'DELETE',
+    console.log('Attempting to completed applicant ID:', selectedApplicantId);
+  
+    fetch(`http://localhost:8080/api/completed-appointments/move/${selectedApplicantId}`, {
+      method: 'POST',
     })
       .then((response) => {
         if (response.ok) {
+          console.log('Successfully moved to Completed Appointments History');
+  
+          return fetch(`http://localhost:8080/api/patients/${selectedApplicantId}`, {
+            method: 'DELETE',
+          });
+        } else {
+          throw new Error('Failed to move to Completed Appointments History');
+        }
+      })
+      .then((response) => {
+        if (response.ok) {
           console.log('Patient deleted successfully');
-          
-          // Remove patient from the local state after deletion
-          setApplicants((prevApplicants) =>
-            prevApplicants.filter((applicant) => applicant.id !== selectedApplicantId)
-          );
+          navigate('/patientlist');
+  
+          if (typeof setApplicants === 'function') {
+            setApplicants((prevApplicants) =>
+              prevApplicants.filter((applicant) => applicant.id !== selectedApplicantId)
+            );
+          }
         } else {
           console.error('Failed to delete patient:', response);
         }
       })
       .catch((error) => {
-        console.error('Error completing patient:', error);
+        console.error('Error:', error);
       })
       .finally(() => {
         setOpenConfirmDialog(false); 
@@ -136,6 +152,24 @@ const PatientList = () => {
 
   const handleCloseConfirmDialog = () => {
     setOpenConfirmDialog(false);  
+  };
+
+  const handleDeleteEvent = () => {
+    if (selectedApplicantId) {
+      fetch(`http://localhost:8080/api/events/${selectedApplicantId}`, {
+        method: 'DELETE',
+      })
+        .then((eventResponse) => {
+          if (eventResponse.ok) {
+            console.log('Event deleted successfully');
+          } else {
+            console.error('Failed to delete event:', eventResponse);
+          }
+        })
+        .catch((error) => {
+          console.error('Error deleting event:', error);
+        });
+    }
   };
 
   return (
@@ -242,8 +276,8 @@ const PatientList = () => {
               <TableCell style={{ paddingLeft: 15, fontSize: '16px' }}>{applicant.fullName}</TableCell>
               <TableCell style={{ paddingLeft: 30, fontSize: '16px' }}>{applicant.program}</TableCell>
               <TableCell style={{ paddingLeft: 70, fontSize: '16px' }}>{applicant.yearLevel}</TableCell>
-              <TableCell style={{ paddingLeft: 25, fontSize: '16px' }}>
-                {applicant.date} <strong>{applicant.time}</strong>
+              <TableCell style={{ paddingLeft: 20, fontSize: '16px' }}>
+                {applicant.date} <strong>&emsp;&emsp;{applicant.time}</strong>
               </TableCell>
                 <TableCell>
                   <Button

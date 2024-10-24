@@ -512,7 +512,6 @@ const eventStyleGetter = (event, start, end, isSelected) => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      whiteSpace: 'nowrap',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       marginBottom:'1px',

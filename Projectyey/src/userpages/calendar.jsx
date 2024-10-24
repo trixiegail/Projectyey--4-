@@ -187,8 +187,8 @@ const App = () => {
     if (!successModalOpen) return null;
 
     return ReactDOM.createPortal(
-      <div className="fixed inset-0 z-30 flex items-center justify-center overflow-y-auto text-black bg-black bg-opacity-50">
-        <div ref={wrapperRef} style={{ ...modalStyles.content, padding: '20px' }}>
+      <div className="fixed inset-0 z-30 flex items-center justify-center overflow-y-auto text-black bg-black bg-opacity-50 " >
+        <div ref={wrapperRef} className="bg-white py-10 px-10 rounded-xl">
           <h2 className="text-xl font-bold text-center">Yeyy Reservation Successful!</h2>
           <div className="flex justify-center space-x-4 mt-4">
             <Button variant="contained" style={{ backgroundColor: '#F7C301' }} onClick={closeSuccessModal}>
@@ -247,7 +247,6 @@ const App = () => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      whiteSpace: 'nowrap',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       marginBottom:'1px',
@@ -280,8 +279,8 @@ const App = () => {
     if (!limitModalOpen) return null;
   
     return ReactDOM.createPortal(
-      <div className="fixed inset-0 z-30 flex items-center justify-center overflow-y-auto text-black bg-black bg-opacity-50">
-        <div ref={wrapperRef} style={{ ...modalStyles.content, padding: '20px' }}>
+      <div className="fixed inset-0 z-30 flex items-center justify-center overflow-y-auto text-black bg-black bg-opacity-50 " >
+        <div ref={wrapperRef} className="bg-white py-10 px-10 rounded-xl">
           <h2 className="text-xl font-bold text-center">Reservation Limit Reached</h2>
           <p className="mt-2 text-center">You are limited to 1 available reservation slot only!</p>
           <div className="flex justify-center space-x-4 mt-4">

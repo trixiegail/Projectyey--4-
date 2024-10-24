@@ -64,7 +64,9 @@ import { PatientsProvider } from './doctor/PatientsContext';
 import StaffPatients from './staff/StaffPatients';
 import { StaffPatientsProvider } from './staff/StaffPatientsContext';
 import StudentProfile from "@/userpages/studentprofile.jsx";
-
+import DeclinedAppointments from './doctor/DeclinedAppointments';
+import PatientForm from './pages/PatientForm';
+import CompletedAppointments from './doctor/CompletedAppointments';
 
 export default function App() {
   // State to manage events
@@ -122,6 +124,7 @@ export default function App() {
             
 
             <Route path="/CheckupForm/:studentIdNumber" exact element={<ChckupForm />} />
+            <Route path="/PatientForm/:studentIdNumber" exact element={<PatientForm />} />
             <Route path='/checkupform' exact element={<ChckupForm />} />
             
             {/* Doctor */}
@@ -135,6 +138,8 @@ export default function App() {
             <Route path='/docforms' exact element={<DocForms />} />
             <Route path='/docsettings' exact element={<DocSettings />} />
             <Route path='/patientlist' exact element={<Patients />} />
+            <Route path="/declined-appointments" element={<DeclinedAppointments />} />
+            <Route path="/completed-appointments" element={<CompletedAppointments />} />
             </Route>
 
             {/* Staff */}
@@ -143,7 +148,7 @@ export default function App() {
             <Route path='/stafflist' exact element={<StaffList />} />
             <Route path='/staffforms' exact element={<StaffForms />} />
             <Route path='/staffsettings' exact element={<StaffSettings />} />
-            <Route path='/staffpatientlist' exact element={<StaffPatients />} />
+            
 
             {/* Login */}
             <Route path="/login-student" exact element={<LoginStudent />} />

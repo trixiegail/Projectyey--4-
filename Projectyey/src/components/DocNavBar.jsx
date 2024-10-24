@@ -10,7 +10,7 @@ const DocNavBar = () => {
 
   return (
     <Box sx={{ display: 'flex', padding: 1, justifyContent: 'flex-end', width: '100%' }}>
-      <TextField
+      {/* <TextField
         variant="outlined"
         placeholder="Search Here"
         size="small"
@@ -22,7 +22,7 @@ const DocNavBar = () => {
           ),
         }}
         sx={{ marginRight: 2, width: '20%' }}
-      />
+      /> */}
       <IconButton>
         <NotificationsIcon />
       </IconButton>
