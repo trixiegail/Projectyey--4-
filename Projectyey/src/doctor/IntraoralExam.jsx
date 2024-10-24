@@ -624,7 +624,6 @@ const IntraoralExamination = () => {
   },
   button: {
     backgroundColor: '#88343b',
-    color: 'white',
     padding: '10px',
     border: 'none',
     borderRadius: '4px',

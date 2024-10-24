@@ -10,6 +10,7 @@ const DocNavBar = () => {
     const [notifications, setNotifications] = useState([]);
     const [profilePicture, setProfilePicture] = useState('');
 
+<<<<<<< HEAD
     // Fetch profile picture on component mount
     useEffect(() => {
         const fetchProfilePicture = async () => {
@@ -61,6 +62,32 @@ const DocNavBar = () => {
                     </Typography>
                 </Box>
             </Box>
+=======
+  return (
+    <Box sx={{ display: 'flex', padding: 1, justifyContent: 'flex-end', width: '100%' }}>
+      {/* <TextField
+        variant="outlined"
+        placeholder="Search Here"
+        size="small"
+        InputProps={{
+          endAdornment: (
+            <IconButton>
+              <SearchIcon />
+            </IconButton>
+          ),
+        }}
+        sx={{ marginRight: 2, width: '20%' }}
+      /> */}
+      <IconButton>
+        <NotificationsIcon />
+      </IconButton>
+      <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 2 }}>
+        <Avatar sx={{ width: 40, height: 40, marginRight: 1 }} />
+        <Box>
+          <Typography variant="body1">
+            Dr. {doctor ? `${doctor.firstname} ${doctor.lastname}` : 'Guest'}
+          </Typography>
+>>>>>>> cad00321828b4c35c6dbb19a0af1ed73515d07b3
         </Box>
     );
 };

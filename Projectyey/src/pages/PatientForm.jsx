@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation , useNavigate  } from 'react-router-dom';
 import { 
-  Box, Button, Collapse, Card, CardContent, CardActions, TextField, Typography, Drawer, 
+  Box, Button, Collapse, Card, CardContent, CardActions, TextField, Typography, Drawer, DialogContentText, 
   Tabs, Tab, List, ListItem, ListItemText, Grid, Dialog, DialogTitle, DialogContent, DialogActions 
 } from '@mui/material';
 import Sidebar from '../components/DocSidebar';
 import DocNavBar from '../components/DocNavBar';
 
 
-const MedicalForm = () => {
+const PatientForm = () => {
   const [showForm, setShowForm] = useState(false);
   const location = useLocation();
   const applicant = location.state?.applicant || {};
+  const navigate = useNavigate();
 
   const [formValues, setFormValues] = useState({
     bloodPressure: '',
@@ -23,16 +24,6 @@ const MedicalForm = () => {
     gumHealth: '',
     generalHealthCondition: '',
     specificHealthConcerns: ''
-  });
-
-  const [formData, setFormData] = useState({
-    fullName: '',
-    idNumber: '',
-    department: '',
-    course: '',
-    year: '',
-    dateOfBirth: '',
-    email: ''
   });
 
   const resetForm = () => {
@@ -48,6 +39,17 @@ const MedicalForm = () => {
       specificHealthConcerns: ''
     });
   };
+  
+
+  const [formData, setFormData] = useState({
+    fullName: '',
+    idNumber: '',
+    department: '',
+    course: '',
+    year: '',
+    dateOfBirth: '',
+    email: ''
+  });
 
   const [medicalRecords, setMedicalRecords] = useState([]); 
   const [selectedRecord, setSelectedRecord] = useState(null); 
@@ -56,7 +58,10 @@ const MedicalForm = () => {
   const [activeTab, setActiveTab] = useState('checkup'); 
   const [showIncompleteFieldsDialog, setShowIncompleteFieldsDialog] = useState(false);
   const [openSuccessModal, setOpenSuccessModal] = useState(false);
-  const [openConfirmModal, setOpenConfirmModal] = useState(false); // State for confirmation modal
+  const [openConfirmModal, setOpenConfirmModal] = useState(false); 
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+  const [selectedApplicantId, setSelectedApplicantId] = useState(null);
+  const [applicants, setApplicants] = useState([]);
 
   const handleCloseSuccessModal = () => {
     setOpenSuccessModal(false);
@@ -183,6 +188,77 @@ const MedicalForm = () => {
     setSelectedRecord(record);
   };
 
+  const handleDone = (event, applicantId) => {
+    event.stopPropagation(); // Prevents row click event
+    setSelectedApplicantId(applicantId);  // Store the applicant ID to be deleted
+    setOpenConfirmDialog(true);  
+    handleDeleteEvent();
+
+  };
+
+  const handleDeleteEvent = () => {
+    if (selectedApplicantId) {
+      fetch(`http://localhost:8080/api/events/${selectedApplicantId}`, {
+        method: 'DELETE',
+      })
+        .then((eventResponse) => {
+          if (eventResponse.ok) {
+            console.log('Event deleted successfully');
+          } else {
+            console.error('Failed to delete event:', eventResponse);
+          }
+        })
+        .catch((error) => {
+          console.error('Error deleting event:', error);
+        });
+    }
+  };
+
+  const handleCloseConfirmDialog = () => {
+    setOpenConfirmDialog(false);  
+  };
+
+  const handleDelete = () => {
+    console.log('Attempting to completed applicant ID:', selectedApplicantId);
+  
+    fetch(`http://localhost:8080/api/completed-appointments/move/${selectedApplicantId}`, {
+      method: 'POST',
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log('Successfully moved to Completed Appointments History');
+  
+          return fetch(`http://localhost:8080/api/patients/${selectedApplicantId}`, {
+            method: 'DELETE',
+          });
+        } else {
+          throw new Error('Failed to move to Completed Appointments History');
+        }
+      })
+      .then((response) => {
+        if (response.ok) {
+          console.log('Patient deleted successfully');
+          navigate('/patientlist');
+  
+          // Update local state by removing the deleted applicant
+          if (typeof setApplicants === 'function') {
+            setApplicants((prevApplicants) =>
+              prevApplicants.filter((applicant) => applicant.id !== selectedApplicantId)
+            );
+          }
+        } else {
+          console.error('Failed to delete patient:', response);
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      })
+      .finally(() => {
+        setOpenConfirmDialog(false); 
+      });
+  };
+  
+
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh'}}>
       <Sidebar /> 
@@ -216,14 +292,35 @@ const MedicalForm = () => {
         <br/>
 
         {/* Buttons to toggle form and records */}
-        <Box sx={{ display: 'flex', gap: 2 }}>
-          <Button variant="contained" sx={{ backgroundColor: '#a52a2a', '&:hover': { backgroundColor: '#F7C301' }}} onClick={() => setShowForm(!showForm)}>
-            Check Student
-          </Button>
-          <Button variant="contained" sx={{ backgroundColor: '#a52a2a', '&:hover': { backgroundColor: '#F7C301' }}} onClick={handleMedicalRecords}>
-            Medical Records
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+          {/* Left-aligned buttons */}
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <Button 
+              variant="contained" 
+              sx={{ backgroundColor: '#a52a2a', '&:hover': { backgroundColor: '#F7C301' }}} 
+              onClick={() => setShowForm(!showForm)}
+            >
+              Check Student
+            </Button>
+            <Button 
+              variant="contained" 
+              sx={{ backgroundColor: '#a52a2a', '&:hover': { backgroundColor: '#F7C301' }}} 
+              onClick={handleMedicalRecords}
+            >
+              Medical Records
+            </Button>
+          </Box>
+
+          {/* Right-aligned Done button */}
+          <Button   
+            variant="contained"
+            onClick={(event) => handleDone(event, applicant.id)}
+            style={{ backgroundColor: '#90242c', color: '#FFFFFF' }}
+          >
+            Done
           </Button>
         </Box>
+
 
         {/* Collapsible Checkup Form */}
         <Collapse in={showForm} unmountOnExit>
@@ -352,8 +449,30 @@ const MedicalForm = () => {
           </DialogActions>
         </Dialog>
       </Box>
+
+        {/* Confirmation Dialog */}
+        <Dialog
+          open={openConfirmDialog}
+          onClose={handleCloseConfirmDialog}
+        >
+          <DialogTitle>{"Complete Patient"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to mark this patient as Done?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseConfirmDialog} style={{ color: '#88343B' }}>
+              Cancel
+            </Button>
+            <Button onClick={handleDelete} style={{ color: '#cc9999' }} autoFocus>
+              Yes, Complete
+            </Button>
+          </DialogActions>
+        </Dialog>
+        
     </Box>
   );
 };
 
-export default MedicalForm;
+export default PatientForm;

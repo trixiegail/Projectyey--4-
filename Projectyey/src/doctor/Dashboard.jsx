@@ -3,7 +3,7 @@ import { Box, Grid, Card, Typography, Button, IconButton, Badge, List, ListItem,
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import PersonIcon from '@mui/icons-material/Person';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import Sidebar from '../components/DocSidebar';
 import DocNavBar from '../components/DocNavBar';
 
@@ -12,7 +12,7 @@ const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF1493', '#6A5ACD'
 const Dashboard = () => {
   const [notifications, setNotifications] = useState([]);
   const [patientData, setPatientData] = useState({
-    totalPatients: 150,
+    totalPatients: 10,
     withCavities: 40,
     withGumDisease: 30,
     withFilledTeeth: 20,
@@ -54,19 +54,19 @@ const Dashboard = () => {
     { name: 'Teeth Cleaning', value: patientData.services.teethCleaning },
     { name: 'Consultation', value: patientData.services.consultation },
   ];
-                    {/* Notification Icon with Badge */}
-                    {/*<IconButton color="inherit">*/}
-                    {/*    <Badge badgeContent={notifications.length} color="error">*/}
-                    {/*        <NotificationsIcon />*/}
-                    {/*    </Badge>*/}
-                    {/*</IconButton>*/}
+
+  const handleClearNotifications = () => {
+    setNotifications([]);
+    localStorage.setItem('doctorNotifications', JSON.stringify([]));
+  };
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       <Sidebar />
-      <Box sx={{ flexGrow: 1, p: 3 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-          <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#90343c' }}>
+      <Box sx={{ flexGrow: 1, p: { xs: 2, md: 3 } }}>
+        {/* Header */}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: { xs: 2, md: 3 } }}>
+          <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#90343c', fontSize: { xs: '1.5rem', md: '2rem' } }}>
             Dashboard
           </Typography>
           <IconButton color="inherit">
@@ -77,107 +77,60 @@ const Dashboard = () => {
           <DocNavBar />
         </Box>
 
+        {/* Statistic Cards */}
         <Grid container spacing={2} sx={{ mb: 3 }}>
-          <Grid item xs={12} sm={6} md={3}>
-            <Button
-              fullWidth
-              variant="contained"
-              sx={{
-                p: 2,
-                backgroundColor: '#8B232A',
-                color: '#FFFFFF',
-                textAlign: 'center',
-                '&:hover': { backgroundColor: '#6E1D22' }, // Darken on hover
-              }}
-              onClick={() => alert('Patients Today button clicked!')}
-            >
-              <Typography variant="subtitle1">Patients Today</Typography>
-              <Typography variant="h5">0</Typography>
-            </Button>
-          </Grid>
-
-          <Grid item xs={12} sm={6} md={3}>
-            <Button
-              fullWidth
-              variant="contained"
-              sx={{
-                p: 2,
-                backgroundColor: '#8B232A',
-                color: '#FFFFFF',
-                textAlign: 'center',
-                '&:hover': { backgroundColor: '#6E1D22' }, // Darken on hover
-              }}
-              onClick={() => alert('Total Patients button clicked!')}
-            >
-              <Typography variant="subtitle1">Total Patients</Typography>
-              <Typography variant="h5">{patientData.totalPatients}</Typography>
-            </Button>
-          </Grid>
-
-          <Grid item xs={12} sm={6} md={3}>
-            <Button
-              fullWidth
-              variant="contained"
-              sx={{
-                p: 2,
-                backgroundColor: '#8B232A',
-                color: '#FFFFFF',
-                textAlign: 'center',
-                '&:hover': { backgroundColor: '#6E1D22' }, // Darken on hover
-              }}
-              onClick={() => alert('For Recall button clicked!')}
-            >
-              <Typography variant="subtitle1">For Recall</Typography>
-              <Typography variant="h5">0</Typography>
-            </Button>
-          </Grid>
-
-          <Grid item xs={12} sm={6} md={3}>
-            <Button
-              fullWidth
-              variant="contained"
-              sx={{
-                p: 2,
-                backgroundColor: '#8B232A',
-                color: '#FFFFFF',
-                textAlign: 'center',
-                '&:hover': { backgroundColor: '#6E1D22' }, // Darken on hover
-              }}
-              onClick={() => alert('Requests button clicked!')}
-            >
-              <Typography variant="subtitle1">Requests</Typography>
-              <Typography variant="h5">0</Typography>
-            </Button>
-          </Grid>
+          {[
+            { label: 'Patients Today', value: 0 },
+            { label: 'Total Patients', value: patientData.totalPatients },
+            { label: 'For Recall', value: 0 },
+            { label: 'Requests', value: 0 },
+          ].map((stat, index) => (
+            <Grid item xs={12} sm={6} md={3} key={index}>
+              <Button
+                fullWidth
+                variant="contained"
+                sx={{
+                  p: 2,
+                  backgroundColor: '#8B232A',
+                  color: '#FFFFFF',
+                  textAlign: 'center',
+                  '&:hover': { backgroundColor: '#6E1D22' },
+                  fontSize: { xs: '0.875rem', md: '1rem' },
+                }}
+              >
+                <Typography variant="subtitle1">{stat.label}</Typography>
+                <Typography variant="h5">{stat.value}</Typography>
+              </Button>
+            </Grid>
+          ))}
         </Grid>
 
         {/* Main Content */}
         <Grid container spacing={2}>
-          {/* Appointments Statistics */}
+          {/* Appointments Statistics with Line Chart */}
           <Grid item xs={12} md={8}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
+            <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', fontSize: { xs: '1rem', md: '1.25rem' } }}>
               Appointments Statistics (Patients per Year)
             </Typography>
             <Card sx={{ p: 3, mb: 3 }}>
               <Box sx={{ textAlign: 'center', mb: 2 }}>
-                <LineChart
-                  width={500}
-                  height={300}
-                  data={patientData.patientsPerYear}
-                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="year" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Line type="monotone" dataKey="patients" stroke="#8884d8" />
-                </LineChart>
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={patientData.patientsPerYear} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="year" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line type="monotone" dataKey="patients" stroke="#8884d8" />
+                  </LineChart>
+                </ResponsiveContainer>
               </Box>
             </Card>
 
             {/* Patients with Dental Conditions */}
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>Patients with Dental Conditions</Typography>
+            <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', fontSize: { xs: '1rem', md: '1.25rem' } }}>
+              Patients with Dental Conditions
+            </Typography>
             <Grid container spacing={2}>
               <Grid item xs={12} md={6}>
                 {/* Counters for Patients with Dental Conditions */}
@@ -196,11 +149,11 @@ const Dashboard = () => {
                           p: 2,
                           textAlign: 'center',
                           boxShadow: 2,
-                          backgroundColor: '#FFFFFF', // White background
-                          transition: 'background-color 0.3s ease', // Smooth transition
+                          backgroundColor: '#FFFFFF',
+                          transition: 'background-color 0.3s ease',
                           '&:hover': {
-                            backgroundColor: 'rgb(139, 35, 42)', // Change color to maroon on hover
-                            color: '#FFFFFF', // Change text color to white
+                            backgroundColor: 'rgb(139, 35, 42)',
+                            color: '#FFFFFF',
                           },
                         }}
                       >
@@ -215,29 +168,33 @@ const Dashboard = () => {
               <Grid item xs={12} md={6}>
                 {/* Pie Chart for Patients with Dental Conditions */}
                 <Card sx={{ p: 3, mb: 3 }}>
-                  <PieChart width={400} height={400}>
-                    <Pie
-                      data={patientPieData}
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={120}
-                      fill="#8884d8"
-                      dataKey="value"
-                      label
-                    >
-                      {patientPieData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                    <Legend />
-                  </PieChart>
+                  <ResponsiveContainer width="100%" height={400}>
+                    <PieChart>
+                      <Pie
+                        data={patientPieData}
+                        cx="50%"
+                        cy="50%"
+                        outerRadius="80%"
+                        fill="#8884d8"
+                        dataKey="value"
+                        label
+                      >
+                        {patientPieData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
                 </Card>
               </Grid>
             </Grid>
 
             {/* Services Provided */}
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>Services Provided</Typography>
+            <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', fontSize: { xs: '1rem', md: '1.25rem' } }}>
+              Services Provided
+            </Typography>
             <Grid container spacing={2}>
               <Grid item xs={12} md={6}>
                 {/* Counters for Services */}
@@ -253,11 +210,11 @@ const Dashboard = () => {
                           p: 2,
                           textAlign: 'center',
                           boxShadow: 2,
-                          backgroundColor: '#FFFFFF', // White background
-                          transition: 'background-color 0.3s ease', // Smooth transition
+                          backgroundColor: '#FFFFFF',
+                          transition: 'background-color 0.3s ease',
                           '&:hover': {
-                            backgroundColor: 'rgb(139, 35, 42)', // Change color to maroon on hover
-                            color: '#FFFFFF', // Change text color to white
+                            backgroundColor: 'rgb(139, 35, 42)',
+                            color: '#FFFFFF',
                           },
                         }}
                       >
@@ -272,23 +229,25 @@ const Dashboard = () => {
               <Grid item xs={12} md={6}>
                 {/* Pie Chart for Services Provided */}
                 <Card sx={{ p: 3, mb: 3 }}>
-                  <PieChart width={400} height={400}>
-                    <Pie
-                      data={servicePieData}
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={120}
-                      fill="#8884d8"
-                      dataKey="value"
-                      label
-                    >
-                      {servicePieData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                    <Legend />
-                  </PieChart>
+                  <ResponsiveContainer width="100%" height={400}>
+                    <PieChart>
+                      <Pie
+                        data={servicePieData}
+                        cx="50%"
+                        cy="50%"
+                        outerRadius="80%"
+                        fill="#8884d8"
+                        dataKey="value"
+                        label
+                      >
+                        {servicePieData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
                 </Card>
               </Grid>
             </Grid>
@@ -298,7 +257,9 @@ const Dashboard = () => {
           <Grid item xs={12} md={4}>
             {/* Notifications Card */}
             <Card sx={{ p: 2, mb: 3 }}>
-              <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Notifications</Typography>
+              <Typography variant="h6" sx={{ fontWeight: 'bold', fontSize: { xs: '1rem', md: '1.25rem' } }}>
+                Notifications
+              </Typography>
               {notifications.length === 0 ? (
                 <Typography>No new notifications</Typography>
               ) : (
@@ -322,13 +283,17 @@ const Dashboard = () => {
 
             {/* Calendar Section */}
             <Card sx={{ p: 2, mb: 3 }}>
-              <Typography variant="h6" sx={{ fontWeight: 'bold' }}>October 2021</Typography>
+              <Typography variant="h6" sx={{ fontWeight: 'bold', fontSize: { xs: '1rem', md: '1.25rem' } }}>
+                October 2024
+              </Typography>
               <Typography variant="body2" color="textSecondary">[Calendar Placeholder]</Typography>
             </Card>
 
             {/* Upcoming Appointments */}
             <Card sx={{ p: 2, mb: 3 }}>
-              <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Upcoming Appointments</Typography>
+              <Typography variant="h6" sx={{ fontWeight: 'bold', fontSize: { xs: '1rem', md: '1.25rem' } }}>
+                Upcoming Appointments
+              </Typography>
               <List>
                 {['Mike Robin', 'Jane Black'].map((name, index) => (
                   <ListItem key={index} sx={{ display: 'flex', justifyContent: 'space-between', p: 1 }}>
@@ -348,7 +313,9 @@ const Dashboard = () => {
 
             {/* Tomorrow's Appointment */}
             <Card sx={{ p: 2 }}>
-              <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Tomorrow's Appointment</Typography>
+              <Typography variant="h6" sx={{ fontWeight: 'bold', fontSize: { xs: '1rem', md: '1.25rem' } }}>
+                Tomorrow's Appointment
+              </Typography>
               <List>
                 {['Baba Kaothat', 'Damilarie Usman', 'Nneka Chukwu', 'Desmond Tutu'].map((name, index) => (
                   <ListItem key={index} sx={{ display: 'flex', justifyContent: 'space-between', p: 1 }}>

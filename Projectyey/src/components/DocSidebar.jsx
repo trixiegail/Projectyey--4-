@@ -12,7 +12,8 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import DescriptionIcon from '@mui/icons-material/Description';
-import MailIcon from '@mui/icons-material/Mail';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -47,6 +48,11 @@ const Sidebar = () => {
     { text: 'Calendar', icon: <CalendarTodayIcon />, path: '/doccalendar' },
     { text: 'Applicants', icon: <EventAvailableIcon />, path: '/CheckupApplicantList' },
     { text: 'Forms', icon: <DescriptionIcon />, path: '/docforms' },
+  ];
+
+  const history = [
+    { text: 'Completed', icon: <CheckCircleIcon />, path: '/completed-appointments' },
+    { text: 'Declined', icon: <CancelIcon />, path: '/declined-appointments' },
     { text: 'Settings', icon: <SettingsIcon />, path: '/docsettings' },
   ];
 
@@ -136,6 +142,36 @@ const Sidebar = () => {
           </ListItem>
         ))}
       </List>
+
+      <Typography
+        variant="caption"
+        sx={{ p: 2, color: '#AAAAAA', textTransform: 'uppercase' }}
+      >
+        Appointement History
+      </Typography>
+
+      <List>
+        {history.map((item, index) => (
+          <ListItem
+            button
+            key={index}
+            component={Link}
+            to={item.path}
+            sx={{
+              '&:hover': {
+                backgroundColor: '#f8c404',
+                color: '#88343b',
+                '& .MuiListItemIcon-root': { color: '#88343b' },
+              },
+            }}
+          >
+            <ListItemIcon sx={{ color: '#FFFFFF' }}>{item.icon}</ListItemIcon>
+            <ListItemText primary={item.text} />
+          </ListItem>
+        ))}
+      </List>
+
+      
 
       <Divider sx={{ borderColor: '#f8c404', mt: 'auto' }} />
 

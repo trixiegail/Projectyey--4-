@@ -512,7 +512,6 @@ const eventStyleGetter = (event, start, end, isSelected) => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      whiteSpace: 'nowrap',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       marginBottom:'1px',
@@ -775,7 +774,6 @@ const handleDeleteEvent = (event) => {
                         variant="body1"
                         style={{
                           flex: 1,
-                          // whiteSpace: 'nowrap',
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
                         }}

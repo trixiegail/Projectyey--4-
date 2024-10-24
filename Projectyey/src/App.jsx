@@ -31,6 +31,7 @@ import Studinfo from "./pages/studinfo";
 import RgstrForCheckup from "./pages/RegisterForCheckup";
 import ChckupForm from "./pages/CheckupForm";
 import CheckupApplicantList from "./pages/CheckupApplicantList";
+import StaffCheckupApplicantList from "./staff/StaffCheckupApplicantList";
 import StudentMedicalHistory from "./pages/StudentMedicalHistory";
 import MedicalHistoryProvider from "./pages/MedicalHistoryProvider";
 import AfterLogin from "./pages/AfterLogin";
@@ -46,6 +47,7 @@ import IntraoralExamination from './doctor/IntraoralExam';
 import DocDashboard from './doctor/Dashboard';
 import BookingPage from './pages/BookingPage';
 import Sidebar from './components/DocSidebar';
+import StaffSidebar from './components/StaffSidebar';
 import NurseDashboard from './nurse/NurseDashboard';
 import DocCalendar from './doctor/DocCalendar';
 import FormManagement from './doctor/FormManagement';
@@ -59,13 +61,17 @@ import StaffForms from './staff/StaffForms';
 import StaffSettings from './staff/StaffSettings';
 import Patients from './doctor/Patients';
 import { PatientsContext } from './doctor/PatientsContext';
+import { StaffPatientsContext } from './staff/StaffPatientsContext';
 import { PatientsProvider } from './doctor/PatientsContext';
+import StaffPatients from './staff/StaffPatients';
+import { StaffPatientsProvider } from './staff/StaffPatientsContext';
 import StudentProfile from "@/userpages/studentprofile.jsx";
 import CreateDoctorAccount from "@/staffpages/CreateDoctorAccount.jsx";
 import CreateNurseAccount from "@/staffpages/CreateNurseAccount.jsx";
 import CreateStaffAccount from "@/staffpages/CreateStaffAccount.jsx";
 import StudentArchive from "@/staffpages/StudentArchive.jsx";
 import DoctorArchive from "@/staffpages/DoctorArchive.jsx";
+
 
 
 export default function App() {
@@ -84,6 +90,7 @@ export default function App() {
   return (
     <div>
       <PatientsProvider>
+      <StaffPatientsProvider>
       <BrowserRouter>
       <AuthProvider>
         <MedicalHistoryProvider>
@@ -127,6 +134,7 @@ export default function App() {
             
 
             <Route path="/CheckupForm/:studentIdNumber" exact element={<ChckupForm />} />
+            <Route path="/PatientForm/:studentIdNumber" exact element={<PatientForm />} />
             <Route path='/checkupform' exact element={<ChckupForm />} />
             
             {/* Doctor */}
@@ -140,6 +148,8 @@ export default function App() {
             <Route path='/docforms' exact element={<DocForms />} />
             <Route path='/docsettings' exact element={<DocSettings />} />
             <Route path='/patientlist' exact element={<Patients />} />
+            <Route path="/declined-appointments" element={<DeclinedAppointments />} />
+            <Route path="/completed-appointments" element={<CompletedAppointments />} />
             </Route>
 
             {/* Staff */}
@@ -148,6 +158,7 @@ export default function App() {
             <Route path='/stafflist' exact element={<StaffList />} />
             <Route path='/staffforms' exact element={<StaffForms />} />
             <Route path='/staffsettings' exact element={<StaffSettings />} />
+            <Route path='/staffpatientlist' exact element={<StaffPatients />} />
 
             {/* Login */}
             <Route path="/login-student" exact element={<LoginStudent />} />
@@ -155,8 +166,9 @@ export default function App() {
             <Route path="/login-nurse" exact element={<LoginNurse />} />
             <Route path="/login-admin" exact element={<LoginAdmin />} />
             <Route path="/login-doctor" exact element={<LoginDoctor />} />
-            <Route path="/change-password" exact element={<ForgotPassword />} />
-            
+            <Route path="/change-password" exact element={<ChangePassword />} />
+            <Route path="/forgot-password" exact element={<ForgotPassword />} />
+
             
             
             {/* Booking Page */}
@@ -169,6 +181,7 @@ export default function App() {
         </MedicalHistoryProvider>
         </AuthProvider>
       </BrowserRouter>
+      </StaffPatientsProvider>
       </PatientsProvider>
     </div>
   );
