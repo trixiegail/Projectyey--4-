@@ -19,7 +19,7 @@ import LoginStudent from './login/LoginStudent';
 import LoginNurse from './login/LoginNurse';
 import LoginAdmin from './login/LoginAdmin';
 import LoginDoctor from './login/LoginDoctor';
-import Archive from './staffpages/Archive';
+
 import Home from './userpages/home';
 import AboutUs from './userpages/aboutus';
 import Services from './userpages/services';
@@ -61,6 +61,11 @@ import Patients from './doctor/Patients';
 import { PatientsContext } from './doctor/PatientsContext';
 import { PatientsProvider } from './doctor/PatientsContext';
 import StudentProfile from "@/userpages/studentprofile.jsx";
+import CreateDoctorAccount from "@/staffpages/CreateDoctorAccount.jsx";
+import CreateNurseAccount from "@/staffpages/CreateNurseAccount.jsx";
+import CreateStaffAccount from "@/staffpages/CreateStaffAccount.jsx";
+import StudentArchive from "@/staffpages/StudentArchive.jsx";
+import DoctorArchive from "@/staffpages/DoctorArchive.jsx";
 
 
 export default function App() {
@@ -89,11 +94,14 @@ export default function App() {
             <Route path="/staff-accounts" exact element={<StaffAccounts />} />
             <Route path="/nurse-accounts" exact element={<NurseAccounts />} />
             <Route path="/doctor-accounts" exact element={<DoctorAccounts />} />
-            <Route path="/archived-student-accounts" exact element={<Archive />} />
+            <Route path="/archived-student-accounts" exact element={<StudentArchive />} />
             <Route path="/archived-staff-accounts" exact element={<StaffArchive />} />
             <Route path="/archived-nurse-accounts" exact element={<NurseArchive />} />
-            <Route path="/create-account" exact element={<CreateUserRoleAccount />} />
+            <Route path="/archived-doctor-accounts" exact element={<DoctorArchive />} />
+            <Route path= "/create-doctor-account" exact element={<CreateDoctorAccount/>} />
+            <Route path="/create-nurse-account" exact element={<CreateNurseAccount />} />
             <Route path="/create-student-account" exact element={<CreateStudent />} />
+            <Route path="/create-staff-account" exact element={<CreateStaffAccount />} />
             <Route path="/create-department" exact element={<CreateDepartment />} />
             <Route path="/create-program" exact element={<CreateProgram />} />
             <Route path="/home" exact element={<Home />} />

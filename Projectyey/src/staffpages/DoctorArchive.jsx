@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Nav from '../components/Nav';
 
-function NurseArchive() {
+function DoctorArchive() {
     const [archivedAccounts, setArchivedAccounts] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -12,7 +12,7 @@ function NurseArchive() {
 
     const fetchArchivedAccounts = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/nurse/getAllArchivedNurses');
+            const response = await axios.get('http://localhost:8080/doctor/getAllArchivedDoctors');
 
             if (response.status === 200) {
                 setArchivedAccounts(response.data);
@@ -27,7 +27,7 @@ function NurseArchive() {
 
     const handleSearch = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/nurse/search/archivedNurses?keyword=${searchTerm}`);
+            const response = await axios.get(`http://localhost:8080/doctor/search/archivedDoctors?keyword=${searchTerm}`);
             if (response.status === 200) {
                 setArchivedAccounts(response.data);
                 console.log('Archived accounts searched successfully:', response.data);
@@ -41,7 +41,7 @@ function NurseArchive() {
 
     const handleUnarchive = async (id) => {
         try {
-            const response = await axios.post(`http://localhost:8080/nurse/unarchiveNurse/${id}`);
+            const response = await axios.post(`http://localhost:8080/doctor/unarchiveDoctor/${id}`);
             if (response.status === 200) {
                 console.log('Account unarchived successfully');
                 fetchArchivedAccounts(); // Refresh the list
@@ -59,7 +59,7 @@ function NurseArchive() {
             <img src="src/image/logo.png" alt="Logo" className="absolute top-0 left-5 ml-[265px] object-center"/>
 
             <div className="w-50 ml-10 mt-[120px] relative">
-                <h1 className="text-2xl font-bold mb-5">Archived Nurse Accounts</h1>
+                <h1 className="text-2xl font-bold mb-5">Archived Doctor Accounts</h1>
 
                 <div className="flex items-center mb-5">
                     <input
@@ -113,4 +113,4 @@ function NurseArchive() {
     );
 }
 
-export default NurseArchive;
+export default DoctorArchive;

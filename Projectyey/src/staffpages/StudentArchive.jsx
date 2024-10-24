@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Nav from '../components/Nav';
 
-function Archive() {
+function StudentArchive() {
   const [archivedAccounts, setArchivedAccounts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -113,4 +113,4 @@ function Archive() {
   );
 }
 
-export default Archive;
+export default StudentArchive;

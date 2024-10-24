@@ -135,7 +135,7 @@ function DoctorAccounts() {
             Search
           </button>
           <a
-            href="/create-account"
+            href="/create-doctor-account"
             className="ml-2 p-2 bg-[#F7C301] text-white rounded-lg shadow-md hover:bg-[#F7C301]"
           >
             <span>Create Account</span>

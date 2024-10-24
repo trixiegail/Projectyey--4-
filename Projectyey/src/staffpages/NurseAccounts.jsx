@@ -16,7 +16,7 @@ function NurseAccounts() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/nurse/nurses?archived=false');
+      const response = await axios.get('http://localhost:8080/nurse/getNurses?archived=false');
       if (response.status === 200) {
         setData(response.data);
         console.log('Staff accounts fetched successfully:', response.data);
@@ -50,7 +50,7 @@ function NurseAccounts() {
   const handleArchiveConfirm = async () => {
     try {
       console.log(`Attempting to archive user with ID: ${selectedUser.id}`);
-      const response = await axios.post(`http://localhost:8080/nurse/nurses/archiveNurse/${selectedUser.id}`);
+      const response = await axios.post(`http://localhost:8080/nurse/archiveNurse/${selectedUser.id}`);
       console.log('Archive response:', response);
       if (response.status === 200) {
         console.log('Staff account archived successfully');
@@ -135,7 +135,7 @@ function NurseAccounts() {
           </button>
 
           <a
-          href="/Create-account"
+          href="/create-nurse-account"
           className="ml-2 p-2 bg-[#F7C301] text-white rounded-lg shadow-md hover:bg-[#F7C301]">
             <span>Create Account</span>
           </a>
