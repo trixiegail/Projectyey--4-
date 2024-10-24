@@ -69,11 +69,7 @@ const Dashboard = () => {
           <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#90343c', fontSize: { xs: '1.5rem', md: '2rem' } }}>
             Dashboard
           </Typography>
-          <IconButton color="inherit">
-            <Badge badgeContent={notifications.length} color="error">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
+          
           <DocNavBar />
         </Box>
 
