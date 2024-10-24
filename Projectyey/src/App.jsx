@@ -31,6 +31,7 @@ import Studinfo from "./pages/studinfo";
 import RgstrForCheckup from "./pages/RegisterForCheckup";
 import ChckupForm from "./pages/CheckupForm";
 import CheckupApplicantList from "./pages/CheckupApplicantList";
+import StaffCheckupApplicantList from "./staff/StaffCheckupApplicantList";
 import StudentMedicalHistory from "./pages/StudentMedicalHistory";
 import MedicalHistoryProvider from "./pages/MedicalHistoryProvider";
 import AfterLogin from "./pages/AfterLogin";
@@ -60,6 +61,7 @@ import StaffForms from './staff/StaffForms';
 import StaffSettings from './staff/StaffSettings';
 import Patients from './doctor/Patients';
 import { PatientsContext } from './doctor/PatientsContext';
+import { StaffPatientsContext } from './staff/StaffPatientsContext';
 import { PatientsProvider } from './doctor/PatientsContext';
 import StaffPatients from './staff/StaffPatients';
 import { StaffPatientsProvider } from './staff/StaffPatientsContext';
@@ -82,6 +84,7 @@ export default function App() {
   return (
     <div>
       <PatientsProvider>
+      <StaffPatientsProvider>
       <BrowserRouter>
       <AuthProvider>
         <MedicalHistoryProvider>
@@ -144,6 +147,8 @@ export default function App() {
             <Route path='/staffforms' exact element={<StaffForms />} />
             <Route path='/staffsettings' exact element={<StaffSettings />} />
             <Route path='/staffpatientlist' exact element={<StaffPatients />} />
+            <Route path='/patientlist' exact element={<StaffPatients />} />
+            <Route path="/staffcheckupapplicantlist" exact element={<StaffCheckupApplicantList />} />
 
             {/* Login */}
             <Route path="/login-student" exact element={<LoginStudent />} />
@@ -165,6 +170,7 @@ export default function App() {
         </MedicalHistoryProvider>
         </AuthProvider>
       </BrowserRouter>
+      </StaffPatientsProvider>
       </PatientsProvider>
     </div>
   );
