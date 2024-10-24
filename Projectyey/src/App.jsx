@@ -71,6 +71,10 @@ import CreateNurseAccount from "@/staffpages/CreateNurseAccount.jsx";
 import CreateStaffAccount from "@/staffpages/CreateStaffAccount.jsx";
 import StudentArchive from "@/staffpages/StudentArchive.jsx";
 import DoctorArchive from "@/staffpages/DoctorArchive.jsx";
+import PatientForm from "@/pages/PatientForm.jsx";
+import DeclinedAppointments from "@/doctor/DeclinedAppointments.jsx";
+import CompletedAppointments from "@/doctor/CompletedAppointments.jsx";
+import ChangePassword from "@/login/ChangePassword.jsx";
 
 
 
