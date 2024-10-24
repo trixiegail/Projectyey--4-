@@ -52,7 +52,7 @@ const programsByDepartment = {
   ],
 };
 
-const PatientList = () => {
+const StaffPatientList = () => {
   const [filterPriority, setFilterPriority] = useState('All');
   const [filterDepartment, setFilterDepartment] = useState('');
   const [filterProgram, setFilterProgram] = useState('');
@@ -305,7 +305,7 @@ const StaffPatients = () => {
     <ApplicantsContext.Provider value={{ applicants, setApplicants }}>
       <Box sx={{ display: 'flex', minHeight: '100vh' }}>
         <Sidebar /> 
-        <PatientList />
+        <StaffPatientList />
       </Box>
     </ApplicantsContext.Provider>
   );

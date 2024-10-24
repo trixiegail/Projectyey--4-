@@ -44,12 +44,12 @@ const Sidebar = () => {
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/staffdashboard' },
     { text: 'Staff', icon: <PeopleIcon />, path: '/stafflist' },
-    { text: 'Patients', icon: <PeopleIcon />, path: '/patientlist' },
+    { text: 'Patients', icon: <PeopleIcon />, path: '/staffpatientlist' },
   ];
 
   const manageItems = [
     { text: 'Calendar', icon: <CalendarTodayIcon />, path: '/staffcalendar' },
-    { text: 'Applicants', icon: <EventAvailableIcon />, path: '/CheckupApplicantList' },
+    { text: 'Applicants', icon: <EventAvailableIcon />, path: '/StaffCheckupApplicantList' },
     { text: 'Settings', icon: <SettingsIcon />, path: '/staffsettings' },
   ];
 
