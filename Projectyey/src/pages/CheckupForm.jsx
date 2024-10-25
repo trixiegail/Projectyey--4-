@@ -195,12 +195,14 @@ const MedicalForm = () => {
             mb: 2 
           }}
         >
+          <Box sx={{ width: '100%' }}>
           <Typography 
             variant="h4" 
             sx={{ fontWeight: 'bold', color: '#90343c' }} 
           >
             Medical Checkup and Records
           </Typography>
+          </Box>
           <DocNavBar />
         </Box>
 

@@ -47,13 +47,13 @@ const Sidebar = () => {
   const manageItems = [
     { text: 'Calendar', icon: <CalendarTodayIcon />, path: '/doccalendar' },
     { text: 'Applicants', icon: <EventAvailableIcon />, path: '/CheckupApplicantList' },
-    { text: 'Forms', icon: <DescriptionIcon />, path: '/docforms' },
+    // { text: 'Forms', icon: <DescriptionIcon />, path: '/docforms' },
+    { text: 'Settings', icon: <SettingsIcon />, path: '/docsettings' },
   ];
 
   const history = [
     { text: 'Completed', icon: <CheckCircleIcon />, path: '/completed-appointments' },
     { text: 'Declined', icon: <CancelIcon />, path: '/declined-appointments' },
-    { text: 'Settings', icon: <SettingsIcon />, path: '/docsettings' },
   ];
 
   const handleLogoClick = () => {
@@ -84,8 +84,8 @@ const Sidebar = () => {
         <img
           src={
             isHovered 
-              ? 'src/image/teethLogoDesignYellow.png' 
-              : 'src/image/teethLogoDesignWhite.png'
+              ? '/src/image/teethLogoDesignYellow.png' 
+              : '/src/image/teethLogoDesignWhite.png'
           }
           alt="Logo"
           style={{ width: '150px', height: 'auto', transition: '0.3s' }}
@@ -147,7 +147,7 @@ const Sidebar = () => {
         variant="caption"
         sx={{ p: 2, color: '#AAAAAA', textTransform: 'uppercase' }}
       >
-        Appointement History
+        Appointment History
       </Typography>
 
       <List>
