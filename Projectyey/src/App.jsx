@@ -127,6 +127,7 @@ export default function App() {
             <Route path="/staffinfo" exact element={<Staffinfo />} />
             <Route path="/RegisterForCheckup" exact element={<RgstrForCheckup />} />
             <Route path="/CheckupApplicantList" exact element={<CheckupApplicantList />} />
+            <Route path="/StaffCheckupApplicantList" exact element={<StaffCheckupApplicantList />} />
             <Route path="/StudentMedicalHistory" exact element={<StudentMedicalHistory />} />
             <Route path="/AfterLogin" exact element={<AfterLogin />} />
             <Route path="/StudentMedicalRecords" exact element={<StudentMedicalRecords />} />

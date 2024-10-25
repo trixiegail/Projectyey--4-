@@ -1,26 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Card, CardContent, Typography, CircularProgress, Grid, Box, Avatar, Divider , TextField , IconButton } from '@mui/material';
-import Sidebar from '../components/StaffSidebar';
+import StaffSidebar from '../components/StaffSidebar';
 import { Email, Badge, Cake } from '@mui/icons-material';
 import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import StaffNavBar from '../components/StaffNavBar';
 
 function StaffList() {
-  const [staff, setStaffs] = useState([]);
+  const [staff, setStaff] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchStaffs();
+    fetchStaff();
   }, []);
 
-  const fetchStaffs = async () => {
+  const fetchStaff = async () => {
     try {
       const response = await axios.get('http://localhost:8080/staff/getStaff?archived=false');
       if (response.status === 200) {
-        setStaffs(response.data);
+        setStaff(response.data);
       } else {
         throw new Error('Failed to fetch staff accounts');
       }
@@ -34,7 +34,7 @@ function StaffList() {
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh'}}>
-      <Sidebar /> 
+      <StaffSidebar /> 
       <Box sx={{ flexGrow: 1, p: 3 }}>
       <Box 
           sx={{ 
@@ -64,7 +64,7 @@ function StaffList() {
           </Typography>
         ) : (
           <Grid container spacing={3} justifyContent="left">
-            {staffs.map((staff) => (
+            {staff.map((staff) => (
               <Grid item xs={12} sm={6} md={4} key={staff.id}>
                 <Card
                   sx={{
