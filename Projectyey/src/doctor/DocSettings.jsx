@@ -171,9 +171,13 @@ function Settings() {
                       id="profile-picture-input"
                   />
                   <label htmlFor="profile-picture-input">
-                    <Button variant="contained" component="span">
-                      Upload Profile Picture
-                    </Button>
+                  <Button 
+  variant="contained" 
+  style={{ backgroundColor: '#88343B', fontWeight: 'bold', color: '#fff' }} 
+  component="span"
+>
+  Upload Profile Picture
+</Button>
                   </label>
                 </Grid>
                 <Grid item xs={12}>
@@ -185,9 +189,13 @@ function Settings() {
 
               {/* Other settings like notifications and dark mode */}
               <Box sx={{ mt: 3 }}>
-                <Button type="submit" variant="contained" color="primary">
-                  Save Changes
-                </Button>
+              <Button 
+  type="submit" 
+  variant="contained" 
+  style={{ backgroundColor: '#88343B', fontWeight: 'bold', color: '#fff' }}
+>
+  Save Changes
+</Button>
               </Box>
             </form>
           </Paper>

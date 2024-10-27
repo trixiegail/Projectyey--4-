@@ -301,17 +301,17 @@ const PatientList = () => {
       >
         <DialogTitle>{"Complete Patient"}</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Are you sure you want to mark this patient as Done?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseConfirmDialog} style={{ color: '#88343B' }}>
-            Cancel
-          </Button>
-          <Button onClick={handleDelete} style={{ color: '#cc9999' }} autoFocus>
-            Yes, Complete
-          </Button>
+        <DialogContentText style={{ color: 'black' }}>
+  Are you sure you want to mark this patient as Done?
+</DialogContentText>
+</DialogContent>
+<DialogActions>
+  <Button onClick={handleCloseConfirmDialog} style={{ color: 'black', fontWeight: 'bold' }}>
+    Cancel
+  </Button>
+  <Button onClick={handleDelete} style={{ color: 'black', fontWeight: 'bold' }} autoFocus>
+    Yes, Complete
+  </Button>
         </DialogActions>
       </Dialog>
 
