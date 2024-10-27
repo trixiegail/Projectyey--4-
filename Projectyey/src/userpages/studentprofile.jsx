@@ -17,56 +17,87 @@ import {
   Tabs,
   TextField,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import Studfooter from "../components/Studfooter";
 import Studnav from "../components/Studnav";
+import axios from "axios";
 
 export function Home() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [personalInfo, setPersonalInfo] = useState({
-    fullName: "Mike",
-    studentId: "21-2063-321",
-    year: "4",
-    location: "Cebu City",
-    course: "BS Computer Science",
-    department: "College of Computer Studies",
-    dateOfBirth: "January 1, 2000",
-    phoneNumber: "+1 234 567 890",
+    fullName: "",
+    studentId: "",
+    year: "",
+    location: "",
+    course: "",
+    department: "",
+    dateOfBirth: "",
+    email: "",
   });
+
+
   const [imageSrc, setImageSrc] = useState("src/image/student.png");
   const [newImage, setNewImage] = useState(null);
 
   const [showMedicalRecords, setShowMedicalRecords] = useState(false);
   const [activeTab, setActiveTab] = useState("checkup");
   const [selectedRecord, setSelectedRecord] = useState(null);
+  const [medicalRecords, setMedicalRecords] = useState([]);
 
-  // Static medical records data
-  const medicalRecords = [
-    {
-      date: new Date(),
-      bloodPressure: "120/80",
-      heartRate: "72 bpm",
-      respiratoryRate: "18 bpm",
-      temperature: "98.6°F",
-      oralHealthStatus: "Good",
-      cavities: "None",
-      gumHealth: "Healthy",
-      generalHealth: "Good",
-      healthConcerns: "None",
-    },
-    {
-      date: new Date(Date.now() - 86400000), // Previous day
-      bloodPressure: "130/85",
-      heartRate: "75 bpm",
-      respiratoryRate: "20 bpm",
-      temperature: "99.1°F",
-      oralHealthStatus: "Fair",
-      cavities: "1",
-      gumHealth: "Minor Gingivitis",
-      generalHealth: "Fair",
-      healthConcerns: "Toothache",
-    },
-  ];
+  useEffect(() => {
+    const fetchStudentInfo = async () => {
+      const studentIdNumber = localStorage.getItem("studentIdNumber");
+
+      if (studentIdNumber) {
+        try {
+          const response = await axios.get(`http://localhost:8080/student/students/${studentIdNumber}`);
+          const data = response.data;
+
+          console.log("Fetched student data:", data); // Log the data to verify
+
+          // Update state with the fetched data using the correct field names
+          setPersonalInfo({
+            fullName: `${data.firstname} ${data.lastname}`,
+            studentId: data.idNumber,
+            year: data.yearLevel || "",
+            location: data.location || "",
+            course: data.program || "", 
+            department: data.department || "",
+            dateOfBirth: data.birthdate || "", 
+            email: data.email || "", 
+          });
+
+          if (data.profilePicture) {
+            setImageSrc(`data:image/png;base64,${data.profilePicture}`);
+          }
+        } catch (error) {
+          console.error("Error fetching student data:", error);
+        }
+      }
+    };
+
+    const fetchMedicalRecords = async () => {
+      const studentIdNumber = localStorage.getItem("studentIdNumber");
+      
+      if (studentIdNumber) {
+        try {
+          const response = await axios.get(`http://localhost:8080/api/checkups/student/${studentIdNumber}`);
+          const records = response.data;
+
+          setMedicalRecords(records.sort((a, b) => new Date(b.date) - new Date(a.date)));
+        } catch (error) {
+          console.error("Error fetching medical records:", error);
+        }
+      }
+    };
+
+    fetchStudentInfo();
+    fetchMedicalRecords();
+  }, []);
+
+
+  
+
 
   // Toggle the medical records drawer
   const toggleMedicalRecordsDrawer = () => {
@@ -149,7 +180,7 @@ export function Home() {
                                 name="fullName"
                                 variant="outlined"
                                 value={personalInfo.fullName}
-                                onChange={handleInputChange}
+                                onChange={(e) => setPersonalInfo({ ...personalInfo, fullName: e.target.value })}
                                 fullWidth
                                 size="small"
                                 margin="dense"
@@ -326,10 +357,10 @@ export function Home() {
                   <div className="text-wrapper">
                     {isEditMode ? (
                         <TextField
-                            name="phoneNumber"
-                            label="Phone Number"
+                            name="email"
+                            label="Email"
                             variant="outlined"
-                            value={personalInfo.phoneNumber}
+                            value={personalInfo.email}
                             onChange={handleInputChange}
                             fullWidth
                             size="small"
@@ -339,7 +370,7 @@ export function Home() {
                         <div className="flex items-center gap-2">
                           <BuildingLibraryIcon className="-mt-px h-4 w-4 text-blue-gray-500" />
                           <Typography className="font-medium text-blue-gray-500">
-                            Phone Number: {personalInfo.phoneNumber}
+                            Email: {personalInfo.email}
                           </Typography>
                         </div>
                     )}
@@ -350,96 +381,58 @@ export function Home() {
           </section>
 
           {/* Medical Records Drawer */}
-          <Drawer anchor="right" open={showMedicalRecords} onClose={handleDone}>
-            <Box sx={{ width: 400, padding: 2 }}>
-              <MuiTypography variant="h6" gutterBottom align="center">
-                Medical Records
-              </MuiTypography>
-              <Tabs
-                  value={activeTab}
-                  onChange={(event, newValue) => setActiveTab(newValue)}
-                  indicatorColor="primary"
-                  textColor="primary"
-                  variant="fullWidth"
-                  aria-label="medical records tabs"
-              >
-                <Tab label="Checkup" value="checkup" />
-                <Tab label="Dental Treatment" value="dental" />
-              </Tabs>
+        <Drawer anchor="right" open={showMedicalRecords} onClose={handleDone}>
+          <Box sx={{ width: 400, padding: 2 }}>
+            <MuiTypography variant="h6" gutterBottom align="center">
+              Medical Records
+            </MuiTypography>
+            <Tabs
+              value={activeTab}
+              onChange={(event, newValue) => setActiveTab(newValue)}
+              indicatorColor="primary"
+              textColor="primary"
+              variant="fullWidth"
+              aria-label="medical records tabs"
+            >
+              <Tab label="Checkup" value="checkup" />
+              {/* <Tab label="Dental Treatment" value="dental" /> */}
+            </Tabs>
 
-              {activeTab === "checkup" && (
-                  <List>
-                    {medicalRecords.map((record, index) => (
-                        <ListItem
-                            key={index}
-                            button
-                            onClick={() => handleRecordClick(record)}
-                        >
-                          <ListItemText
-                              primary={`${new Date(record.date).toDateString()} - ${new Date(
-                                  record.date
-                              ).toLocaleTimeString()}`}
-                          />
-                        </ListItem>
-                    ))}
-                  </List>
-              )}
+            {activeTab === "checkup" && (
+              <List>
+                {medicalRecords.map((record, index) => (
+                  <ListItem key={index} button onClick={() => handleRecordClick(record)}>
+                    <ListItemText
+                      primary={`${new Date(record.date).toDateString()} - ${new Date(record.date).toLocaleTimeString()}`}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            )}
 
-              {selectedRecord && (
-                  <div>
-                    <MuiTypography variant="h6" gutterBottom>
-                      Records for{" "}
-                      {new Date(selectedRecord.date).toDateString()} -{" "}
-                      {new Date(selectedRecord.date).toLocaleTimeString()}
-                    </MuiTypography>
-                    <Card sx={{ marginBottom: 2 }}>
-                      <CardContent>
-                        <MuiTypography variant="body2">
-                          Blood Pressure: {selectedRecord.bloodPressure}
-                        </MuiTypography>
-                        <MuiTypography variant="body2">
-                          Heart Rate: {selectedRecord.heartRate}
-                        </MuiTypography>
-                        <MuiTypography variant="body2">
-                          Respiratory Rate: {selectedRecord.respiratoryRate}
-                        </MuiTypography>
-                        <MuiTypography variant="body2">
-                          Temperature: {selectedRecord.temperature}
-                        </MuiTypography>
-                        <MuiTypography variant="body2">
-                          Oral Health Status: {selectedRecord.oralHealthStatus}
-                        </MuiTypography>
-                        <MuiTypography variant="body2">
-                          Cavities: {selectedRecord.cavities}
-                        </MuiTypography>
-                        <MuiTypography variant="body2">
-                          Gum Health: {selectedRecord.gumHealth}
-                        </MuiTypography>
-                        <MuiTypography variant="body2">
-                          General Health: {selectedRecord.generalHealth}
-                        </MuiTypography>
-                        <MuiTypography variant="body2">
-                          Health Concerns: {selectedRecord.healthConcerns}
-                        </MuiTypography>
-                      </CardContent>
-                    </Card>
-                    <Button
-                        variant="contained"
-                        sx={{
-                          backgroundColor: "#88343B",
-                          "&:hover": {
-                            backgroundColor: "#88343B",
-                          },
-                          marginTop: 2,
-                        }}
-                        onClick={() => window.print()}
-                    >
-                      Print View
-                    </Button>
-                  </div>
-              )}
-            </Box>
-          </Drawer>
+            {selectedRecord && (
+              <div>
+                <MuiTypography variant="h6" gutterBottom>
+                  Records for {new Date(selectedRecord.date).toDateString()} -{" "}
+                  {new Date(selectedRecord.date).toLocaleTimeString()}
+                </MuiTypography>
+                <Card sx={{ marginBottom: 2 }}>
+                  <CardContent>
+                    <MuiTypography variant="body2">Blood Pressure: {selectedRecord.bloodPressure}</MuiTypography>
+                    <MuiTypography variant="body2">Heart Rate: {selectedRecord.heartRate}</MuiTypography>
+                    <MuiTypography variant="body2">Respiratory Rate: {selectedRecord.respiratoryRate}</MuiTypography>
+                    <MuiTypography variant="body2">Temperature: {selectedRecord.temperature}</MuiTypography>
+                    <MuiTypography variant="body2">Oral Health Status: {selectedRecord.oralHealthStatus}</MuiTypography>
+                    <MuiTypography variant="body2">Cavities: {selectedRecord.cavities}</MuiTypography>
+                    <MuiTypography variant="body2">Gum Health: {selectedRecord.gumHealth}</MuiTypography>
+                    <MuiTypography variant="body2">General Health: {selectedRecord.generalHealth}</MuiTypography>
+                    <MuiTypography variant="body2">Health Concerns: {selectedRecord.healthConcerns}</MuiTypography>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+          </Box>
+        </Drawer>
 
           <Studfooter />
         </div>
