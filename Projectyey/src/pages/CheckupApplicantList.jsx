@@ -392,14 +392,18 @@ const ApplicantList = () => {
       >
         <DialogTitle id="accept-dialog-title">Accept Patient</DialogTitle>
         <DialogContent>
-          <DialogContentText id="accept-dialog-description">
-            Are you sure you want to accept this patient?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseAcceptDialog} color="primary">Cancel</Button>
-          <Button onClick={handleConfirmAccept} color="primary" autoFocus>Yes, Accept</Button>
-        </DialogActions>
+  <DialogContentText id="accept-dialog-description" style={{ color: 'black' }}>
+    Are you sure you want to accept this patient?
+  </DialogContentText>
+</DialogContent>
+<DialogActions>
+  <Button onClick={handleCloseAcceptDialog} style={{ fontWeight: 'bold', color: 'black' }}>
+    Cancel
+  </Button>
+  <Button onClick={handleConfirmAccept} style={{ fontWeight: 'bold', color: 'black' }} autoFocus>
+    Yes, Accept
+  </Button>
+</DialogActions>
       </Dialog>
 
       {/* Confirmation Dialog for Rejection */}
@@ -411,23 +415,23 @@ const ApplicantList = () => {
       >
         <DialogTitle id="alert-dialog-title">{"Reject Patient"}</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Are you sure you want to reject this patient?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseConfirmDialog} style={{ color: '#88343B' }}>
-            Cancel
-          </Button>
-          <Button
-            onClick={handleConfirmRefusal} // Calls the function to confirm refusal
-            disabled={isSubmitting}
-            style={{ color: '#cc9999' }}
-            autoFocus
-          >
-            Yes, Reject
-          </Button>
-        </DialogActions>
+  <DialogContentText id="alert-dialog-description" style={{ color: 'black' }}>
+    Are you sure you want to reject this patient?
+  </DialogContentText>
+</DialogContent>
+<DialogActions>
+  <Button onClick={handleCloseConfirmDialog} style={{ fontWeight: 'bold', color: 'black' }}>
+    Cancel
+  </Button>
+  <Button
+    onClick={handleConfirmRefusal}
+    disabled={isSubmitting}
+    style={{ fontWeight: 'bold', color: 'black' }} // Set color to maroon and make bold
+    autoFocus
+  >
+    Yes, Reject
+  </Button>
+</DialogActions>
       </Dialog>
 
       {/* Delete Event Confirmation Dialog */}

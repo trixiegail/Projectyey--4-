@@ -225,7 +225,7 @@ const App = () => {
             variant="contained" style={{ backgroundColor: '#88343B' }} onClick={closeModal} >
               Cancel
             </Button>
-            <Button variant="contained" style={{ backgroundColor: '#F7C301' }} onClick={handleReserve}>
+            <Button variant="contained" style={{ backgroundColor: '#F7C301', color: '#88343B', fontWeight: 'bold' }} onClick={handleReserve}>
               Confirm
             </Button>
           </div>
@@ -378,15 +378,15 @@ const App = () => {
               No, Keep Reservation
             </Button>
             <Button 
-              variant="contained" 
-              style={{ backgroundColor: '#F7C301' }} 
-              onClick={() => {
-                handleCancelReservation(); // Call the existing cancellation function
-                setOpenCancelConfirmModal(false); // Close the modal
-              }}
-            >
-              Yes, Cancel Reservation
-            </Button>
+  variant="contained" 
+  style={{ backgroundColor: '#F7C301', color: '#88343B', fontWeight: 'bold' }} // Set text color to maroon and make it bold
+  onClick={() => {
+    handleCancelReservation(); // Call the existing cancellation function
+    setOpenCancelConfirmModal(false); // Close the modal
+  }}
+>
+  Yes, Cancel Reservation
+</Button>
           </div>
         </div>
       </div>,
@@ -426,12 +426,19 @@ const App = () => {
                 <strong>Status:</strong> {reservedEvent.status}   
               </Typography> */}
               <Button
-                variant="contained"
-                style={{ marginTop: '20px', backgroundColor: '#88343B', marginLeft:'320px'}}
-                onClick={() => setOpenCancelConfirmModal(true)}
-              >
-                Cancel Reservation
-              </Button>
+  variant="contained"
+  style={{ 
+    marginTop: '20px', 
+    backgroundColor: '#F7C301', 
+    color: 'rgb(136,52,59)', 
+    marginLeft: '320px',
+    fontWeight: 'bold' 
+  }}
+  onClick={() => setOpenCancelConfirmModal(true)}
+>
+  Cancel Reservation
+</Button>
+
             </Box>
           ) : (
             <Typography>No reservation found for this student.</Typography>

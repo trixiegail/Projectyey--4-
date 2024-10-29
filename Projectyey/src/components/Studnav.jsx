@@ -158,20 +158,20 @@ export function Studnav() {
                     </div>
                   </MenuHandler>
 
-                  <MenuList className="bg-[rgb(136,52,59)]">
-                    <MenuItem className="bg-[rgb(136,52,59)] hover:bg-gradient-to-b from-[#F0E1A6] !hover:text-black">
-                      <a href="/student-profile" className="text-white">My Profile</a>
-                    </MenuItem>
-                    <MenuItem className="bg-[rgb(136,52,59)] hover:bg-gradient-to-b from-[#F0E1A6] !hover:text-black">
-                      <a href="/settings" className="text-white">Settings</a>
-                    </MenuItem>
-                    <MenuItem className="bg-[rgb(136,52,59)] hover:bg-gradient-to-b from-[#F0E1A6] !hover:text-black">
-                      <a href="/contact" className="font-medium text-white">Help</a>
-                    </MenuItem>
-                    <hr className="my-2 bg-[#F7C301]" />
-                    <MenuItem className="bg-[rgb(136,52,59)] hover:bg-gradient-to-b from-[#F0E1A6] !hover:text-black" onClick={handleLogout}>
-                      <Typography variant="small" className="font-medium text-white">Sign Out</Typography>
-                    </MenuItem>
+                  <MenuList className="bg-white">
+  <MenuItem className="bg-white hover:bg-gradient-to-b from-[#F0E1A6] !hover:text-black">
+    <a href="/student-profile" className="text-black font-bold">My Profile</a>
+  </MenuItem>
+  <MenuItem className="bg-white hover:bg-gradient-to-b from-[#F0E1A6] !hover:text-black">
+    <a href="/settings" className="text-black font-bold">Settings</a>
+  </MenuItem>
+  <MenuItem className="bg-white hover:bg-gradient-to-b from-[#F0E1A6] !hover:text-black">
+    <a href="/contact" className="font-bold text-black">Help</a>
+  </MenuItem>
+  <hr className="my-2 bg-[#F7C301]" />
+  <MenuItem className="bg-white hover:bg-gradient-to-b from-[#F0E1A6] !hover:text-black" onClick={handleLogout}>
+    <Typography variant="small" className="font-bold text-black">Sign Out</Typography>
+  </MenuItem>
                   </MenuList>
                 </Menu>
               )}
