@@ -209,7 +209,7 @@ function StaffAccounts() {
                       {isUpdate ? 'Update Staff Details' : 'Staff Details'}
                     </h3>
                     <div className="mt-2">
-                      <p className="text-sm text-gray-500">ID Number: {selectedUser.idNumber}</p>
+                      <p className="text-sm text-black-500">ID Number: {selectedUser.idNumber}</p>
                       {isUpdate ? (
                         <>
                           <input
@@ -217,7 +217,7 @@ function StaffAccounts() {
                             name="firstname"
                             value={selectedUser.firstname}
                             onChange={handleInputChange}
-                            className="mt-2 p-2 border border-gray-300 rounded-lg w-full"
+                            className="mt-2 p-2 border border-black-300 rounded-lg w-full"
                             placeholder="First Name"
                           />
                           <input
@@ -225,7 +225,7 @@ function StaffAccounts() {
                             name="lastname"
                             value={selectedUser.lastname}
                             onChange={handleInputChange}
-                            className="mt-2 p-2 border border-gray-300 rounded-lg w-full"
+                            className="mt-2 p-2 border border-black-300 rounded-lg w-full"
                             placeholder="Last Name"
                           />
                           <input
@@ -233,7 +233,7 @@ function StaffAccounts() {
                             name="birthdate"
                             value={selectedUser.birthdate}
                             onChange={handleInputChange}
-                            className="mt-2 p-2 border border-gray-300 rounded-lg w-full"
+                            className="mt-2 p-2 border border-black-300 rounded-lg w-full"
                             placeholder="Birthdate"
                           />
                           <input
@@ -241,16 +241,16 @@ function StaffAccounts() {
                             name="email"
                             value={selectedUser.email}
                             onChange={handleInputChange}
-                            className="mt-2 p-2 border border-gray-300 rounded-lg w-full"
+                            className="mt-2 p-2 border border-black-300 rounded-lg w-full"
                             placeholder="Email"
                           />
                         </>
                       ) : (
                         <>
-                          <p className="mt-2 text-sm text-gray-500">First Name: {selectedUser.firstname}</p>
-                          <p className="mt-2 text-sm text-gray-500">Last Name: {selectedUser.lastname}</p>
-                          <p className="mt-2 text-sm text-gray-500">Birthdate: {selectedUser.birthdate}</p>
-                          <p className="mt-2 text-sm text-gray-500">Email: {selectedUser.email}</p>
+                          <p className="mt-2 text-sm text-black-500">First Name: {selectedUser.firstname}</p>
+                          <p className="mt-2 text-sm text-black-500">Last Name: {selectedUser.lastname}</p>
+                          <p className="mt-2 text-sm text-black-500">Birthdate: {selectedUser.birthdate}</p>
+                          <p className="mt-2 text-sm text-black-500">Email: {selectedUser.email}</p>
                         </>
                       )}
                     </div>

@@ -3,7 +3,7 @@ import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './CalendarSchedule.css';
-import NavNurseDentist from '../components/NavNurseDentist';
+import Nsidebar from '../components/NurseSidebar';
 import Modal from 'react-modal';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -413,7 +413,7 @@ const confirmEventCreation = () => {
  
   return (
     <div>
-      <NavNurseDentist />
+      <Nsidebar />
       <div className="calendar-container" style={{ padding: '20px', color:'black' }}>
         <h2>Calendar Schedule</h2>
 

@@ -369,12 +369,18 @@ const PatientForm = () => {
          <Dialog open={openConfirmModal} onClose={handleCloseConfirmModal}>
           <DialogTitle>Confirm Save</DialogTitle>
           <DialogContent>
-            <Typography>Are you sure you want to save this medical checkup?</Typography>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseConfirmModal} color="secondary">Cancel</Button>
-            <Button onClick={handleConfirmSave} color="primary">Yes, Save</Button>
-          </DialogActions>
+  <Typography style={{ color: 'black' }}>
+    Are you sure you want to save this medical checkup?
+  </Typography>
+</DialogContent>
+<DialogActions>
+  <Button onClick={handleCloseConfirmModal} style={{ fontWeight: 'bold', color: 'black' }}>
+    Cancel
+  </Button>
+  <Button onClick={handleConfirmSave} style={{ fontWeight: 'bold', color: 'black' }}>
+    Yes, Save
+  </Button>
+</DialogActions>
         </Dialog>
 
          {/* Success Modal */}
@@ -457,15 +463,15 @@ const PatientForm = () => {
         >
           <DialogTitle>{"Complete Patient"}</DialogTitle>
           <DialogContent>
-            <DialogContentText>
+            <DialogContentText style={{ color: 'black' }}>
               Are you sure you want to mark this patient as Done?
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseConfirmDialog} style={{ color: '#88343B' }}>
+            <Button onClick={handleCloseConfirmDialog} style={{ color: 'black', fontWeight: 'bold' }}>
               Cancel
             </Button>
-            <Button onClick={handleDelete} style={{ color: '#cc9999' }} autoFocus>
+            <Button onClick={handleDelete} style={{ color: 'black', fontWeight: 'bold' }} autoFocus>
               Yes, Complete
             </Button>
           </DialogActions>

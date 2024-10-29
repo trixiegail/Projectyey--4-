@@ -75,6 +75,8 @@ import PatientForm from "@/pages/PatientForm.jsx";
 import DeclinedAppointments from "@/doctor/DeclinedAppointments.jsx";
 import CompletedAppointments from "@/doctor/CompletedAppointments.jsx";
 import ChangePassword from "@/login/ChangePassword.jsx";
+// import Nsidebar from './components/NurseSidebarSidebar';
+
 
 
 
@@ -136,6 +138,7 @@ export default function App() {
             <Route path='/printview' exact element={<PrintView />} />
             <Route path='/sidebar' exact element={<StudentProfile />} />
             <Route path='/student-profile' exact element={<StudentProfile />} />
+
             
 
             <Route path="/CheckupForm/:studentIdNumber" exact element={<ChckupForm />} />
