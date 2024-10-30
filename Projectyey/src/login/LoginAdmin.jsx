@@ -14,7 +14,7 @@ const LoginAdmin = () => {
     event.preventDefault(); // Prevent the default form submission behavior
 
     try {
-      const endpoint = 'https://localhost:8080/dentalmanagement/admin';
+      const endpoint = 'https://projectyey.vercel.app/dentalmanagement/admin';
       const response = await axios.post(endpoint, { username, password });
   
       if (response.data) {
