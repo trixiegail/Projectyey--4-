@@ -12,7 +12,7 @@ function NurseArchive() {
 
     const fetchArchivedAccounts = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/nurse/getAllArchivedNurses');
+            const response = await axios.get('https://projectyey.vercel.app/nurse/getAllArchivedNurses');
 
             if (response.status === 200) {
                 setArchivedAccounts(response.data);
@@ -27,7 +27,7 @@ function NurseArchive() {
 
     const handleSearch = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/nurse/search/archivedNurses?keyword=${searchTerm}`);
+            const response = await axios.get(`https://projectyey.vercel.app/nurse/search/archivedNurses?keyword=${searchTerm}`);
             if (response.status === 200) {
                 setArchivedAccounts(response.data);
                 console.log('Archived accounts searched successfully:', response.data);
@@ -41,7 +41,7 @@ function NurseArchive() {
 
     const handleUnarchive = async (id) => {
         try {
-            const response = await axios.post(`http://localhost:8080/nurse/unarchiveNurse/${id}`);
+            const response = await axios.post(`https://projectyey.vercel.app/nurse/unarchiveNurse/${id}`);
             if (response.status === 200) {
                 console.log('Account unarchived successfully');
                 fetchArchivedAccounts(); // Refresh the list

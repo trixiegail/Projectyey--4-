@@ -96,7 +96,7 @@ function DoctorAccounts() {
     if (selectedUser && selectedUser.id) {
       try {
         console.log('Updating user with ID:', selectedUser.id);
-        const response = await axios.put(`http://localhost:8080/doctor/update/doctors/${selectedUser.id}`, selectedUser);
+        const response = await axios.put(`https://projectyey.vercel.app/doctor/update/doctors/${selectedUser.id}`, selectedUser);
         if (response.status === 200) {
           console.log('Student account updated successfully');
           fetchData();

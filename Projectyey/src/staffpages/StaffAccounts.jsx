@@ -96,7 +96,7 @@ function StaffAccounts() {
     if (selectedUser && selectedUser.id) {
       try {
         console.log('Updating user with ID:', selectedUser.id);
-        const response = await axios.put(`http://localhost:8080/staff/updateStaff/${selectedUser.id}`, selectedUser);
+        const response = await axios.put(`https://projectyey.vercel.app/staff/updateStaff/${selectedUser.id}`, selectedUser);
         if (response.status === 200) {
           console.log('Staff account updated successfully');
           fetchData(); // Refresh the data

@@ -12,7 +12,7 @@ function StudentArchive() {
 
   const fetchArchivedAccounts = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/student/archivedStudents');
+      const response = await axios.get('https://projectyey.vercel.app/student/archivedStudents');
 
       if (response.status === 200) {
         setArchivedAccounts(response.data);
@@ -27,7 +27,7 @@ function StudentArchive() {
 
   const handleSearch = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/student/search/archivedStudents?keyword=${searchTerm}`);
+      const response = await axios.get(`https://projectyey.vercel.app/student/search/archivedStudents?keyword=${searchTerm}`);
       if (response.status === 200) {
         setArchivedAccounts(response.data);
         console.log('Archived accounts searched successfully:', response.data);
@@ -41,7 +41,7 @@ function StudentArchive() {
 
   const handleUnarchive = async (id) => {
     try {
-      const response = await axios.post(`http://localhost:8080/student/unarchiveStudent/${id}`);
+      const response = await axios.post(`https://projectyey.vercel.app/student/unarchiveStudent/${id}`);
       if (response.status === 200) {
         console.log('Account unarchived successfully');
         fetchArchivedAccounts(); // Refresh the list
