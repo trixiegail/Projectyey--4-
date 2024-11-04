@@ -101,7 +101,7 @@ export default function App() {
       <AuthProvider>
         <MedicalHistoryProvider>
           <Routes>
-            <Route path="/" exact element={<LoginAdmin />} />
+            <Route path="/" exact element={<Home />} />
             <Route path="/dashboard" exact element={<Dashboard />} />
             <Route path="/student-accounts" exact element={<StudentsAccounts />} />
             <Route path="/staff-accounts" exact element={<StaffAccounts />} />
