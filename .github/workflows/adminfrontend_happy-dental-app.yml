@@ -26,17 +26,17 @@ jobs:
           npm install
           npm run build --if-present
           npm run test --if-present
-        working-directory: ./Projectyey--4-
+        working-directory: ./Projectyey
 
       - name: Zip artifact for deployment
         run: zip release.zip ./* -r
-        working-directory: ./Projectyey--4-
+        working-directory: ./Projectyey
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: ./Projectyey--4-/release.zip
+          path: ./Projectyey/release.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -55,7 +55,7 @@ jobs:
 
       - name: Unzip artifact for deployment
         run: unzip release.zip
-        working-directory: ./Projectyey--4-
+        working-directory: ./Projectyey
 
       - name: Login to Azure
         uses: azure/login@v2
