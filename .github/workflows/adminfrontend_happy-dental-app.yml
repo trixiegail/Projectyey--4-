@@ -54,8 +54,9 @@ jobs:
           name: node-app
 
       - name: Unzip artifact for deployment
-        run: unzip ./Projectyey--4-/release.zip
-      
+        run: unzip release.zip
+        working-directory: ./Projectyey--4-
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -69,4 +70,4 @@ jobs:
         with:
           app-name: 'happy-dental-app'
           slot-name: 'Production'
-          package: ./Projectyey--4-
+          package: .
