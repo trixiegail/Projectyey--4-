@@ -16,7 +16,7 @@ function NurseAccounts() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('https://projectyey.vercel.app/nurse/getNurses?archived=false');
+      const response = await axios.get('https://dentalmanagement.azurewebsites.net/nurse/getNurses?archived=false');
       if (response.status === 200) {
         setData(response.data);
         console.log('Staff accounts fetched successfully:', response.data);
@@ -30,7 +30,7 @@ function NurseAccounts() {
 
   const handleSearch = async () => {
     try {
-      const response = await axios.get(`https://projectyey.vercel.app/nurse/search?keyword=${searchTerm}`);
+      const response = await axios.get(`https://dentalmanagement.azurewebsites.net/nurse/search?keyword=${searchTerm}`);
       if (response.status === 200) {
         setData(response.data);
         console.log('Staff accounts fetched successfully:', response.data);
@@ -50,7 +50,7 @@ function NurseAccounts() {
   const handleArchiveConfirm = async () => {
     try {
       console.log(`Attempting to archive user with ID: ${selectedUser.id}`);
-      const response = await axios.post(`https://projectyey.vercel.app/nurse/archiveNurse/${selectedUser.id}`);
+      const response = await axios.post(`https://dentalmanagement.azurewebsites.net/nurse/archiveNurse/${selectedUser.id}`);
       console.log('Archive response:', response);
       if (response.status === 200) {
         console.log('Staff account archived successfully');
@@ -96,7 +96,7 @@ function NurseAccounts() {
     if (selectedUser && selectedUser.id) {
       try {
         console.log('Updating user with ID:', selectedUser.id);
-        const response = await axios.put(`http://localhost:8080/nurse/updateStaff/${selectedUser.id}`, selectedUser);
+        const response = await axios.put(`https://dentalmanagement.azurewebsites.net/nurse/updateStaff/${selectedUser.id}`, selectedUser);
         if (response.status === 200) {
           console.log('Staff account updated successfully');
           fetchData(); // Refresh the data

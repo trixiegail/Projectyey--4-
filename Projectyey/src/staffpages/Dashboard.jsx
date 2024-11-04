@@ -24,7 +24,7 @@ function Dashboard() {
         endTime: endTime,
         availableSlots: availableSlots,
       };
-      await axios.post('http://localhost:8080/api/slots', newSlot);
+      await axios.post('https://dentalmanagement.azurewebsites.net/api/slots', newSlot);
       alert('Slot generated successfully!');
       setStartTime('');
       setEndTime('');

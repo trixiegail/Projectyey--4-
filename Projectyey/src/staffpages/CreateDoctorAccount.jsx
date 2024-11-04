@@ -50,7 +50,7 @@ function CreateDoctorAccount(){
             password: password
         }
         try {
-            const response = await axios.post("https://projectyey.vercel.app/doctor/insertDoctor", doctor_data);
+            const response = await axios.post("https://dentalmanagement.azurewebsites.net/doctor/insertDoctor", doctor_data);
             console.log(response.data);
             console.log("Submitted!");
             showModal("Success", "Data submitted successfully!");
