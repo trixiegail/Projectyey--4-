@@ -101,14 +101,14 @@ export default function App() {
       <AuthProvider>
         <MedicalHistoryProvider>
           <Routes>
-            <Route path="/" exact element={<LoginAdmin />} />
-            <Route path="/dashboard" exact element={<Dashboard />} />
-            <Route path="/student-accounts" exact element={<StudentsAccounts />} />
-            <Route path="/staff-accounts" exact element={<StaffAccounts />} />
-            <Route path="/nurse-accounts" exact element={<NurseAccounts />} />
-            <Route path="/doctor-accounts" exact element={<DoctorAccounts />} />
-            <Route path="/archived-student-accounts" exact element={<StudentArchive />} />
-            <Route path="/archived-staff-accounts" exact element={<StaffArchive />} />
+            <Route path="/" element={<LoginAdmin />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/student-accounts" element={<StudentsAccounts />} />
+            <Route path="/staff-accounts" element={<StaffAccounts />} />
+            <Route path="/nurse-accounts" element={<NurseAccounts />} />
+            <Route path="/doctor-accounts" element={<DoctorAccounts />} />
+            <Route path="/archived-student-accounts" element={<StudentArchive />} />
+            <Route path="/archived-staff-accounts" element={<StaffArchive />} />
             <Route path="/archived-nurse-accounts" exact element={<NurseArchive />} />
             <Route path="/archived-doctor-accounts" exact element={<DoctorArchive />} />
             <Route path= "/create-doctor-account" exact element={<CreateDoctorAccount/>} />
