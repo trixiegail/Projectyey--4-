@@ -24,7 +24,7 @@ export default function SideNavigationSearchBar() {
         >
           <img
             className="h-20 w-auto"
-            src="/public/cit logo.png"
+            src="/cit logo.png"
             alt="Your Company"
           />
           <h1 className="text-white font-bold uppercase text-2xl tracking-wide">Admin</h1>
