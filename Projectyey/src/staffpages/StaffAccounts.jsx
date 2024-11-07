@@ -16,7 +16,7 @@ function StaffAccounts() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/staff/getStaffs?archived=false');
+      const response = await axios.get('https://dentalmanagement.azurewebsites.net/staff/getStaffs?archived=false');
       if (response.status === 200) {
         setData(response.data);
         console.log('Staff accounts fetched successfully:', response.data);
@@ -30,7 +30,7 @@ function StaffAccounts() {
 
   const handleSearch = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/staff/staffs/search?keyword=${searchTerm}`);
+      const response = await axios.get(`https://dentalmanagement.azurewebsites.net/staff/staffs/search?keyword=${searchTerm}`);
       if (response.status === 200) {
         setData(response.data);
         console.log('Staff accounts fetched successfully:', response.data);
@@ -50,7 +50,7 @@ function StaffAccounts() {
   const handleArchiveConfirm = async () => {
     try {
       console.log(`Attempting to archive user with ID: ${selectedUser.id}`);
-      const response = await axios.post(`http://localhost:8080/staff/archiveStaff/${selectedUser.id}`);
+      const response = await axios.post(`https://dentalmanagement.azurewebsites.net/staff/archiveStaff/${selectedUser.id}`);
       console.log('Archive response:', response);
       if (response.status === 200) {
         console.log('Staff account archived successfully');
