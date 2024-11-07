@@ -12,7 +12,7 @@ const LoginStudent = () => {
     event.preventDefault();
 
     try {
-      const endpoint = 'https://projectyey.vercel.app/student/login';
+      const endpoint = 'https://dentalmanagement.azurewebsites.net/student/login';
       const response = await axios.post(endpoint, { idNumber, password });
 
       if (response.data) {

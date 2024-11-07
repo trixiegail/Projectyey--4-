@@ -91,7 +91,7 @@ const StaffApplicantList = () => {
    const handleConfirmAccept = () => {
     if (selectedApplicant) {
       // Call the backend API to accept the reservation
-      fetch(`http://localhost:8080/api/reservations/accept/${selectedApplicant.id}`, {
+      fetch(`https://dentalmanagement.azurewebsites.net/api/reservations/accept/${selectedApplicant.id}`, {
         method: 'POST',
       })
       .then(response => {
@@ -100,7 +100,7 @@ const StaffApplicantList = () => {
 
         const eventId = selectedApplicant.event.id; 
 
-        fetch(`http://localhost:8080/api/events/${eventId}`, {
+        fetch(`https://dentalmanagement.azurewebsites.net/api/events/${eventId}`, {
           method: 'DELETE',
         })
         .then(eventResponse => {
@@ -183,7 +183,7 @@ const StaffApplicantList = () => {
     console.log('Attempting to reject applicant ID:', selectedApplicantId);
     
     // Automatically delete the reservation
-    fetch(`http://localhost:8080/api/reservations/${selectedApplicantId}`, {
+    fetch(`https://dentalmanagement.azurewebsites.net/api/reservations/${selectedApplicantId}`, {
       method: 'DELETE',
     })
       .then((response) => {
@@ -204,7 +204,7 @@ const StaffApplicantList = () => {
   
   const handleDeclineAndDeleteEvent = () => {
     if (selectedEventId) {
-      fetch(`http://localhost:8080/api/events/${selectedEventId}`, {
+      fetch(`https://dentalmanagement.azurewebsites.net/api/events/${selectedEventId}`, {
         method: 'DELETE',
       })
         .then((eventResponse) => {
@@ -436,7 +436,7 @@ const StaffCheckupApplicantList = () => {
   const [applicants, setApplicants] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/reservations/reservations')
+    fetch('https://dentalmanagement.azurewebsites.net/api/reservations/reservations')
       .then((response) => response.json())
       .then((data) => {
         console.log('API Response:', data); // Check if the data is returned correctly

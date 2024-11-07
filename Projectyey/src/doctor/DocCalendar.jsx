@@ -67,14 +67,14 @@ const DocCalendar = () => {
   useEffect(() => {
     const now = new Date(); 
 
-    fetch('http://localhost:8080/api/events')
+    fetch('https://dentalmanagement.azurewebsites.net/api/events')
       .then(response => response.json())
       .then(data => {
         const pastEvents = data.filter(event => new Date(event.end) < now); 
         const upcomingEvents = data.filter(event => new Date(event.end) >= now); 
 
         pastEvents.forEach(event => {
-          fetch(`http://localhost:8080/api/events/${event.id}`, {
+          fetch(`https://dentalmanagement.azurewebsites.net/api/events/${event.id}`, {
             method: 'DELETE',
           })
             .then(response => {
@@ -221,7 +221,7 @@ const DocCalendar = () => {
       };
   
       if (editEvent) {
-        fetch(`http://localhost:8080/api/events/${editEvent.id}`, {
+        fetch(`https://dentalmanagement.azurewebsites.net/api/events/${editEvent.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newEvent),
@@ -275,7 +275,7 @@ const DocCalendar = () => {
 
   const confirmDeleteEvent = () => {
     if (eventToDelete) {
-      fetch(`http://localhost:8080/api/events/${eventToDelete.id}`, {
+      fetch(`https://dentalmanagement.azurewebsites.net/api/events/${eventToDelete.id}`, {
         method: 'DELETE',
       })
         .then(response => {
@@ -391,7 +391,7 @@ const handleCreateMultipleEvents = () => {
   }
 
   const createEventPromises = newEvents.map(event => {
-    return fetch('http://localhost:8080/api/events', {
+    return fetch('https://dentalmanagement.azurewebsites.net/api/events', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -459,7 +459,7 @@ const confirmEventCreation = () => {
   }
 
   const createEventPromises = newEvents.map(event => {
-    return fetch('http://localhost:8080/api/events', {
+    return fetch('https://dentalmanagement.azurewebsites.net/api/events', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

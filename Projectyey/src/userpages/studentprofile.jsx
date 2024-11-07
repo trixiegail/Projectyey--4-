@@ -50,7 +50,7 @@ export function Home() {
 
       if (studentIdNumber) {
         try {
-          const response = await axios.get(`http://localhost:8080/student/students/${studentIdNumber}`);
+          const response = await axios.get(`https://dentalmanagement.azurewebsites.net/student/students/${studentIdNumber}`);
           const data = response.data;
 
           console.log("Fetched student data:", data); // Log the data to verify
@@ -81,7 +81,7 @@ export function Home() {
       
       if (studentIdNumber) {
         try {
-          const response = await axios.get(`http://localhost:8080/api/checkups/student/${studentIdNumber}`);
+          const response = await axios.get(`https://dentalmanagement.azurewebsites.net/api/checkups/student/${studentIdNumber}`);
           const records = response.data;
 
           setMedicalRecords(records.sort((a, b) => new Date(b.date) - new Date(a.date)));
