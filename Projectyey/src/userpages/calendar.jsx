@@ -105,7 +105,7 @@ const App = () => {
   
     try {
       // Fetch student data using studentIdNumber
-      const response = await fetch(`https://dentalmanagement.azurewebsites.net/student/${studentIdNumber}`);
+      const response = await fetch(`https://dentalmanagement.azurewebsites.net/student/students/${studentIdNumber}`);
       if (!response.ok) {
         throw new Error('Failed to fetch student data');
       }
