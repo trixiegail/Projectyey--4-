@@ -115,7 +115,7 @@ function StaffAccounts() {
   return (
     <div className='ml-[265px]'>
       <Nav />
-      <img src="src/image/logo.png" alt="Logo" className="absolute top-0 left-5 ml-[265px] object-center"/>
+      <img src="/logo.png" alt="Logo" className="absolute top-0 left-5 ml-[265px] object-center"/>
 
       <div className="w-50 ml-10 mt-[120px] relative ">
         <div className="flex items-center mb-5 mt-5">
