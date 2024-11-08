@@ -26,7 +26,7 @@ export default function NavbarBasicPreview() {
             >
               <img
                 className="h-10 w-auto"
-                src="src/image/teethLogo.png"
+                src="/teethLogo.png"
                 alt="Your Company"
               />
               Cebu Institute of Technology - University

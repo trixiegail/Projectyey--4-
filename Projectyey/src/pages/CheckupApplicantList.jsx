@@ -91,7 +91,7 @@ const ApplicantList = () => {
    const handleConfirmAccept = () => {
     if (selectedApplicant) {
       // Call the backend API to accept the reservation
-      fetch(`http://localhost:8080/api/reservations/accept/${selectedApplicant.id}`, {
+      fetch(`https://dentalmanagement.azurewebsites.net/api/reservations/accept/${selectedApplicant.id}`, {
         method: 'POST',
       })
       .then(response => {
@@ -100,7 +100,7 @@ const ApplicantList = () => {
 
         const eventId = selectedApplicant.event.id; 
 
-        fetch(`http://localhost:8080/api/events/${eventId}`, {
+        fetch(`https://dentalmanagement.azurewebsites.net/api/events/${eventId}`, {
           method: 'DELETE',
         })
         .then(eventResponse => {
@@ -187,7 +187,7 @@ const ApplicantList = () => {
     console.log('Attempting to reject applicant ID:', selectedApplicantId);
   
     // Move the reservation to the Declined Appointments History first
-    fetch(`http://localhost:8080/api/declined-appointments/move/${selectedApplicantId}`, {
+    fetch(`https://dentalmanagement.azurewebsites.net/api/declined-appointments/move/${selectedApplicantId}`, {
       method: 'POST',
     })
       .then((response) => {
@@ -195,7 +195,7 @@ const ApplicantList = () => {
           console.log('Successfully moved to Declined Appointments History');
   
           // Now delete the reservation
-          fetch(`http://localhost:8080/api/reservations/${selectedApplicantId}`, {
+          fetch(`https://dentalmanagement.azurewebsites.net/api/reservations/${selectedApplicantId}`, {
             method: 'DELETE',
           })
             .then((deleteResponse) => {
@@ -229,7 +229,7 @@ const ApplicantList = () => {
   
   const handleDeclineAndDeleteEvent = () => {
     if (selectedEventId) {
-      fetch(`http://localhost:8080/api/events/${selectedEventId}`, {
+      fetch(`https://dentalmanagement.azurewebsites.net/api/events/${selectedEventId}`, {
         method: 'DELETE',
       })
         .then((eventResponse) => {
@@ -469,7 +469,7 @@ const CheckupApplicantList = () => {
   useEffect(() => {
     console.log("Fetching applicants...");
   
-    fetch('http://localhost:8080/api/reservations/reservations')
+    fetch('https://dentalmanagement.azurewebsites.net/api/reservations/reservations')
       .then((response) => response.json())
       .then((data) => {
         console.log('API Response:', data);

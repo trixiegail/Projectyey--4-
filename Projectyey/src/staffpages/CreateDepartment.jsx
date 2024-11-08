@@ -20,7 +20,7 @@ function CreateDepartment() {
     };
 
     try {
-      const response = await axios.post("http://localhost:8080/department/insertDepartment", dept_data);
+      const response = await axios.post("https://projectyey.vercel.app/department/insertDepartment", dept_data);
       console.log(response.data);
       console.log("Submitted!");
       alert("Data submitted successfully!");

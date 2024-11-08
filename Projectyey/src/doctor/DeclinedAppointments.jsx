@@ -59,7 +59,7 @@ const DeclinedAppointments = () => {
 
   // Fetch declined appointments on component mount
   useEffect(() => {
-    fetch('http://localhost:8080/api/declined-appointments')  // Adjust API endpoint as necessary
+    fetch('https://dentalmanagement.azurewebsites.net/api/declined-appointments')  // Adjust API endpoint as necessary
       .then((response) => response.json())
       .then((data) => {
         // Sort the data by declinedDate in descending order

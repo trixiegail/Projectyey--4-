@@ -4,7 +4,7 @@ import Sidebar from '../components/DocSidebar';
 import DocNavBar from '../components/DocNavBar';
 import axios from 'axios'; // Import axios for HTTP requests
 import { useAuth } from '../contexts/AuthContext'; // Access logged-in doctor info
-
+ 
 function Settings() {
   const { doctor } = useAuth(); // Get logged-in doctor from context
   const [loading, setLoading] = useState(true); // Track loading state
@@ -20,7 +20,7 @@ function Settings() {
   const [darkMode, setDarkMode] = useState(false);
   const [profilePicture, setProfilePicture] = useState(null); // New state for profile picture
   const [preview, setPreview] = useState(''); // Preview image URL
-
+ 
   // Fetch doctor data from backend
   useEffect(() => {
     const fetchDoctorData = async () => {
@@ -28,7 +28,7 @@ function Settings() {
         if (doctor && doctor.id) {
           const response = await axios.get(`http://localhost:8080/doctor/getProfilePicture/${doctor.id}`);
           const doctorData = response.data;
-
+ 
           // Populate form with fetched data
           setFormData({
             username: doctorData.username,
@@ -48,24 +48,24 @@ function Settings() {
         setLoading(false); // Stop loading
       }
     };
-
+ 
     fetchDoctorData();
   }, [doctor]);
-
+ 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
+ 
   const handleNotificationChange = (e) => {
     const { name, checked } = e.target;
     setNotifications({ ...notifications, [name]: checked });
   };
-
+ 
   const handleDarkModeToggle = () => {
     setDarkMode(!darkMode);
   };
-
+ 
   const handleProfilePictureChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -73,7 +73,7 @@ function Settings() {
       setPreview(URL.createObjectURL(file)); // Show image preview immediately
     }
   };
-
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -83,30 +83,30 @@ function Settings() {
         smsNotifications: notifications.smsNotifications,
         darkMode,
       };
-
-      await axios.post(`http://localhost:8080/doctor/uploadProfilePicture/${doctor.id}`, updatedData);
-
+ 
+      await axios.post(`https://dentalmanagement.azurewebsites.net/doctor/uploadProfilePicture/${doctor.id}`, updatedData);
+ 
       if (profilePicture) {
         // Handle profile picture upload
         const formData = new FormData();
         formData.append('profilePicture', profilePicture);
-
-        await axios.post(`http://localhost:8080/doctor/uploadProfilePicture/${doctor.id}`, formData, {
+ 
+        await axios.post(`https://dentalmanagement.azurewebsites.net/doctor/uploadProfilePicture/${doctor.id}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         });
       }
-
+ 
       alert('Profile updated successfully!');
     } catch (error) {
       console.error('Failed to update profile:', error);
       alert('An error occurred while updating the profile.');
     }
   };
-
+ 
   if (loading) return <Typography>Loading...</Typography>;
-
+ 
   return (
       <Box sx={{ display: 'flex', minHeight: '100vh' }}>
         <Sidebar />
@@ -171,9 +171,9 @@ function Settings() {
                       id="profile-picture-input"
                   />
                   <label htmlFor="profile-picture-input">
-                  <Button 
-  variant="contained" 
-  style={{ backgroundColor: '#88343B', fontWeight: 'bold', color: '#fff' }} 
+                  <Button
+  variant="contained"
+  style={{ backgroundColor: '#88343B', fontWeight: 'bold', color: '#fff' }}
   component="span"
 >
   Upload Profile Picture
@@ -186,12 +186,12 @@ function Settings() {
                   )}
                 </Grid>
               </Grid>
-
+ 
               {/* Other settings like notifications and dark mode */}
               <Box sx={{ mt: 3 }}>
-              <Button 
-  type="submit" 
-  variant="contained" 
+              <Button
+  type="submit"
+  variant="contained"
   style={{ backgroundColor: '#88343B', fontWeight: 'bold', color: '#fff' }}
 >
   Save Changes
@@ -203,5 +203,5 @@ function Settings() {
       </Box>
   );
 }
-
+ 
 export default Settings;

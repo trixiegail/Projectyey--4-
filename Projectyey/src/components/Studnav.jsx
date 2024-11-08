@@ -94,7 +94,7 @@ export function Studnav() {
         <div className="container mx-auto px-5 py-7">
           <div className="flex justify-between items-center">
             <a href="/home" className="flex items-center text-xl font-bold text-black">
-              <img src="src/image/teethLogoDesign.png" alt="Teeth Logo" className="h-14" />
+              <img src="/teethLogoDesign.png" alt="Teeth Logo" className="h-14" />
             </a>
 
             <div>
@@ -146,14 +146,14 @@ export function Studnav() {
 
               {studentName === 'Sign in' ? (
                 <div className="flex items-center space-x-2 cursor-pointer" onClick={handleAvatarClick}>
-                  <Avatar variant="circular" alt="student avatar" src="src/image/student.png" />
+                  <Avatar variant="circular" alt="student avatar" src="/student.png" />
                   <Typography variant="h6" className="font-medium text-gray-800">{studentName}</Typography>
                 </div>
               ) : (
                 <Menu className="shadow-2xl">
                   <MenuHandler>
                     <div className="flex items-center space-x-2 cursor-pointer">
-                      <Avatar variant="circular" alt="student avatar" src="src/image/student.png" />
+                      <Avatar variant="circular" alt="student avatar" src="/student.png" />
                       <Typography variant="h6" className="font-medium text-black">{studentName}</Typography>
                     </div>
                   </MenuHandler>

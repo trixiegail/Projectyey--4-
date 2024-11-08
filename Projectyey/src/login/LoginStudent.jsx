@@ -12,7 +12,7 @@ const LoginStudent = () => {
     event.preventDefault();
 
     try {
-      const endpoint = 'http://localhost:8080/student/login';
+      const endpoint = 'https://dentalmanagement.azurewebsites.net/student/login';
       const response = await axios.post(endpoint, { idNumber, password });
 
       if (response.data) {

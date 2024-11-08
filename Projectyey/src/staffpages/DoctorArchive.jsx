@@ -12,7 +12,7 @@ function DoctorArchive() {
 
     const fetchArchivedAccounts = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/doctor/getAllArchivedDoctors');
+            const response = await axios.get('https://dentalmanagement.azurewebsites.net/doctor/getAllArchivedDoctors');
 
             if (response.status === 200) {
                 setArchivedAccounts(response.data);
@@ -27,7 +27,7 @@ function DoctorArchive() {
 
     const handleSearch = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/doctor/search/archivedDoctors?keyword=${searchTerm}`);
+            const response = await axios.get(`https://dentalmanagement.azurewebsites.net/doctor/search/archivedDoctors?keyword=${searchTerm}`);
             if (response.status === 200) {
                 setArchivedAccounts(response.data);
                 console.log('Archived accounts searched successfully:', response.data);
@@ -41,7 +41,7 @@ function DoctorArchive() {
 
     const handleUnarchive = async (id) => {
         try {
-            const response = await axios.post(`http://localhost:8080/doctor/unarchiveDoctor/${id}`);
+            const response = await axios.post(`https://dentalmanagement.azurewebsites.net/doctor/unarchiveDoctor/${id}`);
             if (response.status === 200) {
                 console.log('Account unarchived successfully');
                 fetchArchivedAccounts(); // Refresh the list

@@ -14,7 +14,7 @@ const BookingPage = () => {
 
   useEffect(() => {
     // Fetch events from the backend
-    fetch('http://localhost:8080/api/events')
+    fetch('https://dentalmanagement.azurewebsites.net/api/events')
       .then(response => response.json())
       .then(data => setEvents(data))
       .catch(error => console.error('Error fetching events:', error));

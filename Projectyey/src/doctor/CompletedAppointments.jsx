@@ -59,7 +59,7 @@ const CompletedAppointments = () => {
 
   // Fetch completed appointments on component mount
   useEffect(() => {
-    fetch('http://localhost:8080/api/completed-appointments')  // Adjust API endpoint as necessary
+    fetch('https://dentalmanagement.azurewebsites.net/api/completed-appointments')  // Adjust API endpoint as necessary
       .then((response) => response.json())
       .then((data) => {
         const sortedData = data.sort((a, b) => new Date(b.completedDate) - new Date(a.completedDate));

@@ -74,7 +74,7 @@ const PatientForm = () => {
   useEffect(() => {
     const fetchStudentData = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/student/students/${applicant.studentIdNumber}`);
+        const response = await fetch(`https://dentalmanagement.azurewebsites.net/student/students/${applicant.studentIdNumber}`);
   
         if (!response.ok) {
           throw new Error(`Error fetching student data: ${response.statusText}`);
@@ -140,7 +140,7 @@ const PatientForm = () => {
       };
 
       try {
-        const response = await fetch(`http://localhost:8080/api/checkups/save?idNumber=${applicant.studentIdNumber}`, {
+        const response = await fetch(`https://dentalmanagement.azurewebsites.net/api/checkups/save?idNumber=${applicant.studentIdNumber}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -168,7 +168,7 @@ const PatientForm = () => {
   // Toggle the medical records drawer
   const handleMedicalRecords = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/checkups/student/${applicant.studentIdNumber}`);
+      const response = await fetch(`https://dentalmanagement.azurewebsites.net/api/checkups/student/${applicant.studentIdNumber}`);
       if (response.ok) {
         const records = await response.json(); // Parse the JSON response
         // Sort the records by date (newest first)
@@ -198,7 +198,7 @@ const PatientForm = () => {
 
   const handleDeleteEvent = () => {
     if (selectedApplicantId) {
-      fetch(`http://localhost:8080/api/events/${selectedApplicantId}`, {
+      fetch(`https://dentalmanagement.azurewebsites.net/api/events/${selectedApplicantId}`, {
         method: 'DELETE',
       })
         .then((eventResponse) => {
@@ -221,14 +221,14 @@ const PatientForm = () => {
   const handleDelete = () => {
     console.log('Attempting to completed applicant ID:', selectedApplicantId);
   
-    fetch(`http://localhost:8080/api/completed-appointments/move/${selectedApplicantId}`, {
+    fetch(`https://dentalmanagement.azurewebsites.net/api/completed-appointments/move/${selectedApplicantId}`, {
       method: 'POST',
     })
       .then((response) => {
         if (response.ok) {
           console.log('Successfully moved to Completed Appointments History');
   
-          return fetch(`http://localhost:8080/api/patients/${selectedApplicantId}`, {
+          return fetch(`https://dentalmanagement.azurewebsites.net/api/patients/${selectedApplicantId}`, {
             method: 'DELETE',
           });
         } else {

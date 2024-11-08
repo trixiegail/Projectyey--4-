@@ -8,7 +8,7 @@ const Studfooter = () => {
             <div className="w-1/3">
               {/* Brand logo */}
               <a href="/home" className="flex items-center text-xl font-bold text-black ">
-                <img src="src/image/teethLogoDesignWhite.png" alt="Teeth Logo" className="h-20" />
+                <img src="/teethLogoDesignWhite.png" alt="Teeth Logo" className="h-20" />
                 {/* HAPPY <span className="text-gray-800">DENTAL</span> */}
               </a>
               <p className="mt-2">

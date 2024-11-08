@@ -24,7 +24,7 @@ function Settings() {
     const fetchStaffData = async () => {
       try {
         if (staff && staff.id) {
-          const response = await axios.get(`http://localhost:8080/user/profile/${staff.id}`);
+          const response = await axios.get(`https://dentalmanagement.azurewebsites.net/user/profile/${staff.id}`);
           const staffData = response.data;
 
           // Populate form with fetched data

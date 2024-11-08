@@ -14,7 +14,7 @@ const LoginAdmin = () => {
     event.preventDefault(); // Prevent the default form submission behavior
 
     try {
-      const endpoint = 'http://localhost:8080/dentalmanagement/admin';
+      const endpoint = 'https://dentalmanagement.azurewebsites.net/admin/login-admin';
       const response = await axios.post(endpoint, { username, password });
   
       if (response.data) {
