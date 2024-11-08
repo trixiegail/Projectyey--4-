@@ -96,7 +96,7 @@ function NurseAccounts() {
     if (selectedUser && selectedUser.id) {
       try {
         console.log('Updating user with ID:', selectedUser.id);
-        const response = await axios.put(`https://dentalmanagement.azurewebsites.net/nurse/updateStaff/${selectedUser.id}`, selectedUser);
+        const response = await axios.put(`https://dentalmanagement.azurewebsites.net/nurse/updateNurse/${selectedUser.id}`, selectedUser);
         if (response.status === 200) {
           console.log('Staff account updated successfully');
           fetchData(); // Refresh the data
