@@ -233,7 +233,7 @@ const DocCalendar = () => {
           })
           .catch(error => console.error('Error updating event:', error));
       } else {
-        fetch('http://localhost:8080/api/events', {
+        fetch('https://dentalmanagement.azurewebsites.net/api/events', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newEvent),
