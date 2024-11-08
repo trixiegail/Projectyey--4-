@@ -84,8 +84,8 @@ const Sidebar = () => {
         <img
           src={
             isHovered 
-              ? '/src/image/teethLogoDesignYellow.png' 
-              : '/src/image/teethLogoDesignWhite.png'
+              ? '/teethLogoDesignYellow.png'
+              : '/teethLogoDesignWhite.png'
           }
           alt="Logo"
           style={{ width: '150px', height: 'auto', transition: '0.3s' }}
