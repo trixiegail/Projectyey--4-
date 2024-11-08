@@ -19,7 +19,7 @@ export function Home() {
           <Studnav />
           <img
             className="h-90 w-full items-center"
-            src="src/image/Banner.png"
+            src="/Banner.png"
             alt="Your Company"
           />
  
@@ -27,7 +27,7 @@ export function Home() {
         <div className="container mx-auto flex flex-col md:flex-row items-center">
           {/* Image Section */}
           <div className="md:w-1/2 w-full px-4 mb-8 md:mb-0">
-            <img src="src/image/Aboutus.png" alt="Happy Dental" className="rounded-lg shadow-lg" />
+            <img src="/Aboutus.png" alt="Happy Dental" className="rounded-lg shadow-lg" />
           </div>
  
           {/* Text Section */}
@@ -53,7 +53,7 @@ export function Home() {
         </div>
  
         <video className="h-50 w-50 rounded-lg container mx-auto flex flex-col items-center mt-20" controls>
-          <source src="src/image/video.mp4" type="video/mp4" />
+          <source src="/video.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
       </section>
@@ -93,21 +93,21 @@ export function Home() {
     <div className="flex flex-col md:flex-row justify-center items-center gap-8">
       <div className="max-w-xs text-center">
         <div className="bg-[#88343B] p-4 mb-4 inline-block rounded">
-          <img src="/src/image/scedule.png" alt="Make Appointment Icon" className="h-16 w-16" />
+          <img src="/scedule.png" alt="Make Appointment Icon" className="h-16 w-16" />
         </div>
         <h3 className="text-xl font-semibold text-gray-900 mb-2">Make Appointment</h3>
         <p className="text-gray-600">Etiam fusce arcu ac auctor nisl purus consectetur. Eu viverra ultricies sit.</p>
       </div>
       <div className="max-w-xs text-center">
         <div className="bg-[#88343B] p-4 mb-4 inline-block rounded">
-          <img src="/src/image/dentist.png" alt="Expert Dental Care Icon" className="h-16 w-16" />
+          <img src="/dentist.png" alt="Expert Dental Care Icon" className="h-16 w-16" />
         </div>
         <h3 className="text-xl font-semibold text-gray-900 mb-2">Expert Dental Care</h3>
         <p className="text-gray-600">Etiam fusce arcu ac auctor nisl purus consectetur. Eu viverra ultricies sit.</p>
       </div>
       <div className="max-w-xs text-center">
         <div className="bg-[#88343B] p-4 mb-4 inline-block rounded">
-          <img src="/src/image/whitening.png" alt="Radiate Confidence Icon" className="h-16 w-16" />
+          <img src="/whitening.png" alt="Radiate Confidence Icon" className="h-16 w-16" />
         </div>
         <h3 className="text-xl font-semibold text-gray-900 mb-2">Radiate Confidence</h3>
         <p className="text-gray-600">Etiam fusce arcu ac auctor nisl purus consectetur. Eu viverra ultricies sit.</p>
