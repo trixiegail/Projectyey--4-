@@ -120,7 +120,7 @@ function RegisterForCheckup() {
       </SearchContainer>
 
       {/* Cover Image */}
-      <CoverImage src="src/image/nursecover.png" alt="Nurse Cover" />
+      <CoverImage src="/nursecover.png" alt="Nurse Cover" />
     </div>
   );
 }

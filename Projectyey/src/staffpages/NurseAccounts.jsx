@@ -98,13 +98,13 @@ function NurseAccounts() {
         console.log('Updating user with ID:', selectedUser.id);
         const response = await axios.put(`https://dentalmanagement.azurewebsites.net/nurse/updateNurse/${selectedUser.id}`, selectedUser);
         if (response.status === 200) {
-          console.log('Staff account updated successfully');
+          console.log('Nurse account updated successfully');
           fetchData(); // Refresh the data
         } else {
-          throw new Error('Failed to update staff account');
+          throw new Error('Failed to update nurse account');
         }
       } catch (error) {
-        console.error('Error updating staff account:', error);
+        console.error('Error updating nurse account:', error);
       }
       handleClose();
     } else {
