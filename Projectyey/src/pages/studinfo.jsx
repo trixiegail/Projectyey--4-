@@ -41,7 +41,7 @@ function App() {
             <div className="overflow-hidden rounded-lg bg-gray-200 float-right">
               <img
                 className="h-40 w-auto"
-                src="src/image/student.png"
+                src="/student.png"
                 alt="me"
               />
             </div>

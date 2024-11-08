@@ -43,7 +43,7 @@ const StudentMedicalHistory = () => {
             </header>
 
             <div className="overflow-hidden rounded-lg bg-gray-200 float-right">
-              <img className="h-40 w-auto" src="src/image/student.png" alt="me" />
+              <img className="h-40 w-auto" src="/student.png" alt="me" />
             </div>
 
             <div className="mt-10 grid grid-cols-1 gap-x-1 gap-y-5 sm:grid-cols-6">

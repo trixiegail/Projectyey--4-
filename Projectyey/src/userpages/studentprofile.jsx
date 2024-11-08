@@ -36,7 +36,7 @@ export function Home() {
   });
 
 
-  const [imageSrc, setImageSrc] = useState("src/image/student.png");
+  const [imageSrc, setImageSrc] = useState("/student.png");
   const [newImage, setNewImage] = useState(null);
 
   const [showMedicalRecords, setShowMedicalRecords] = useState(false);
@@ -50,7 +50,7 @@ export function Home() {
 
       if (studentIdNumber) {
         try {
-          const response = await axios.get(`https://dentalmanagement.azurewebsites.net/student/students/${studentIdNumber}`);
+          const response = await axios.get(`https://dentalmanagement.azurewebsites.net/student/${studentIdNumber}`);
           const data = response.data;
 
           console.log("Fetched student data:", data); // Log the data to verify
@@ -146,7 +146,7 @@ export function Home() {
             <div className="bg-profile-background absolute top-0 bg-[url('/img/background-3.png')] bg-cover bg-center scale-105" />
             <img
                 className="absolute top-0 h-full w-full bg-black/60 bg-cover bg-center "
-                src="src/image/Banner.png"
+                src="/Banner.png"
                 alt="Your Company"
             />
           </section>
