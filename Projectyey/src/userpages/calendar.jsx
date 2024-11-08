@@ -303,7 +303,7 @@ const App = () => {
       if (studentIdNumber) {
         try {
           // Fetch the reservation from the backend
-          const response = await fetch(`https://dentalmanagement.azurewebsites.net/api/reservations/reserve/${studentIdNumber}`);
+          const response = await fetch(`https://dentalmanagement.azurewebsites.net/api/reservations/reservations/${studentIdNumber}`);
           if (response.ok) {
             const reservationData = await response.json();
             console.log("Fetched reservation data:", reservationData); // Debugging
