@@ -34,19 +34,19 @@ export function Home() {
           <div className="md:w-1/2 w-full px-4">
             <h2 className="text-lg font-semibold text-gray-600 uppercase mb-2">About Us</h2>
             <h1 className="text-4xl font-bold text-gray-900 mb-4">Your Trusted Partner For Dental Health</h1>
-            <p className="text-gray-700 mb-6">
-              Purus turpis vivamus sem est blandit. In at egestas id sollicitudin mattis integer aliquet ut tempor. Risus enim nisi ipsum imperdiet. Sed turpis tellus quisque tellus ipsum malesuada fringilla amet elit.
+            <p className="text-gray-700 mb-6" style={{ textAlign: 'justify' }}>
+            At CIT-U University Medical-Dental Clinic, we are dedicated to providing top-quality dental care. With a commitment to excellence, our experienced dentists offer personalized treatments in a welcoming environment. We believe that everyone deserves access to affordable, reliable dental services to ensure a healthy smile. Trust us to be your partner in maintaining optimal dental health, with expert care that you can rely on.
             </p>
             <div className="flex items-center mb-4">
               <div>
                 <h3 className="text-xl font-semibold text-gray-900">Experienced Dentist</h3>
-                <p className="text-gray-600">Purus turpis vivamus sem est blandit in at egestas.</p>
+                <p className="text-gray-600" style={{ textAlign: 'justify' }}>Our team of dentists brings years of experience and expertise in various dental specialties, ensuring you receive the highest standard of care. With a patient-centered approach, we strive to make every visit comfortable and effective, using the latest techniques and technology to achieve the best results.</p>
               </div>
             </div>
             <div className="flex items-center">
               <div>
                 <h3 className="text-xl font-semibold text-gray-900">Affordable Pricing</h3>
-                <p className="text-gray-600">Purus turpis vivamus sem est blandit in at egestas.</p>
+                <p className="text-gray-600" style={{ textAlign: 'justify' }}>Quality dental care should be accessible to everyone. We offer competitive pricing and flexible payment options to make our services affordable for all. From routine check-ups to advanced treatments, we believe in transparent pricing without compromising on the quality of care.</p>
               </div>
             </div>
           </div>
@@ -63,8 +63,8 @@ export function Home() {
           {/* Text Section */}
           <div className="w-full px-4 text-center">
             <h1 className="text-4xl font-bold text-white mb-4">Happy dental Statistic</h1>
-            <p className="text-white mb-6 col-span-4 lg:col-span-6">
-              Purus turpis vivamus sem est blandit. In at egestas id sollicitudin mattis integer aliquet ut tempor. Risus enim nisi ipsum imperdiet. Sed turpis tellus quisque tellus ipsum malesuada fringilla amet elit.
+            <p className="text-white mb-6 col-span-4 lg:col-span-6" >
+            Our clinic takes pride in delivering satisfaction to our patients, with countless smiles and successful treatments. These statistics represent the trust and happiness of our patients, highlighting our dedication to providing top-quality dental care. Join our community of satisfied clients and experience dental care that exceeds expectations.
             </p>
           </div>
         </div>
@@ -96,21 +96,21 @@ export function Home() {
           <img src="/scedule.png" alt="Make Appointment Icon" className="h-16 w-16" />
         </div>
         <h3 className="text-xl font-semibold text-gray-900 mb-2">Make Appointment</h3>
-        <p className="text-gray-600">Etiam fusce arcu ac auctor nisl purus consectetur. Eu viverra ultricies sit.</p>
+        <p className="text-gray-600">Conveniently book your next visit with us and start your journey to optimal dental health.</p>
       </div>
       <div className="max-w-xs text-center">
         <div className="bg-[#88343B] p-4 mb-4 inline-block rounded">
           <img src="/dentist.png" alt="Expert Dental Care Icon" className="h-16 w-16" />
         </div>
         <h3 className="text-xl font-semibold text-gray-900 mb-2">Expert Dental Care</h3>
-        <p className="text-gray-600">Etiam fusce arcu ac auctor nisl purus consectetur. Eu viverra ultricies sit.</p>
+        <p className="text-gray-600">Our skilled team provides personalized treatments to meet all your dental needs.</p>
       </div>
       <div className="max-w-xs text-center">
         <div className="bg-[#88343B] p-4 mb-4 inline-block rounded">
           <img src="/whitening.png" alt="Radiate Confidence Icon" className="h-16 w-16" />
         </div>
         <h3 className="text-xl font-semibold text-gray-900 mb-2">Radiate Confidence</h3>
-        <p className="text-gray-600">Etiam fusce arcu ac auctor nisl purus consectetur. Eu viverra ultricies sit.</p>
+        <p className="text-gray-600">Leave our clinic with a smile that makes you feel confident and proud.</p>
       </div>
     </div>
     <div className="mt-10">
