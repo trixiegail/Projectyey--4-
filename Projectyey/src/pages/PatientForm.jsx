@@ -126,7 +126,7 @@ const PatientForm = () => {
   useEffect(() => {
     const fetchStudentData = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/student/students/${applicant.studentIdNumber}`);
+        const response = await fetch(`https://dentalmanagement.azurewebsites.net/student/students/${applicant.studentIdNumber}`);
   
         if (!response.ok) {
           throw new Error(`Error fetching student data: ${response.statusText}`);
@@ -190,7 +190,7 @@ const PatientForm = () => {
       };
 
       try {
-        const response = await fetch(`http://localhost:8080/api/checkups/save?idNumber=${applicant.studentIdNumber}`, {
+        const response = await fetch(`https://dentalmanagement.azurewebsites.net/api/checkups/save?idNumber=${applicant.studentIdNumber}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -217,7 +217,7 @@ const PatientForm = () => {
 
   const handleMedicalRecords = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/checkups/student/${applicant.studentIdNumber}`);
+      const response = await fetch(`https://dentalmanagement.azurewebsites.net/api/checkups/student/${applicant.studentIdNumber}`);
       if (response.ok) {
         const records = await response.json(); 
         const sortedRecords = records.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -236,7 +236,7 @@ const PatientForm = () => {
     const date = '2024-11-15'; 
 
     try {
-        const response = await fetch(`http://localhost:8080/student/toothStatusesByDate?studentId=${studentId}&date=${date}`);
+        const response = await fetch(`https://dentalmanagement.azurewebsites.net/student/toothStatusesByDate?studentId=${studentId}&date=${date}`);
         if (response.ok) {
             const records = await response.json(); 
             const sortedRecords = records.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt)); 
@@ -254,7 +254,7 @@ const handleAllToothStatuses = async () => {
 
   try {
       console.log('Fetching all tooth statuses for:', applicant.studentIdNumber);
-      const response = await fetch(`http://localhost:8080/student/${applicant.studentIdNumber}/tooth-statuses`);
+      const response = await fetch(`https://dentalmanagement.azurewebsites.net/student/${applicant.studentIdNumber}/tooth-statuses`);
 
       if (response.ok) {
           const records = await response.json();
@@ -287,7 +287,7 @@ const handleAllToothStatuses = async () => {
 
   const handleDeleteEvent = () => {
     if (selectedApplicantId) {
-      fetch(`http://localhost:8080/api/events/${selectedApplicantId}`, {
+      fetch(`https://dentalmanagement.azurewebsites.net/api/events/${selectedApplicantId}`, {
         method: 'DELETE',
       })
         .then((eventResponse) => {
@@ -310,14 +310,14 @@ const handleAllToothStatuses = async () => {
   const handleDelete = () => {
     console.log('Attempting to completed applicant ID:', selectedApplicantId);
   
-    fetch(`http://localhost:8080/api/completed-appointments/move/${selectedApplicantId}`, {
+    fetch(`https://dentalmanagement.azurewebsites.net/api/completed-appointments/move/${selectedApplicantId}`, {
       method: 'POST',
     })
       .then((response) => {
         if (response.ok) {
           console.log('Successfully moved to Completed Appointments History');
   
-          return fetch(`http://localhost:8080/api/patients/${selectedApplicantId}`, {
+          return fetch(`https://dentalmanagement.azurewebsites.net/api/patients/${selectedApplicantId}`, {
             method: 'DELETE',
           });
         } else {
@@ -533,7 +533,7 @@ const handleSaveAll = async () => {
       date: new Date().toISOString(),  
     }));
 
-    const response = await fetch(`http://localhost:8080/student/saveToothStatuses?studentIdNumber=${formData.idNumber}`, {
+    const response = await fetch(`https://dentalmanagement.azurewebsites.net/student/saveToothStatuses?studentIdNumber=${formData.idNumber}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
