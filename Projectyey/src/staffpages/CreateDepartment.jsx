@@ -35,7 +35,7 @@ function CreateDepartment() {
   return (
     <div className="ml-[265px] min-h-screen flex flex-col items-center justify-center bg-gradient-to-b">
       <Nav />
-      <img src="src/image/logo.png" alt="Logo" className="absolute top-0 left-5 ml-[265px] object-center"/>
+      <img src="/logo.png" alt="Logo" className="absolute top-0 left-5 ml-[265px] object-center"/>
 
       <div className="w-full max-w-4xl p-8 space-y-6 bg-[#88343B] rounded-lg shadow-md">
         <h1 className="text-2xl font-bold text-center text-white">Create Department</h1>

@@ -56,7 +56,7 @@ function DoctorArchive() {
     return (
         <div className='ml-[265px]'>
             <Nav />
-            <img src="src/image/logo.png" alt="Logo" className="absolute top-0 left-5 ml-[265px] object-center"/>
+            <img src="/logo.png" alt="Logo" className="absolute top-0 left-5 ml-[265px] object-center"/>
 
             <div className="w-50 ml-10 mt-[120px] relative">
                 <h1 className="text-2xl font-bold mb-5">Archived Doctor Accounts</h1>

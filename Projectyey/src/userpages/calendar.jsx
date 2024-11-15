@@ -105,7 +105,7 @@ const App = () => {
   
     try {
       // Fetch student data using studentIdNumber
-      const response = await fetch(`https://dentalmanagement.azurewebsites.net/student/${studentIdNumber}`);
+      const response = await fetch(`https://dentalmanagement.azurewebsites.net/student/students/${studentIdNumber}`);
       if (!response.ok) {
         throw new Error('Failed to fetch student data');
       }
@@ -143,8 +143,9 @@ const App = () => {
       });
   
       if (!reserveResponse.ok) {
-        const errorData = await reserveResponse.json();
-        throw new Error(errorData.error); 
+        const errorData = await reserveResponse.text(); // Use text() to capture full response
+        console.error("Error response:", errorData);
+        throw new Error("Failed to reserve slot");
       }
   
       const data = await reserveResponse.json();
@@ -303,7 +304,7 @@ const App = () => {
       if (studentIdNumber) {
         try {
           // Fetch the reservation from the backend
-          const response = await fetch(`https://dentalmanagement.azurewebsites.net/api/reservations/reserve/${studentIdNumber}`);
+          const response = await fetch(`https://dentalmanagement.azurewebsites.net/api/reservations/reservations/${studentIdNumber}`);
           if (response.ok) {
             const reservationData = await response.json();
             console.log("Fetched reservation data:", reservationData); // Debugging
