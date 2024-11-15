@@ -116,7 +116,7 @@ const App = () => {
       const reservationCheckResponse = await fetch(`https://dentalmanagement.azurewebsites.net/api/reservations?studentId=${studentIdNumber}`);
       const reservations = await reservationCheckResponse.json();
 
-      if (reservations.length > 0) {
+      if (reservations.length > 1) {
         setLimitModalOpen(true);
         return; 
       }
