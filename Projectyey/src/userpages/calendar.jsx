@@ -116,7 +116,7 @@ const App = () => {
       const reservationCheckResponse = await fetch(`https://dentalmanagement.azurewebsites.net/api/reservations?studentId=${studentIdNumber}`);
       const reservations = await reservationCheckResponse.json();
 
-      if (reservations.length > 1) {
+      if (reservations.length > 0) {
         setLimitModalOpen(true);
         return; 
       }
@@ -143,8 +143,9 @@ const App = () => {
       });
   
       if (!reserveResponse.ok) {
-        const errorData = await reserveResponse.json();
-        throw new Error(errorData.error); 
+        const errorData = await reserveResponse.text(); // Use text() to capture full response
+        console.error("Error response:", errorData);
+        throw new Error("Failed to reserve slot");
       }
   
       const data = await reserveResponse.json();
