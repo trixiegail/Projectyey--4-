@@ -877,7 +877,7 @@ const handlePrint = () => {
         <div style={{ flex: 1, marginRight: '20px' }}>
           <div className="teeth-chart-container">
             <div className="teeth-chart" style={{ marginBottom: '-50px', marginTop: '-60px' }}>
-              <img src="/src/image/teeth.png" alt="Teeth Chart" />
+              <img src="../teeth.png" alt="Teeth Chart" />
               <div className="teeth-buttons">
                 {/* Upper Teeth Buttons */}
                 {teethUpper.map((tooth) => (
