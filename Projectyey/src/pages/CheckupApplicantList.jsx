@@ -90,41 +90,37 @@ const ApplicantList = () => {
    // Confirm acceptance of the patient
    const handleConfirmAccept = () => {
     if (selectedApplicant) {
-      // Call the backend API to accept the reservation
+      // Accept the applicant
       fetch(`https://dentalmanagement.azurewebsites.net/api/reservations/accept/${selectedApplicant.id}`, {
         method: 'POST',
       })
       .then(response => {
         if (response.ok) {
-          setApplicants((prevApplicants) => prevApplicants.filter(a => a.id !== selectedApplicant.id));
-
-        const eventId = selectedApplicant.event.id; 
-
-        fetch(`https://dentalmanagement.azurewebsites.net/api/events/${eventId}`, {
-          method: 'DELETE',
-        })
-        .then(eventResponse => {
-          if (eventResponse.ok) {
-            console.log('Event deleted successfully');
-
-            setApplicants((prevApplicants) => prevApplicants.filter(a => a.id !== selectedApplicant.id));
-
-            handleCloseAcceptDialog();
-          } else {
-            console.error('Failed to delete event:', eventResponse);
-          }
-        })
-        .catch((error) => {
-          console.error('Error deleting event:', error);
-        });
-      } else {
-        console.error('Failed to accept the patient.');
-      }
-    })
-    .catch(error => {
-      console.error('Error accepting reservation:', error);
-    });
-  }
+          // Send email notification
+          fetch(`https://dentalmanagement.azurewebsites.net/email/notify-approval`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: selectedApplicant.email }),
+          })
+          .then(emailResponse => {
+            if (emailResponse.ok) {
+              console.log('Approval email sent successfully');
+            } else {
+              console.error('Failed to send approval email');
+            }
+          })
+          .catch(error => console.error('Error sending approval email:', error));
+  
+          // Remove the applicant from the list
+          setApplicants(prevApplicants => prevApplicants.filter(a => a.id !== selectedApplicant.id));
+          handleCloseAcceptDialog();
+        } else {
+          console.error('Failed to accept the applicant.');
+        }
+      })
+      .catch(error => console.error('Error accepting the applicant:', error));
+    }
+  
 
   
     // Close the dialog after confirming
