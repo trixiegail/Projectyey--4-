@@ -378,6 +378,7 @@ const handleCreateMultipleEvents = () => {
         const formattedStartTime = moment(start).format('h:mm a');
         const formattedEndTime = moment(end).format('h:mm a');
         const title = `${formattedStartTime} - ${formattedEndTime}`;
+        const formattedDate = moment(start).format('YYYY-MM-DD');
 
         newEvents.push({
           title,  
@@ -385,6 +386,9 @@ const handleCreateMultipleEvents = () => {
           end: end,
           type: 'Available', 
           isBooked: false,
+          date: formattedDate,
+          time: `${formattedStartTime} - ${formattedEndTime}`.toUpperCase(),
+          count: 5,
         });
       });
     }
