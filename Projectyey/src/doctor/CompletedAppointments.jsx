@@ -180,7 +180,7 @@ const CompletedAppointments = () => {
                 backgroundColor: 'white',
                 transition: 'background-color 0.3s ease',
                 '&:hover': {
-                  backgroundColor: '#f0f0f0', 
+                  backgroundColor: '#eaf6ff', 
                 },
               }}
             >
