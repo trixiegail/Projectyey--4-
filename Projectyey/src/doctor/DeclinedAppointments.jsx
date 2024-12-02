@@ -173,7 +173,18 @@ const DeclinedAppointments = () => {
           
           <TableBody>
           {declinedAppointments.map((appointment) => (
-          <TableRow key={appointment.id} onClick={() => handleRowClick(applicant)} style={{ cursor: 'pointer', backgroundColor:'white'}}>
+          <TableRow
+              key={appointment.id}
+              onClick={() => handleRowClick(appointment)}
+              sx={{
+                cursor: 'pointer',
+                backgroundColor: 'white',
+                transition: 'background-color 0.3s ease',
+                '&:hover': {
+                  backgroundColor: '#f0f0f0', 
+                },
+              }}
+            >
                 <TableCell style={{ paddingLeft: 15}}>{appointment.studentIdNumber}</TableCell>
                 <TableCell style={{ paddingLeft: 15}}>{appointment.fullName}</TableCell>
                 <TableCell style={{ paddingLeft: 30}}>{appointment.program}</TableCell>

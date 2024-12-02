@@ -346,7 +346,18 @@ const ApplicantList = () => {
           </TableHead>
           <TableBody>
             {filteredApplicants.map((applicant) => (
-              <TableRow key={applicant.id} onClick={() => handleRowClick(applicant)} style={{ cursor: 'pointer', backgroundColor:'white' }}>
+              <TableRow
+                key={applicant.id}
+                onClick={() => handleRowClick(applicant)}
+                sx={{
+                  cursor: 'pointer',
+                  backgroundColor: 'white',
+                  transition: 'background-color 0.3s ease',
+                  '&:hover': {
+                    backgroundColor: '#f0f0f0', 
+                  },
+                }}
+              >
                 <TableCell style={{ paddingLeft: 15, fontSize: '16px' }}>{applicant.studentIdNumber}</TableCell>
                 <TableCell style={{ paddingLeft: 15, fontSize: '16px' }}>{applicant.fullName}</TableCell>
                 <TableCell style={{ paddingLeft: 30, fontSize: '16px' }}>{applicant.program}</TableCell>
