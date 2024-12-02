@@ -181,7 +181,7 @@ const DeclinedAppointments = () => {
                 backgroundColor: 'white',
                 transition: 'background-color 0.3s ease',
                 '&:hover': {
-                  backgroundColor: '#eaf6ff', 
+                  backgroundColor: 'inherit',
                 },
               }}
             >
