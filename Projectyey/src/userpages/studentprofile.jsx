@@ -58,7 +58,7 @@ export function Home() {
 
       if (studentIdNumber) {
         try {
-          const response = await axios.get(`https://dentalmanagement.azurewebsites.net/student/${studentIdNumber}`);
+          const response = await axios.get(`https://dentalmanagement.azurewebsites.net/student/students/${studentIdNumber}`);
           const data = response.data;
 
           console.log("Fetched student data:", data); // Log the data to verify
