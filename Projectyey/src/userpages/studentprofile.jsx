@@ -52,7 +52,8 @@ export function Home() {
   const applicant = location.state?.applicant || {};
   const [selectedApplicantId, setSelectedApplicantId] = useState(null);
   const [applicants, setApplicants] = useState([]);
-
+  const [expandedDates, setExpandedDates] = useState({});
+  
   useEffect(() => {
     const fetchStudentInfo = async () => {
       const studentIdNumber = localStorage.getItem("studentIdNumber");
