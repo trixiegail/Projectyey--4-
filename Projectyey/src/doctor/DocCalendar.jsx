@@ -264,6 +264,7 @@ const DocCalendar = () => {
   const handleEditEvent = (event) => {
   setEditEvent(event);
   setNote(event.title);
+  setNote('');
   setSelectedEventType(event.type || 'Available'); 
   setTimeSlots([{
     startTime: moment(event.start).format('h:mm a'),
@@ -287,11 +288,18 @@ const DocCalendar = () => {
           setEvents(events.filter(e => e.id !== eventToDelete.id));
           setDayEvents(dayEvents.filter(e => e.id !== eventToDelete.id));
           setEventToDelete(null);
+          setDeleteConfirmOpen(false);
           setModalOpen(false);
-          setConfirmOpen(false);
+          // setConfirmOpen(false);
         })
         .catch(error => console.error('Error deleting event:', error));
     }
+  };
+  
+
+  const handleCloseDeleteModal = () => {
+    setEventToDelete(null); 
+    setDeleteConfirmOpen(false);
   };
   
 
@@ -801,12 +809,12 @@ const handleDeleteEvent = (event) => {
 
                       <Dialog
                         open={deleteConfirmOpen}
-                        onClose={() => setDeleteConfirmOpen(false)}
+                        onClose={handleCloseDeleteModal}
                       >
                         <DialogTitle>Confirm Deletion</DialogTitle>
                         <DialogContent>
                           <DialogContentText>
-                            Are you sure you want to delete the event: "{eventToDelete?.title}"?
+                          Are you sure you want to delete the event: "{eventToDelete?.title || ''}"?
                           </DialogContentText>
                         </DialogContent>
                         <DialogActions>
