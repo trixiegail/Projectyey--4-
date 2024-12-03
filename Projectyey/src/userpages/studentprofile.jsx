@@ -21,6 +21,7 @@ import React, { useState , useEffect} from "react";
 import Studfooter from "../components/Studfooter";
 import Studnav from "../components/Studnav";
 import axios from "axios";
+import { useLocation , useNavigate  } from 'react-router-dom';
 
 export function Home() {
   const [isEditMode, setIsEditMode] = useState(false);
@@ -34,6 +35,7 @@ export function Home() {
     dateOfBirth: "",
     email: "",
   });
+  
 
 
   const [imageSrc, setImageSrc] = useState("/student.png");
@@ -43,6 +45,12 @@ export function Home() {
   const [activeTab, setActiveTab] = useState("checkup");
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [medicalRecords, setMedicalRecords] = useState([]);
+  const navigate = useNavigate();
+  const [intraoralRecordsFetched, setIntraoralRecordsFetched] = useState(false);
+  const [intraoralRecords, setIntraoralRecords] = useState([]); 
+  const applicant = location.state?.applicant || {};
+  const [selectedApplicantId, setSelectedApplicantId] = useState(null);
+  const [applicants, setApplicants] = useState([]);
 
   useEffect(() => {
     const fetchStudentInfo = async () => {
@@ -135,6 +143,41 @@ export function Home() {
     setIsEditMode(false);
     // Save the updated personal info and image (optional backend call here)
     // You can also handle file upload to a server if needed.
+  };
+
+  const [formData, setFormData] = useState({
+    fullName: '',
+    idNumber: '',
+    department: '',
+    course: '',
+    year: '',
+    dateOfBirth: '',
+    email: '',
+    toothStatus: [], 
+    teethStatuses: [] ,
+    customCondition: ''
+  });
+
+
+  const handleAllToothStatuses = async () => {
+
+    try {
+        console.log('Fetching all tooth statuses for:', applicant.studentIdNumber);
+        const response = await fetch(`https://dentalmanagement.azurewebsites.net/student/${applicant.studentIdNumber}/tooth-statuses`);
+  
+        if (response.ok) {
+            const records = await response.json();
+            const sortedRecords = records.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt));
+            setIntraoralRecords(sortedRecords);
+            setShowMedicalRecords(true);
+        } else {
+            console.error('Failed to fetch all tooth statuses', response.status, response.statusText);
+            alert(`Failed to fetch data: ${response.status} - ${response.statusText}`);
+        }
+    } catch (error) {
+        console.error('Error fetching all tooth statuses:', error);
+        alert(`Error fetching data: ${error.message}`);
+    }
   };
 
   return (
@@ -381,58 +424,135 @@ export function Home() {
           </section>
 
           {/* Medical Records Drawer */}
-        <Drawer anchor="right" open={showMedicalRecords} onClose={handleDone}>
-          <Box sx={{ width: 400, padding: 2 }}>
-            <MuiTypography variant="h6" gutterBottom align="center">
-              Medical Records
-            </MuiTypography>
-            <Tabs
-              value={activeTab}
-              onChange={(event, newValue) => setActiveTab(newValue)}
-              indicatorColor="primary"
-              textColor="primary"
-              variant="fullWidth"
-              aria-label="medical records tabs"
-            >
-              <Tab label="Checkup" value="checkup" />
-              {/* <Tab label="Dental Treatment" value="dental" /> */}
-            </Tabs>
+          <Drawer anchor="right" open={showMedicalRecords} onClose={() => setShowMedicalRecords(false)}>
+  <Box
+    sx={{
+      width: 400,
+      padding: 2,
+      display: "flex",
+      flexDirection: "column",
+      height: "100vh", 
+      boxSizing: "border-box", 
+    }}
+  >
+    {/* Header */}
+    <Typography variant="h6" gutterBottom align="center">
+      Medical Records
+    </Typography>
+    <Tabs
+      value={activeTab}
+      onChange={(event, newValue) => {
+        setActiveTab(newValue);
+        if (newValue === "intraoral") {
+          handleAllToothStatuses(); 
+          setSelectedRecord(null);
+        }
+      }}
+      aria-label="medical records tabs"
+    >
+      <Tab label="Checkup" value="checkup" />
+      <Tab label="Intraoral Examination" value="intraoral" />
+    </Tabs>
 
-            {activeTab === "checkup" && (
-              <List>
-                {medicalRecords.map((record, index) => (
-                  <ListItem key={index} button onClick={() => handleRecordClick(record)}>
-                    <ListItemText
-                      primary={`${new Date(record.date).toDateString()} - ${new Date(record.date).toLocaleTimeString()}`}
-                    />
-                  </ListItem>
-                ))}
-              </List>
-            )}
+    {/* Content Container */}
+    <Box
+      sx={{
+        flexGrow: 1, 
+        overflowY: "auto", 
+        marginBottom: "70px", 
+      }}
+    >
+      {/* Checkup Tab */}
+      {activeTab === "checkup" && (
+        <List>
+          {medicalRecords.map((record, index) => (
+            <ListItem key={index} button onClick={() => setSelectedRecord(record)}>
+              <ListItemText
+                primary={`${new Date(record.date).toDateString()} - ${new Date(record.date).toLocaleTimeString()}`}
+              />
+            </ListItem>
+          ))}
+        </List>
+      )}
 
-            {selectedRecord && (
-              <div>
-                <MuiTypography variant="h6" gutterBottom>
-                  Records for {new Date(selectedRecord.date).toDateString()} -{" "}
-                  {new Date(selectedRecord.date).toLocaleTimeString()}
-                </MuiTypography>
-                <Card sx={{ marginBottom: 2 }}>
+      {/* Intraoral Examination Tab */}
+      {activeTab === "intraoral" && (
+  <List>
+    {intraoralRecords && intraoralRecords.length > 0 ? (
+      Object.keys(
+        intraoralRecords.reduce((acc, record) => {
+          const date = new Date(record.savedAt).toLocaleDateString();
+          if (!acc[date]) acc[date] = [];
+          acc[date].push(record);
+          return acc;
+        }, {})
+      ).map((date, index) => (
+        <div key={index}>
+          <ListItem button onClick={() => toggleDateExpansion(date)}>
+            <ListItemText primary={`${date}`} />
+          </ListItem>
+          <Collapse in={expandedDates[date]} timeout="auto" unmountOnExit>
+            {intraoralRecords
+              .filter((record) => new Date(record.savedAt).toLocaleDateString() === date)
+              .map((record, i) => (
+                <Card key={i} sx={{ marginBottom: 2, marginLeft: 3 }}>
                   <CardContent>
-                    <MuiTypography variant="body2">Blood Pressure: {selectedRecord.bloodPressure}</MuiTypography>
-                    <MuiTypography variant="body2">Heart Rate: {selectedRecord.heartRate}</MuiTypography>
-                    <MuiTypography variant="body2">Respiratory Rate: {selectedRecord.respiratoryRate}</MuiTypography>
-                    <MuiTypography variant="body2">Temperature: {selectedRecord.temperature}</MuiTypography>
-                    <MuiTypography variant="body2">Oral Health Status: {selectedRecord.oralHealthStatus}</MuiTypography>
-                    <MuiTypography variant="body2">Cavities: {selectedRecord.cavities}</MuiTypography>
-                    <MuiTypography variant="body2">Gum Health: {selectedRecord.gumHealth}</MuiTypography>
-                    <MuiTypography variant="body2">General Health: {selectedRecord.generalHealth}</MuiTypography>
-                    <MuiTypography variant="body2">Health Concerns: {selectedRecord.healthConcerns}</MuiTypography>
+                    <Typography variant="body1">
+                      Tooth Number: <strong>{record.toothNumber}</strong>
+                    </Typography>
+                    <Typography variant="body1">Status: {record.status}</Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      Saved At: {new Date(record.savedAt).toLocaleString()}
+                    </Typography>
                   </CardContent>
                 </Card>
-              </div>
-            )}
-          </Box>
-        </Drawer>
+              ))}
+          </Collapse>
+        </div>
+      ))
+    ) : (
+      <Typography variant="body2" color="textSecondary" sx={{ textAlign: "center", marginTop: 2 }}>
+        No Intraoral Examination records available.
+      </Typography>
+    )}
+  </List>
+)}
+
+{/* Display selected record details only if in Checkup tab */}
+{activeTab === 'checkup' && selectedRecord && (
+      <div>
+        <Typography variant="h6" gutterBottom>
+          Records for {new Date(selectedRecord.date || selectedRecord.savedAt).toDateString()} - {new Date(selectedRecord.date || selectedRecord.savedAt).toLocaleTimeString()}
+        </Typography>
+        <Card sx={{ marginBottom: 2 }}>
+          <CardContent>
+            <Typography variant="body2">Blood Pressure: {selectedRecord.bloodPressure}</Typography>
+            <Typography variant="body2">Heart Rate: {selectedRecord.heartRate}</Typography>
+            <Typography variant="body2">Respiratory Rate: {selectedRecord.respiratoryRate}</Typography>
+            <Typography variant="body2">Temperature: {selectedRecord.temperature}</Typography>
+            <Typography variant="body2">Oral Health Status: {selectedRecord.oralHealthStatus}</Typography>
+            <Typography variant="body2">Gum Health: {selectedRecord.gumHealth}</Typography>
+            <Typography variant="body2">Cavities: {selectedRecord.presenceOfCavities}</Typography>
+            <Typography variant="body2">General Health Condition: {selectedRecord.generalHealthCondition}</Typography>
+            <Typography variant="body2">Specific Health Condition: {selectedRecord.specificHealthConcerns}</Typography>
+          </CardContent>
+        </Card>
+      </div>
+    )}
+
+    </Box>
+
+    {/* Print Records Button Fixed at Bottom */}
+    <Box
+      sx={{
+        position: "fixed", 
+        bottom: 10, 
+      }}
+    >
+    
+    </Box>
+  </Box>
+</Drawer>
 
           <Studfooter />
         </div>
