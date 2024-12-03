@@ -53,7 +53,7 @@ export function Home() {
   const [selectedApplicantId, setSelectedApplicantId] = useState(null);
   const [applicants, setApplicants] = useState([]);
   const [expandedDates, setExpandedDates] = useState({});
-  
+
   useEffect(() => {
     const fetchStudentInfo = async () => {
       const studentIdNumber = localStorage.getItem("studentIdNumber");
@@ -163,6 +163,14 @@ export function Home() {
     teethStatuses: [] ,
     customCondition: ''
   });
+
+  const toggleDateExpansion = (date) => {
+    setExpandedDates(prevState => ({
+      ...prevState,
+      [date]: !prevState[date] 
+    }));
+  };
+  
 
 
   const handleAllToothStatuses = async () => {
