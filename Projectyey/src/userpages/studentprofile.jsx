@@ -539,7 +539,6 @@ export function Home() {
         </Card>
       </div>
     )}
-
     </Box>
 
     {/* Print Records Button Fixed at Bottom */}
@@ -549,7 +548,6 @@ export function Home() {
         bottom: 10, 
       }}
     >
-    
     </Box>
   </Box>
 </Drawer>
