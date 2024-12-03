@@ -110,6 +110,10 @@ export function Home() {
   // Toggle the medical records drawer
   const toggleMedicalRecordsDrawer = () => {
     setShowMedicalRecords(!showMedicalRecords);
+    if (!intraoralRecordsFetched) {
+      handleAllToothStatuses(); // Fetch records when the drawer is opened
+      setIntraoralRecordsFetched(true);
+    }
   };
 
   const handleRecordClick = (record) => {
@@ -160,10 +164,16 @@ export function Home() {
 
 
   const handleAllToothStatuses = async () => {
+    const studentIdNumber = localStorage.getItem("studentIdNumber");
+
+    if (!studentIdNumber) {
+      console.error("Student ID Number not found in localStorage");
+      return;
+    }
 
     try {
-        console.log('Fetching all tooth statuses for:', applicant.studentIdNumber);
-        const response = await fetch(`https://dentalmanagement.azurewebsites.net/student/${applicant.studentIdNumber}/tooth-statuses`);
+        console.log('Fetching all tooth statuses for:', studentIdNumber);
+        const response = await fetch(`https://dentalmanagement.azurewebsites.net/student/${studentIdNumber}/tooth-statuses`);
   
         if (response.ok) {
             const records = await response.json();
