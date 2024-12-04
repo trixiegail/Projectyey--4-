@@ -165,6 +165,8 @@ const App = () => {
       headers: { 'Content-Type': 'application/json' }
     });
 
+    window.location.reload();
+
     // Update the event list to mark the event as unavailable
     setEvents((prevEvents) =>
       prevEvents.map((event) =>
