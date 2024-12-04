@@ -355,7 +355,7 @@ const ApplicantList = () => {
                   backgroundColor: 'white',
                   transition: 'background-color 0.3s ease',
                   '&:hover': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+                    backgroundColor: '#eaf6ff',
                   },
                 }}
               >
