@@ -113,13 +113,12 @@ function StudentAccounts() {
   };
 
   return (
-    <div className='ml-[265px]'>
+    <div className='ml-[265px]' style={{ minHeight: '100vh',}} >
       <Nav />
-      <img src="/logo.png" alt="Logo" className="absolute top-0 left-5 ml-[265px] object-center" />
-
-      <div className="w-50 ml-10 mt-[120px] relative">
-        <h1 className="text-2xl font-bold mb-5">Student Accounts</h1>
-        <div className="flex items-center mb-5 mt-5">
+      
+      <div className="w-50 ml-10 relative pt-[50px]" >
+        <h1 className="text-2xl font-bold mb-5 ">Student Accounts</h1>
+        <div className="flex items-center mb-5 mt-5 mr-40 ml-40">
           <input
             type="text"
             id="search-bar"
@@ -142,8 +141,8 @@ function StudentAccounts() {
           </a>
         </div>
 
-        <div className="overflow-auto h-96 mt-2">
-          <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+        <div className="overflow-auto h-96 mt-2 mr-7">
+         <table className="min-w-full mx-auto bg-white shadow-md rounded-lg overflow-hidden">
             <thead className="bg-[#88343B] text-white">
               <tr>
                 <th className="w-1/6 py-3 px-4 uppercase font-semibold text-sm">ID Number</th>
@@ -163,6 +162,7 @@ function StudentAccounts() {
                   <td className="w-1/6 py-3 px-4">{user.birthdate}</td>
                   <td className="w-1/6 py-3 px-4">{user.email}</td>
                   <td className="w-1/6 py-3 px-4">
+                  <div className="flex justify-evenly">
                     <button
                       onClick={() => handleViewClick(user)}
                       className="ml-8 mb-2 px-4 py-2 bg-[#88343B] text-white rounded-lg shadow-md hover:bg-[#88343B]"
@@ -185,6 +185,7 @@ function StudentAccounts() {
                     >
                       Delete
                     </button>
+                    </div>
                   </td>
                 </tr>
               ))}
