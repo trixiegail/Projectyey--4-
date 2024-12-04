@@ -77,12 +77,12 @@ const Dashboard = () => {
       })
       .catch((error) => console.error('Error fetching patients:', error));
 
-    fetch('http://localhost:8080/api/completed-appointments')
+    fetch('https://dentalmanagement.azurewebsites.net/api/completed-appointments')
       .then((response) => response.json())
       .then((data) => setCompletedCount(data.length))
       .catch((error) => console.error('Error fetching completed appointments:', error));
 
-    fetch('http://localhost:8080/api/declined-appointments')
+    fetch('https://dentalmanagement.azurewebsites.net/api/declined-appointments')
       .then((response) => response.json())
       .then((data) => setDeclinedCount(data.length))
       .catch((error) => console.error('Error fetching declined appointments:', error));
@@ -90,7 +90,7 @@ const Dashboard = () => {
   
   useEffect(() => {
     // Fetch completed appointments
-    fetch('http://localhost:8080/api/completed-appointments')
+    fetch('https://dentalmanagement.azurewebsites.net/api/completed-appointments')
       .then((response) => response.json())
       .then((data) => {
         setCompletedAppointments(data);
