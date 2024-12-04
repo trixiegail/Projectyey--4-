@@ -313,7 +313,14 @@ const DentalRecordDrawer = () => {
       display: "none", 
     },  }}> 
           {/* Left-aligned buttons */}
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+          <Box 
+            sx={{ 
+              display: 'flex', 
+              justifyContent: 'flex-end', 
+              gap: 2, 
+              width: '100%' // Ensure the Box spans the entire width 
+            }}
+>
           <Button variant="contained" 
               sx={{ backgroundColor: '#a52a2a', '&:hover': { backgroundColor: '#F7C301' }}}
               onClick={() => setShowForm(!showForm)}
