@@ -353,7 +353,6 @@ const App = () => {
           headers: { 'Content-Type': 'application/json' },
         });
   
-        window.location.reload();
         // Clear the reserved event from state
         setReservedEvent(null);
       } catch (error) {
