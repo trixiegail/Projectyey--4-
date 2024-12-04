@@ -353,11 +353,12 @@ const App = () => {
           headers: { 'Content-Type': 'application/json' },
         });
   
+        window.location.reload();
         // Clear the reserved event from state
         setReservedEvent(null);
       } catch (error) {
         console.error('Error cancelling reservation:', error);
-        // alert('Failed to cancel the reservation.');
+        alert('Failed to cancel the reservation.');
       }
     } else {
       console.error('No reservation ID found');
