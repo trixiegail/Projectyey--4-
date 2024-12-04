@@ -53,7 +53,7 @@ const Dashboard = () => {
       .then((data) => setApplicantsCount(data.length))
       .catch((error) => console.error('Error fetching applicants:', error));
 
-    fetch('hhttps://dentalmanagement.azurewebsites.net/api/patients/')
+    fetch('https://dentalmanagement.azurewebsites.net/api/patients/')
       .then((response) => response.json())
       .then((data) => {
         setPatientsCount(data.length);
@@ -317,7 +317,7 @@ const Dashboard = () => {
         </Grid>
 
 
-        <Grid container spacing={3} mt={-25}>
+        <Grid container spacing={3} mt={-30}>
   {/* Left Column - Completed Patients Statistics */}
   <Grid item xs={12} md={6}>
     <Card sx={{ p: 3 }}>
