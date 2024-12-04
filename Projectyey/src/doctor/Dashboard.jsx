@@ -317,7 +317,7 @@ const Dashboard = () => {
         </Grid>
 
 
-        <Grid container spacing={3} mt={-55}>
+        <Grid container spacing={3}>
   {/* Left Column - Completed Patients Statistics */}
   <Grid item xs={12} md={6}>
     <Card sx={{ p: 3 }}>
