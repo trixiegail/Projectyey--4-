@@ -141,8 +141,8 @@ function StudentAccounts() {
           </a>
         </div>
 
-        <div className="overflow-auto h-96 mt-2 mr-7">
-         <table className="min-w-full mx-auto bg-white shadow-md rounded-lg overflow-hidden">
+        <div className="overflow-auto h-96 mt-2">
+          <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
             <thead className="bg-[#88343B] text-white">
               <tr>
                 <th className="w-1/6 py-3 px-4 uppercase font-semibold text-sm">ID Number</th>
