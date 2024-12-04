@@ -11,6 +11,8 @@ import { Box, Typography, TextField, IconButton, Avatar, Switch, Button,
         RadioGroup, FormControlLabel, Radio} from '@mui/material';
 import Sidebar from '../components/DocSidebar';
 import DocNavBar from '../components/DocNavBar';
+import '../doctor/dashboard.css';
+
  
 const localizer = momentLocalizer(moment);
  
@@ -591,7 +593,7 @@ const handleDeleteEvent = (event) => {
 
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh'}}>
+    <Box className="dashboard-container"sx={{ display: 'flex', minHeight: '100vh', backgroundColor:'white' }}>
       <Sidebar /> 
       <Box sx={{ flexGrow: 1, p: 3 }}>
       <Box 

@@ -6,6 +6,7 @@ import { Email, Badge, Cake } from '@mui/icons-material';
 import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import DocNavBar from '../components/DocNavBar';
+import '../doctor/dashboard.css';
 
 function DoctorList() {
   const [doctors, setDoctors] = useState([]);
@@ -33,7 +34,7 @@ function DoctorList() {
   };
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh'}}>
+    <Box className="dashboard-container"sx={{ display: 'flex', minHeight: '100vh', backgroundColor:'white' }}>
       <Sidebar /> 
       <Box sx={{ flexGrow: 1, p: 3 }}>
       <Box 
