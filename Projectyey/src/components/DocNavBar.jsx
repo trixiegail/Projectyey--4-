@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Box, TextField, IconButton, Avatar, Typography, Badge, Menu, MenuItem } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import NotificationsIcon from '@mui/icons-material/Notifications';
+import { Box, TextField, IconButton, Avatar, Typography, Badge, Menu, MenuItem, CircularProgress, Backdrop } from '@mui/material';
+// import SearchIcon from '@mui/icons-material/Search';
+// import NotificationsIcon from '@mui/icons-material/Notifications';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 
 const DocNavBar = () => {
     const { doctor, logoutDoctor } = useAuth();
-    const [notifications, setNotifications] = useState([]);
+    // const [notifications, setNotifications] = useState([]);
     const [profilePicture, setProfilePicture] = useState('');
     const [anchorEl, setAnchorEl] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchProfilePicture = async () => {
@@ -27,15 +29,15 @@ const DocNavBar = () => {
         fetchProfilePicture();
     }, [doctor]);
 
-    useEffect(() => {
-        const savedNotifications = JSON.parse(localStorage.getItem('doctorNotifications')) || [];
-        setNotifications(savedNotifications);
-    }, []);
+    // useEffect(() => {
+    //     const savedNotifications = JSON.parse(localStorage.getItem('doctorNotifications')) || [];
+    //     setNotifications(savedNotifications);
+    // }, []);
 
-    const handleClearNotifications = () => {
-        setNotifications([]);
-        localStorage.setItem('doctorNotifications', JSON.stringify([]));
-    };
+    // const handleClearNotifications = () => {
+    //     setNotifications([]);
+    //     localStorage.setItem('doctorNotifications', JSON.stringify([]));
+    // };
 
     const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
     const handleMenuClose = () => setAnchorEl(null);
@@ -44,9 +46,20 @@ const DocNavBar = () => {
         handleMenuClose();
     };
 
+    const handleReload = () => {
+        setLoading(true); 
+        setTimeout(() => {
+            window.location.reload(); 
+        }, 1000); 
+    };
+
     return (
+        <>
+        <Backdrop open={loading} sx={{ zIndex: 1300, color: '#fff' }}>
+            <CircularProgress color="inherit" />
+        </Backdrop>
         <Box sx={{ display: 'flex', alignItems: 'center', padding: 1, justifyContent: 'flex-end', width: '100%' }}>
-            <TextField
+            {/* <TextField
                 variant="outlined"
                 placeholder="Search Here"
                 size="small"
@@ -58,11 +71,14 @@ const DocNavBar = () => {
                     ),
                 }}
                 sx={{ marginRight: 2, width: '20%' }}
-            />
-            <IconButton color="inherit" onClick={handleClearNotifications}>
+            /> */}
+            {/* <IconButton color="inherit" onClick={handleClearNotifications}>
                 <Badge badgeContent={notifications.length} color="error">
                     <NotificationsIcon />
                 </Badge>
+            </IconButton> */}
+            <IconButton color="inherit" onClick={handleReload}>
+                <RefreshIcon />
             </IconButton>
             <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 2 }}>
                 <Avatar sx={{ width: 40, height: 40, marginRight: 1 }} src={profilePicture} />
@@ -72,13 +88,14 @@ const DocNavBar = () => {
                     </Typography>
                 </Box>
             </Box>
-            <IconButton onClick={handleMenuOpen}>
+            {/* <IconButton onClick={handleMenuOpen}>
                 <MoreVertIcon />
             </IconButton>
             <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
-            </Menu>
+            </Menu> */}
         </Box>
+        </>
     );
 };
 
