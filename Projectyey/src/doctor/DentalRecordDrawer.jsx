@@ -5,6 +5,8 @@ import DocNavBar from '../components/DocNavBar';
 import Sidebar from '../components/DocSidebar';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'; 
 import { useNavigate } from 'react-router-dom'; 
+import '../doctor/dashboard.css';
+
 
 const DentalRecordDrawer = () => {
   const printAllRef = useRef();
@@ -152,12 +154,7 @@ const DentalRecordDrawer = () => {
 
   return (
 
-    <Box
-    sx={{
-      display: 'flex',
-      minHeight: '100vh',
-    }}
-  >
+    <Box className="dashboard-container"sx={{ display: 'flex', minHeight: '100vh', backgroundColor:'white' }}>
   
         <Sidebar />
         <Box sx={{ flexGrow: 1, p: 3 }}>
@@ -316,7 +313,7 @@ const DentalRecordDrawer = () => {
       display: "none", 
     },  }}> 
           {/* Left-aligned buttons */}
-          <Box sx={{ display: 'flex', gap: 2 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
           <Button variant="contained" 
               sx={{ backgroundColor: '#a52a2a', '&:hover': { backgroundColor: '#F7C301' }}}
               onClick={() => setShowForm(!showForm)}
@@ -617,7 +614,7 @@ const DentalRecordDrawer = () => {
 
 <Collapse in={showIntraoralExam} unmountOnExit>
 
-<Box sx={{ display: "flex", gap: 2, marginBottom: 2 , alignItems: 'center', justifyContent: "center", }}>
+<Box sx={{ display: "flex", gap: 2, marginBottom: 2 , alignItems: 'center', justifyContent: "center", marginTop:2 }}>
   <Button
     variant="contained"
     sx={{ backgroundColor: "#90343c", "&:hover": { backgroundColor: "#F7C301" , } }}
