@@ -19,31 +19,34 @@ function AboutUs() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               <div className="text-center">
                 <div className="flex justify-center">
-                  <img src="/path-to-your-image-1.jpg" alt="Our Mission" className="h-48 w-48 rounded-full object-cover" />
+                  <img src="C:\Users\Mark Nikko\Desktop\nikko\2024-2025 1st sem\IT411\capstone\Projectyey--4-\Projectyey\src\image\mission.png" alt="Our Mission" className="h-48 w-48 rounded-full object-cover" />
                 </div>
                 <h3 className="mt-6 text-2xl font-bold text-[#88343B]">Our Mission</h3>
                 <p className="mt-4 text-black">
-                  To deliver the highest quality of dental care in a comfortable and welcoming environment.
+                  To protect, promote and maintain the well-being of students and school personnel.
+                </p>
+                <p className="mt-4 text-black">
+                  To promote and maintain school health which consists of the physiological, psychological, sociological, spritual aspect of health as they relate to the school setting.
                 </p>
               </div>
  
               <div className="text-center">
                 <div className="flex justify-center">
-                  <img src="/path-to-your-image-2.jpg" alt="Our Vision" className="h-48 w-48 rounded-full object-cover" />
+                  <img src="C:\Users\Mark Nikko\Desktop\nikko\2024-2025 1st sem\IT411\capstone\Projectyey--4-\Projectyey\src\image\vission.png" alt="Our Vision" className="h-48 w-48 rounded-full object-cover" />
                 </div>
                 <h3 className="mt-6 text-2xl font-bold text-[#88343B]">Our Vision</h3>
                 <p className="mt-4 text-black">
-                  To be the leading dental care provider, known for our commitment to excellence and patient satisfaction.
+                  A health conscious school population with a well-equipped clinic and updated staff on the current trends in medical and dental management.
                 </p>
               </div>
  
               <div className="text-center">
                 <div className="flex justify-center">
-                  <img src="/path-to-your-image-3.jpg" alt="Our Values" className="h-48 w-48 rounded-full object-cover" />
+                  <img src="C:\Users\Mark Nikko\Desktop\nikko\2024-2025 1st sem\IT411\capstone\Projectyey--4-\Projectyey\src\image\values.png" alt="Our Values" className="h-48 w-48 rounded-full object-cover" />
                 </div>
                 <h3 className="mt-6 text-2xl font-bold text-[#88343B]">Our Values</h3>
                 <p className="mt-4 text-black">
-                  Compassion, integrity, and innovation are at the core of everything we do.
+                  At CIT-U medical dental clinic, what we stand for is simple: compassionate care, integrity and excellence in every smile we help create.
                 </p>
               </div>
             </div>
@@ -54,7 +57,7 @@ function AboutUs() {
             <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
               <div className="text-center">
                 <div className="flex justify-center">
-                  <img src="/path-to-team-member-image-1.jpg" alt="Team Member" className="h-48 w-48 rounded-full object-cover" />
+                  <img src="C:\Users\Mark Nikko\Desktop\nikko\2024-2025 1st sem\IT411\capstone\Projectyey--4-\Projectyey\src\image\doc.png" alt="Team Member" className="h-48 w-48 rounded-full object-cover" />
                 </div>
                 <h4 className="mt-4 text-xl font-bold text-[#88343B]">Dr. John Doe</h4>
                 <p className="mt-2 text-black">Chief Dentist</p>
@@ -62,7 +65,7 @@ function AboutUs() {
              
               <div className="text-center">
                 <div className="flex justify-center">
-                  <img src="/path-to-team-member-image-2.jpg" alt="Team Member" className="h-48 w-48 rounded-full object-cover" />
+                  <img src="C:\Users\Mark Nikko\Desktop\nikko\2024-2025 1st sem\IT411\capstone\Projectyey--4-\Projectyey\src\image\doc.png" alt="Team Member" className="h-48 w-48 rounded-full object-cover" />
                 </div>
                 <h4 className="mt-4 text-xl font-bold text-[#88343B]">Dr. Jane Smith</h4>
                 <p className="mt-2 text-black">Orthodontist</p>
@@ -70,7 +73,7 @@ function AboutUs() {
              
               <div className="text-center">
                 <div className="flex justify-center">
-                  <img src="/path-to-team-member-image-3.jpg" alt="Team Member" className="h-48 w-48 rounded-full object-cover" />
+                  <img src="C:\Users\Mark Nikko\Desktop\nikko\2024-2025 1st sem\IT411\capstone\Projectyey--4-\Projectyey\src\image\doc.png" alt="Team Member" className="h-48 w-48 rounded-full object-cover" />
                 </div>
                 <h4 className="mt-4 text-xl font-bold text-[#88343B]">Dr. Emily Johnson</h4>
                 <p className="mt-2 text-black">Pediatric Dentist</p>
@@ -78,7 +81,7 @@ function AboutUs() {
              
               <div className="text-center">
                 <div className="flex justify-center">
-                  <img src="/path-to-team-member-image-4.jpg" alt="Team Member" className="h-48 w-48 rounded-full object-cover" />
+                  <img src="C:\Users\Mark Nikko\Desktop\nikko\2024-2025 1st sem\IT411\capstone\Projectyey--4-\Projectyey\src\image\doc.png" alt="Team Member" className="h-48 w-48 rounded-full object-cover" />
                 </div>
                 <h4 className="mt-4 text-xl font-bold text-[#88343B]">Dr. Michael Lee</h4>
                 <p className="mt-2 text-black">Periodontist</p>
