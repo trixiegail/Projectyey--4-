@@ -16,7 +16,7 @@ function StudentsAccounts() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('https://dentalmanagement.azurewebsites.net/student/nonArchivedStudents');
+      const response = await axios.get('https://dentalmanagement.azurewebsites.net/student/getAllStudents?archived=false');
       if (response.status === 200) {
         setData(response.data);
         console.log('Doctor accounts fetched successfully:', response.data);
@@ -216,7 +216,6 @@ function StudentsAccounts() {
                             type="text"
                             name="firstname"
                             value={selectedUser.firstname}
-                            onChange={handleInputChange}
                             className="mt-2 p-2 border border-gray-300 rounded-lg w-full"
                             placeholder="First Name"
                           />
@@ -224,7 +223,6 @@ function StudentsAccounts() {
                             type="text"
                             name="lastname"
                             value={selectedUser.lastname}
-                            onChange={handleInputChange}
                             className="mt-2 p-2 border border-gray-300 rounded-lg w-full"
                             placeholder="Last Name"
                           />
@@ -232,7 +230,6 @@ function StudentsAccounts() {
                             type="text"
                             name="birthdate"
                             value={selectedUser.birthdate}
-                            onChange={handleInputChange}
                             className="mt-2 p-2 border border-gray-300 rounded-lg w-full"
                             placeholder="Birthdate"
                           />
@@ -240,7 +237,6 @@ function StudentsAccounts() {
                             type="email"
                             name="email"
                             value={selectedUser.email}
-                            onChange={handleInputChange}
                             className="mt-2 p-2 border border-gray-300 rounded-lg w-full"
                             placeholder="Email"
                           />
