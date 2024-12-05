@@ -200,32 +200,6 @@ const ApplicantList = () => {
         if (response.ok) {
           console.log('Successfully moved to Declined Appointments History');
 
-          // Send the email notification
-        fetch(`https://dentalmanagement.azurewebsites.net/email/send-email/${selectedApplicant.email}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email: selectedApplicant.email, // Ensure you have the email of the selected applicant
-            subject: 'Appointment Declined',
-            message: `Dear ${selectedApplicant.fullName},\n
-              We regret to inform you that your appointment request for ${selectedApplicant.date} at ${selectedApplicant.time} has been declined.\n
-              We sincerely apologize for any inconvenience this may have caused. Please feel free to contact us to discuss alternative options or to make a new appointment request.
-              Thank you for your understanding.\n
-              Best regards,\n
-              CITU Oral Healthcare Team`,
-          }),
-        })
-          .then((emailResponse) => {
-            if (emailResponse.ok) {
-              console.log('Decline email sent successfully');
-            } else {
-              console.error('Failed to send decline email');
-            }
-          })
-          .catch((error) => {
-            console.error('Error sending decline email:', error);
-          });
-  
           // Now delete the reservation
           fetch(`https://dentalmanagement.azurewebsites.net/api/reservations/${selectedApplicantId}`, {
             method: 'DELETE',
@@ -254,6 +228,33 @@ const ApplicantList = () => {
         console.error('Error moving to Declined Appointments History:', error);
         setIsSubmitting(false); // Reset the submitting state in case of failure
       });
+
+        // Send the email notification
+        fetch(`https://dentalmanagement.azurewebsites.net/email/send-email/${selectedApplicant.email}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: selectedApplicant.email, // Ensure you have the email of the selected applicant
+            subject: 'Appointment Declined',
+            message: `Dear ${selectedApplicant.fullName},\n
+              We regret to inform you that your appointment request for ${selectedApplicant.date} at ${selectedApplicant.time} has been declined.\n
+              We sincerely apologize for any inconvenience this may have caused. Please feel free to contact us to discuss alternative options or to make a new appointment request.
+              Thank you for your understanding.\n
+              Best regards,\n
+              CITU Oral Healthcare Team`,
+          }),
+        })
+          .then((emailResponse) => {
+            if (emailResponse.ok) {
+              console.log('Decline email sent successfully');
+            } else {
+              console.error('Failed to send decline email');
+            }
+          })
+          .catch((error) => {
+            console.error('Error sending decline email:', error);
+          });
+  
   };
   
   
