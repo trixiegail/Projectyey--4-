@@ -50,7 +50,7 @@ function StudentsAccounts() {
   const handleArchiveConfirm = async () => {
     try {
       console.log(`Attempting to archive user with ID: ${selectedUser.id}`);
-      const response = await axios.post(`https://dentalmanagement.azurewebsites.net/student/archiveStudent/${selectedUser.id}`);
+      const response = await axios.post(`https://dentalmanagement.azurewebsites.net/student/archive/${selectedUser.id}`);
       console.log('Archive response:', response);
       if (response.status === 200) {
         console.log('Student account archived successfully');
