@@ -2,12 +2,12 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import Nav from '../components/Nav';
 
-function StudentsAccounts() {
+function StudentAccounts() {
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [isUpdate, setIsUpdateMode] = useState(false); // State to track update mode
+  const [isUpdate, setIsUpdateMode] = useState(false);
   const [confirmationOpen, setConfirmationOpen] = useState(false);
 
   useEffect(() => {
@@ -96,7 +96,7 @@ function StudentsAccounts() {
     if (selectedUser && selectedUser.id) {
       try {
         console.log('Updating user with ID:', selectedUser.id);
-        const response = await axios.put(`https://dentalmanagement.azurewebsites.net/student/updateStudent/${selectedUser.id}`, selectedUser.id);
+        const response = await axios.put(`https://dentalmanagement.azurewebsites.net/student/updateStudent/${selectedUser.id}`, selectedUser);
         if (response.status === 200) {
           console.log('Student account updated successfully');
           fetchData();
@@ -113,12 +113,13 @@ function StudentsAccounts() {
   };
 
   return (
-    <div className='ml-[265px]' style={{ minHeight: '100vh',}}>
+    <div className='ml-[265px]'>
       <Nav />
+      <img src="/logo.png" alt="Logo" className="absolute top-0 left-5 ml-[265px] object-center" />
 
-      <div className="w-50 ml-10 relative pt-[50px]" >
-        <h1 className="text-2xl font-bold mb-5 ">Doctor Account</h1>
-        <div className="flex items-center mb-5 mt-5 mr-40 ml-40">
+      <div className="w-50 ml-10 mt-[120px] relative">
+        <h1 className="text-2xl font-bold mb-5">Student Accounts</h1>
+        <div className="flex items-center mb-5 mt-5">
           <input
             type="text"
             id="search-bar"
@@ -134,14 +135,14 @@ function StudentsAccounts() {
             Search
           </button>
           <a
-            href="/create-doctor-account"
+            href="/create-student-account"
             className="ml-2 p-2 bg-[#F7C301] text-white rounded-lg shadow-md hover:bg-[#F7C301]"
           >
             <span>Create Account</span>
           </a>
         </div>
 
-        <div className="overflow-auto h-96 mt-2 mr-7">
+        <div className="overflow-auto h-96 mt-2">
           <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
             <thead className="bg-[#88343B] text-white">
               <tr>
@@ -162,7 +163,6 @@ function StudentsAccounts() {
                   <td className="w-1/6 py-3 px-4">{user.birthdate}</td>
                   <td className="w-1/6 py-3 px-4">{user.email}</td>
                   <td className="w-1/6 py-3 px-4">
-                  <div className="flex justify-evenly">
                     <button
                       onClick={() => handleViewClick(user)}
                       className="ml-8 mb-2 px-4 py-2 bg-[#88343B] text-white rounded-lg shadow-md hover:bg-[#88343B]"
@@ -185,7 +185,6 @@ function StudentsAccounts() {
                     >
                       Delete
                     </button>
-                    </div>
                   </td>
                 </tr>
               ))}
@@ -206,16 +205,17 @@ function StudentsAccounts() {
                 <div className="sm:flex sm:items-start">
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                     <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      {isUpdate ? 'Update Doctor Details' : 'Doctor Details'}
+                      {isUpdate ? 'Update Student Details' : 'Student Details'}
                     </h3>
                     <div className="mt-2">
-                      <p className="text-sm text-gray-500">ID Number: {selectedUser.idNumber}</p>
+                      <p className="text-sm text-gray-500">ID Number: {selectedUser.id}</p>
                       {isUpdate ? (
                         <>
                           <input
                             type="text"
                             name="firstname"
                             value={selectedUser.firstname}
+                            onChange={handleInputChange}
                             className="mt-2 p-2 border border-gray-300 rounded-lg w-full"
                             placeholder="First Name"
                           />
@@ -223,6 +223,7 @@ function StudentsAccounts() {
                             type="text"
                             name="lastname"
                             value={selectedUser.lastname}
+                            onChange={handleInputChange}
                             className="mt-2 p-2 border border-gray-300 rounded-lg w-full"
                             placeholder="Last Name"
                           />
@@ -230,6 +231,7 @@ function StudentsAccounts() {
                             type="text"
                             name="birthdate"
                             value={selectedUser.birthdate}
+                            onChange={handleInputChange}
                             className="mt-2 p-2 border border-gray-300 rounded-lg w-full"
                             placeholder="Birthdate"
                           />
@@ -237,6 +239,7 @@ function StudentsAccounts() {
                             type="email"
                             name="email"
                             value={selectedUser.email}
+                            onChange={handleInputChange}
                             className="mt-2 p-2 border border-gray-300 rounded-lg w-full"
                             placeholder="Email"
                           />
@@ -288,7 +291,7 @@ function StudentsAccounts() {
                     <h3 className="text-lg leading-6 font-medium text-gray-900">Confirm Archive</h3>
                     <div className="mt-2">
                       <p className="text-sm text-gray-500">
-                        Are you sure you want to archive the doctor account for {selectedUser.firstname} {selectedUser.lastname}?
+                        Are you sure you want to archive the student account for {selectedUser.firstname} {selectedUser.lastname}?
                       </p>
                     </div>
                   </div>
@@ -316,4 +319,4 @@ function StudentsAccounts() {
   );
 }
 
-export default StudentsAccounts;
+export default StudentAccounts;
