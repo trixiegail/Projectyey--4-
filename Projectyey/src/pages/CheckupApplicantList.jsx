@@ -109,6 +109,8 @@ const ApplicantList = () => {
               console.log('Approval email sent successfully');
             } else {
               console.error('Failed to send approval email');
+              console.log("Selected Applicant:", selectedApplicant);
+              console.log("Email:", selectedApplicant?.email);
             }
           })
           .catch(error => console.error('Error sending approval email:', error));
