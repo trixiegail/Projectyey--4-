@@ -367,7 +367,6 @@ const ApplicantList = () => {
                 <TableCell style={{ paddingLeft: 15, fontSize: '16px' }}>{applicant.fullName}</TableCell>
                 <TableCell style={{ paddingLeft: 30, fontSize: '16px' }}>{applicant.program}</TableCell>
                 <TableCell style={{ paddingLeft: 70, fontSize: '16px' }}>{applicant.yearLevel}</TableCell>
-                <TableCell style={{ paddingLeft: 70, fontSize: '16px' }}>{applicant.email}</TableCell>
                 <TableCell style={{ paddingLeft: 20, fontSize: '16px' }}>
                   {applicant.date} <strong>&emsp;&emsp;{applicant.time}</strong>
                 </TableCell>
