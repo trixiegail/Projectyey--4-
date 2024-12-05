@@ -91,6 +91,7 @@ const App = () => {
 
   const closeSuccessModal = () => {
     setSuccessModalOpen(false);
+    window.location.reload();
   };
 
   const handleReserve = async () => {
@@ -351,6 +352,8 @@ const App = () => {
   
         // Clear the reserved event from state
         setReservedEvent(null);
+        window.location.reload();
+        
       } catch (error) {
         console.error('Error cancelling reservation:', error);
         alert('Failed to cancel the reservation.');
