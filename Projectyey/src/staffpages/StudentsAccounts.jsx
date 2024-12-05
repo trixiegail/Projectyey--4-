@@ -16,7 +16,7 @@ function StudentsAccounts() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('https://dentalmanagement.azurewebsites.net/student/nonArchiveStudents');
+      const response = await axios.get('https://dentalmanagement.azurewebsites.net/student/nonArchivedStudents');
       if (response.status === 200) {
         setData(response.data);
         console.log('Doctor accounts fetched successfully:', response.data);
