@@ -12,7 +12,7 @@ function Contact() {
 
     if (form.current.checkValidity()) {
       emailjs
-          .sendForm('service_42kzvpa', 'template_oq327k3', form.current, {
+          .sendForm('service_zyq9np5', 'template_oq327k3', form.current, {
             publicKey: 'E0l0YjX0W9Dk-nXit',
           })
           .then(() => {
