@@ -78,6 +78,7 @@ const ApplicantList = () => {
 
   // Handle accept button click
   const handleOpenAcceptDialog = (event, applicant) => {
+    console.log("Applicant object passed to dialog:", applicant);
     event.stopPropagation(); // Prevent any row click event from firing
     setSelectedApplicant(applicant); // Store the selected applicant
     setOpenAcceptDialog(true); // Open the confirmation dialog
@@ -366,6 +367,7 @@ const ApplicantList = () => {
                 <TableCell style={{ paddingLeft: 15, fontSize: '16px' }}>{applicant.fullName}</TableCell>
                 <TableCell style={{ paddingLeft: 30, fontSize: '16px' }}>{applicant.program}</TableCell>
                 <TableCell style={{ paddingLeft: 70, fontSize: '16px' }}>{applicant.yearLevel}</TableCell>
+                <TableCell style={{ paddingLeft: 70, fontSize: '16px' }}>{applicant.email}</TableCell>
                 <TableCell style={{ paddingLeft: 20, fontSize: '16px' }}>
                   {applicant.date} <strong>&emsp;&emsp;{applicant.time}</strong>
                 </TableCell>
@@ -487,7 +489,7 @@ const CheckupApplicantList = () => {
         if (Array.isArray(data)) {
           // Remove duplicate entries in the frontend based on unique identifiers like studentIdNumber
           const uniqueApplicants = data.reduce((acc, applicant) => {
-            const found = acc.find(a => a.studentIdNumber === applicant.studentIdNumber && a.date === applicant.date && a.time === applicant.time);
+            const found = acc.find(a => a.studentIdNumber === applicant.studentIdNumber && a.date === applicant.date && a.time === applicant.time && a.email === applicant.email);
             if (!found) acc.push(applicant);
             return acc;
           }, []);
