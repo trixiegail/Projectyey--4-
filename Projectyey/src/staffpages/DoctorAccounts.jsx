@@ -150,8 +150,6 @@ function DoctorAccounts() {
                 <th className="w-1/6 py-3 px-4 uppercase font-semibold text-sm">Last Name</th>
                 <th className="w-1/6 py-3 px-4 uppercase font-semibold text-sm">Birthdate</th>
                 <th className="w-1/6 py-3 px-4 uppercase font-semibold text-sm">Email</th>
-                <th className="w-1/6 py-3 px-4 uppercase font-semibold text-sm">Email</th>
-                <th className="w-1/6 py-3 px-4 uppercase font-semibold text-sm">Email</th>
                 <th className="w-1/6 py-3 px-4 uppercase font-semibold text-sm">Actions</th>
               </tr>
             </thead>
