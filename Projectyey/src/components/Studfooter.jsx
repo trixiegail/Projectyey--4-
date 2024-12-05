@@ -12,7 +12,12 @@ const Studfooter = () => {
                 {/* HAPPY <span className="text-gray-800">DENTAL</span> */}
               </a>
               <p className="mt-2">
-                Amet quis rhoncus turpis phasellus ut dui. Volutpat turpis tortor blandit eget nibh ac lacus vitae purus. Sagittis tortor fermentum.
+              123 Dental St.
+              Smile City, SC 12345
+
+              (123) 456-7890
+
+              dentalcapstone5@gmail.com
               </p>
             </div>
             <div className="w-1/3 ml-20">
