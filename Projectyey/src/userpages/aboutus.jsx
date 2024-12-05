@@ -19,7 +19,7 @@ function AboutUs() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               <div className="text-center">
                 <div className="flex justify-center">
-                  <img src="\mission.png" className="h-48 w-48 rounded-full object-cover" />
+                  <img src="\mission.png" alt="Our Mission" className="h-48 w-48 rounded-full object-cover" />
                 </div>
                 <h3 className="mt-6 text-2xl font-bold text-[#88343B]">Our Mission</h3>
                 <p className="mt-4 text-black">
@@ -32,7 +32,7 @@ function AboutUs() {
  
               <div className="text-center">
                 <div className="flex justify-center">
-                  <img src="\vission.png" className="h-48 w-48 rounded-full object-cover" />
+                  <img src="\vission.png" alt="Our Vision" className="h-48 w-48 rounded-full object-cover" />
                 </div>
                 <h3 className="mt-6 text-2xl font-bold text-[#88343B]">Our Vision</h3>
                 <p className="mt-4 text-black">
@@ -42,7 +42,7 @@ function AboutUs() {
  
               <div className="text-center">
                 <div className="flex justify-center">
-                  <img src="\values.png" className="h-48 w-48 rounded-full object-cover" />
+                  <img src="\values.png" alt="Our Values" className="h-48 w-48 rounded-full object-cover" />
                 </div>
                 <h3 className="mt-6 text-2xl font-bold text-[#88343B]">Our Values</h3>
                 <p className="mt-4 text-black">
@@ -57,7 +57,7 @@ function AboutUs() {
             <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
               <div className="text-center">
                 <div className="flex justify-center">
-                  <img src="\doc.png" className="h-48 w-48 rounded-full object-cover" />
+                  <img src="\doc.png" alt="Team Member" className="h-48 w-48 rounded-full object-cover" />
                 </div>
                 <h4 className="mt-4 text-xl font-bold text-[#88343B]">Dr. John Doe</h4>
                 <p className="mt-2 text-black">Chief Dentist</p>
@@ -65,7 +65,7 @@ function AboutUs() {
              
               <div className="text-center">
                 <div className="flex justify-center">
-                  <img src="\doc.png" className="h-48 w-48 rounded-full object-cover" />
+                  <img src="\doc.png" alt="Team Member" className="h-48 w-48 rounded-full object-cover" />
                 </div>
                 <h4 className="mt-4 text-xl font-bold text-[#88343B]">Dr. Jane Smith</h4>
                 <p className="mt-2 text-black">Orthodontist</p>
@@ -73,7 +73,7 @@ function AboutUs() {
              
               <div className="text-center">
                 <div className="flex justify-center">
-                  <img src="\doc.png" className="h-48 w-48 rounded-full object-cover" />
+                  <img src="\doc.png" alt="Team Member" className="h-48 w-48 rounded-full object-cover" />
                 </div>
                 <h4 className="mt-4 text-xl font-bold text-[#88343B]">Dr. Emily Johnson</h4>
                 <p className="mt-2 text-black">Pediatric Dentist</p>
@@ -81,7 +81,7 @@ function AboutUs() {
              
               <div className="text-center">
                 <div className="flex justify-center">
-                  <img src="\doc.png" className="h-48 w-48 rounded-full object-cover" />
+                  <img src="\doc.png" alt="Team Member" className="h-48 w-48 rounded-full object-cover" />
                 </div>
                 <h4 className="mt-4 text-xl font-bold text-[#88343B]">Dr. Michael Lee</h4>
                 <p className="mt-2 text-black">Periodontist</p>
