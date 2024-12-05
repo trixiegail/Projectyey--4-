@@ -611,7 +611,7 @@ useEffect(() => {
             variant="h4" 
             sx={{ fontWeight: 'bold', color: '#90343c' }} 
           >
-            Medical Checkup and Records
+            Dental Checkup and Records
           </Typography>
           </Box>
           <DocNavBar />

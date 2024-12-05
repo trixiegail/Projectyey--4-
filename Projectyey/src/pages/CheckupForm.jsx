@@ -198,7 +198,7 @@ const MedicalForm = () => {
 
     try {
         console.log('Fetching all tooth statuses for:', applicant.studentIdNumber);
-        const response = await fetch(`https://dentalmanagement.azurewebsites.net/api/checkups/student/${applicant.studentIdNumber}/tooth-statuses`);
+        const response = await fetch(`https://dentalmanagement.azurewebsites.net/student/${applicant.studentIdNumber}/tooth-statuses`);
   
         if (response.ok) {
             const records = await response.json();
@@ -250,7 +250,7 @@ const MedicalForm = () => {
             variant="h4" 
             sx={{ fontWeight: 'bold', color: '#90343c' }} 
           >
-            Medical Checkup and Records
+            Dental Checkup and Records
           </Typography>
           </Box>
           <DocNavBar />
@@ -273,7 +273,7 @@ const MedicalForm = () => {
             Check Student
           </Button>
           <Button variant="contained" sx={{ backgroundColor: '#a52a2a', '&:hover': { backgroundColor: '#F7C301' }}} onClick={handleMedicalRecords}>
-            Medical Records
+            Dental Records
           </Button>
         </Box>
 
@@ -357,7 +357,7 @@ const MedicalForm = () => {
   >
     {/* Header */}
     <Typography variant="h6" gutterBottom align="center">
-      Medical Records
+      Dental Records
     </Typography>
     <Tabs
       value={activeTab}
@@ -481,7 +481,7 @@ const MedicalForm = () => {
           },
         }}
       >
-        Print Records
+        View Records
       </Button>
     </Box>
   </Box>
