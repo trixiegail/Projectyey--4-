@@ -574,6 +574,22 @@ const handlePrint = () => {
 };
 
   
+const handleNavigateToDentalRecord = () => {
+  navigate('/dental-record-drawer', {
+    state: {
+      studentData: formData, // Pass the student data as state
+      medicalRecords,        // Pass medical records
+      intraoralRecords,      // Pass intraoral records if needed
+    },
+  });
+};
+
+
+useEffect(() => {
+  if (showMedicalRecords) {
+    handleAllToothStatuses(); 
+  }
+}, [showMedicalRecords]);
   
   
 
@@ -633,7 +649,7 @@ const handlePrint = () => {
               sx={{ backgroundColor: '#a52a2a', '&:hover': { backgroundColor: '#F7C301' }}}
               onClick={handleMedicalRecords}
             >
-              Medical Records
+              Dental Records
             </Button>
           </Box>
 
@@ -713,17 +729,27 @@ const handlePrint = () => {
         </Dialog>
 
         <Drawer anchor="right" open={showMedicalRecords} onClose={() => setShowMedicalRecords(false)}>
-  <Box sx={{ width: 400, padding: 2 }}>
+  <Box
+    sx={{
+      width: 400,
+      padding: 2,
+      display: "flex",
+      flexDirection: "column",
+      height: "100vh", 
+      boxSizing: "border-box", 
+    }}
+  >
+    {/* Header */}
     <Typography variant="h6" gutterBottom align="center">
-      Medical Records
+      Dental Records
     </Typography>
     <Tabs
       value={activeTab}
       onChange={(event, newValue) => {
         setActiveTab(newValue);
-        if (newValue === 'intraoral') {
-          handleAllToothStatuses(); // Fetch intraoral records when the tab is switched
-          setSelectedRecord(null); // Clear selectedRecord when switching to Intraoral Examination
+        if (newValue === "intraoral") {
+          handleAllToothStatuses(); 
+          setSelectedRecord(null);
         }
       }}
       aria-label="medical records tabs"
@@ -732,63 +758,72 @@ const handlePrint = () => {
       <Tab label="Intraoral Examination" value="intraoral" />
     </Tabs>
 
-    {/* Checkup Tab */}
-    {activeTab === 'checkup' && (
-      <List>
-        {medicalRecords.map((record, index) => (
-          <ListItem key={index} button onClick={() => setSelectedRecord(record)}>
-            <ListItemText
-              primary={`${new Date(record.date).toDateString()} - ${new Date(record.date).toLocaleTimeString()}`}
-            />
-          </ListItem>
-        ))}
-      </List>
-    )}
-
-    {/* Intraoral Examination Tab */}
-    {activeTab === 'intraoral' && (
-      <List>
-        {Object.keys(
-          intraoralRecords.reduce((acc, record) => {
-            const date = new Date(record.savedAt).toLocaleDateString();
-            if (!acc[date]) acc[date] = [];
-            acc[date].push(record);
-            return acc;
-          }, {})
-        ).map((date, index) => (
-          <div key={index}>
-            {/* Date item that can be clicked to expand or collapse */}
-            <ListItem button onClick={() => toggleDateExpansion(date)}>
-              <ListItemText primary={`${date}`} />
+    {/* Content Container */}
+    <Box
+      sx={{
+        flexGrow: 1, 
+        overflowY: "auto", 
+        marginBottom: "70px", 
+      }}
+    >
+      {/* Checkup Tab */}
+      {activeTab === "checkup" && (
+        <List>
+          {medicalRecords.map((record, index) => (
+            <ListItem key={index} button onClick={() => setSelectedRecord(record)}>
+              <ListItemText
+                primary={`${new Date(record.date).toDateString()} - ${new Date(record.date).toLocaleTimeString()}`}
+              />
             </ListItem>
+          ))}
+        </List>
+      )}
 
-            {/* Expandable content for each date */}
-            <Collapse in={expandedDates[date]} timeout="auto" unmountOnExit>
-              {intraoralRecords
-                .filter(record => new Date(record.savedAt).toLocaleDateString() === date)
-                .map((record, i) => (
-                  <Card key={i} sx={{ marginBottom: 2, marginLeft: 3 }}>
-                    <CardContent>
-                      <Typography variant="body1">
-                        Tooth Number: <strong>{record.toothNumber}</strong>
-                      </Typography>
-                      <Typography variant="body1">
-                        Status: {record.status}
-                      </Typography>
-                      <Typography variant="body2" color="textSecondary">
-                        Saved At: {new Date(record.savedAt).toLocaleString()}
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                ))}
-            </Collapse>
-          </div>
-        ))}
-      </List>
+      {/* Intraoral Examination Tab */}
+      {activeTab === "intraoral" && (
+  <List>
+    {intraoralRecords && intraoralRecords.length > 0 ? (
+      Object.keys(
+        intraoralRecords.reduce((acc, record) => {
+          const date = new Date(record.savedAt).toLocaleDateString();
+          if (!acc[date]) acc[date] = [];
+          acc[date].push(record);
+          return acc;
+        }, {})
+      ).map((date, index) => (
+        <div key={index}>
+          <ListItem button onClick={() => toggleDateExpansion(date)}>
+            <ListItemText primary={`${date}`} />
+          </ListItem>
+          <Collapse in={expandedDates[date]} timeout="auto" unmountOnExit>
+            {intraoralRecords
+              .filter((record) => new Date(record.savedAt).toLocaleDateString() === date)
+              .map((record, i) => (
+                <Card key={i} sx={{ marginBottom: 2, marginLeft: 3 }}>
+                  <CardContent>
+                    <Typography variant="body1">
+                      Tooth Number: <strong>{record.toothNumber}</strong>
+                    </Typography>
+                    <Typography variant="body1">Status: {record.status}</Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      Saved At: {new Date(record.savedAt).toLocaleString()}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              ))}
+          </Collapse>
+        </div>
+      ))
+    ) : (
+      <Typography variant="body2" color="textSecondary" sx={{ textAlign: "center", marginTop: 2 }}>
+        No Intraoral Examination records available.
+      </Typography>
     )}
+  </List>
+)}
 
-    {/* Display selected record details only if in Checkup tab */}
-    {activeTab === 'checkup' && selectedRecord && (
+{/* Display selected record details only if in Checkup tab */}
+{activeTab === 'checkup' && selectedRecord && (
       <div>
         <Typography variant="h6" gutterBottom>
           Records for {new Date(selectedRecord.date || selectedRecord.savedAt).toDateString()} - {new Date(selectedRecord.date || selectedRecord.savedAt).toLocaleTimeString()}
@@ -809,30 +844,32 @@ const handlePrint = () => {
       </div>
     )}
 
-    {/* Print Button for each tab */}
-    {/* <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
-      {activeTab === 'checkup' && selectedRecord && (
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => handlePrint('checkup')}
-        >
-          Print Checkup
-        </Button>
-      )}
-      {activeTab === 'intraoral' && (
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => handlePrint('intraoral')}
-        >
-          Print Intraoral Examination
-        </Button>
-      )}
-    </Box> */}
+    </Box>
+
+    {/* Print Records Button Fixed at Bottom */}
+    <Box
+      sx={{
+        position: "fixed", 
+        bottom: 10, 
+      }}
+    >
+      <Button
+        variant="contained"
+        onClick={handleNavigateToDentalRecord}
+        sx={{
+          backgroundColor: "#88343b",
+          color: "#FFFFFF",
+          width: "260%", 
+          "&:hover": {
+            backgroundColor: "#F7C301",
+          },
+        }}
+      >
+        Print Records
+      </Button>
+    </Box>
   </Box>
 </Drawer>
-
 
         {/* Incomplete Fields Dialog */}
         <Dialog open={showIncompleteFieldsDialog} onClose={() => setShowIncompleteFieldsDialog(false)}>

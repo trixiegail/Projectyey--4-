@@ -1,86 +1,56 @@
-.dashboard {
-  font-family: Arial, sans-serif;
+/* Dashboard.css */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(to bottom, #f5f7fa, #c3cfe2);
+}
+
+.dashboard-container {
+  background: linear-gradient(to bottom, #ffffff, #e3f2fd);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-header {
   padding: 20px;
+  border-bottom: 1px solid #ddd;
 }
 
-.section {
-  margin-bottom: 30px;
-}
-
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.section-title {
-  font-size: 1.2em;
+.dashboard-title {
+  font-size: 2rem;
   font-weight: bold;
+  color: #333;
 }
 
-.add-button {
-  background-color: #a162d0;
-  color: white;
-  font-size: 1.5em;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 50%;
-  cursor: pointer;
+.card-content h6 {
+  font-weight: 600;
+  color: #616161;
+}
+
+.card-content h4 {
+  font-size: 2rem;
 }
 
 .card {
-  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 15px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.card-item {
-  text-align: center;
-  padding: 10px;
+.card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.card-item h2 {
-  font-size: 2em;
-  color: #007bff;
+.chart-container {
+  padding: 20px;
 }
 
-.card-item p {
-  font-size: 0.9em;
-  margin: 5px 0;
-}
-
-.icon-view {
-  color: #a162d0;
-  font-size: 1.5em;
-}
-
-.icon-arrow {
-  color: #a162d0;
-  font-size: 1.5em;
-}
-
-.icon-birthday {
-  color: #a162d0;
-  font-size: 1.5em;
-}
-
-.calendar-button {
-  display: block;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 10px;
+.gradient-footer {
+  position: absolute;
+  bottom: 0;
   width: 100%;
-  text-align: center;
-  border-radius: 5px;
-  margin-top: 10px;
-  cursor: pointer;
-}
-
-.calendar-button:hover {
-  background-color: #0056b3;
+  height: 150px;
+  background: linear-gradient(to top, #c3cfe2, transparent);
+  z-index: -1;
 }
