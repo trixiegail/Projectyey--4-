@@ -130,6 +130,7 @@ const App = () => {
         department: studentData.department, // Fetched from student data
         program: studentData.program, // Fetched from student data
         yearLevel: studentData.yearLevel, // Fetched from student data
+        email: studentData.email, // Fetched from student data
         date: moment(selectedEvent.start).format('YYYY-MM-DD'),
         time: `${moment(selectedEvent.start).format('h:mm A')} - ${moment(selectedEvent.end).format('h:mm A')}`,
       };
