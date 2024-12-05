@@ -220,270 +220,262 @@ const Dashboard = () => {
           Dashboard
         </Typography>
 
-        {/* Horizontal Row with Summary Cards */}
-        <Grid container spacing={3} sx={{ mb: 3 }}>
-          <Grid item xs={12} sm={6} md={2.4}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">Applicants</Typography>
-                <Typography variant="h4" color="primary">
-                  {applicantsCount}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={2.4}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">Patients</Typography>
-                <Typography variant="h4" color="secondary">
-                  {patientsCount}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={2.4}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">Completed</Typography>
-                <Typography variant="h4" color="success">
-                  {completedCount}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={2.4}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">Declined</Typography>
-                <Typography variant="h4" color="error">
-                  {declinedCount}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-
-          {/* Vertical Stack for Appointments Today and Tomorrow */}
-          <Grid item xs={12} sm={6} md={2.4}>
-          <Typography variant="h6" sx={{ mb: 2 }}>
-            Appointments
-          </Typography>
-            <Grid container spacing={3} direction="column">
-              {/* Appointments Today */}
-              <Grid item>
-                <Card>
-                  <CardContent>
-                    <Typography variant="h6">Today</Typography>
-                    <Typography variant="h4" color="info.main">
-                      {appointmentsToday.length}
-                    </Typography>
-                    <List>
-                      {appointmentsToday.map((appointment) => (
-                        <ListItem key={appointment.id} sx={{ pl: 0 }}>
-                          <ListItemText
-                            primary={appointment.fullName}
-                            secondary={`Time: ${appointment.time}`} // Replace `time` with correct field if needed
-                          />
-                        </ListItem>
-                      ))}
-                    </List>
-                  </CardContent>
-                </Card>
-              </Grid>
-
-              {/* Appointments Tomorrow */}
-              <Grid item>
-                <Card>
-                  <CardContent>
-                    <Typography variant="h6">Tomorrow</Typography>
-                    <Typography variant="h4" color="warning.main">
-                      {appointmentsTomorrow.length}
-                    </Typography>
-                    <List>
-                      {appointmentsTomorrow.map((appointment) => (
-                        <ListItem key={appointment.id} sx={{ pl: 0 }}>
-                          <ListItemText
-                            primary={appointment.fullName}
-                            secondary={`Time: ${appointment.time}`} // Replace `time` with correct field if needed
-                          />
-                        </ListItem>
-                      ))}
-                    </List>
-                  </CardContent>
-                </Card>
-              </Grid>
+        <Grid container spacing={3}>
+        {/* Left Column */}
+        <Grid item xs={12} md={9}>
+          {/* Top Row: Summary Cards */}
+          <Grid container spacing={3}>
+            <Grid item xs={6} sm={3}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6">Applicants</Typography>
+                  <Typography variant="h4" color="primary">
+                    {applicantsCount}
+                  </Typography>
+                </CardContent>
+              </Card>
             </Grid>
+            <Grid item xs={6} sm={3}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6">Patients</Typography>
+                  <Typography variant="h4" color="secondary">
+                    {patientsCount}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={6} sm={3}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6">Completed</Typography>
+                  <Typography variant="h4" color="success">
+                    {completedCount}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={6} sm={3}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6">Declined</Typography>
+                  <Typography variant="h4" color="error">
+                    {declinedCount}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+
+          {/* Bottom Row: Completed Patients Statistics and Category Comparison */}
+          <Grid container spacing={3} sx={{ mt: 3 }}>
+            <Grid item xs={12} md={8}>
+              <Card sx={{ p: 3 }}>
+                <Typography variant="h6" sx={{ mb: 2 }}>
+                  Completed Patients Statistics
+                </Typography>
+                <FormControl variant="outlined" sx={{ minWidth: 200, mb: 3 }}>
+                  <InputLabel>View By</InputLabel>
+                  <Select value={view} onChange={handleViewChange} label="View By">
+                    <MenuItem value="year">Year</MenuItem>
+                    <MenuItem value="month">Month</MenuItem>
+                    <MenuItem value="week">Week</MenuItem>
+                  </Select>
+                </FormControl>
+                <ResponsiveContainer width="100%" height={220}>
+                  <LineChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Line type="monotone" dataKey="count" stroke="#8884d8" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </Card>
+            </Grid>
+
+            <Grid item xs={12} md={4}>
+              <Card sx={{ p: 3 }}>
+                <Typography variant="h6" sx={{ mb: 2 }}>
+                  Category Comparison
+                </Typography>
+                <ResponsiveContainer width="100%" height={220}>
+                  <BarChart data={barChartData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Bar dataKey="count" fill="#8884d8" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </Card>
+            </Grid>
+          </Grid>
+          <Grid container spacing={3} sx={{ mt: 3 }}>
+
+
+        {/* Pie Charts */}
+        <Grid container spacing={3} sx={{ mt: 1 , ml: 0.5}}>
+          <Grid item xs={10} md={3}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6" sx={{ mb: 2 }}>
+                  Applicants
+                </Typography>
+                <ResponsiveContainer width="100%" height={200}>
+                  <PieChart>
+                    <Pie
+                      data={applicantsByProgram}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={100}
+                      label
+                    >
+                      {applicantsByProgram.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6" sx={{ mb: 2 }}>
+                  Patients
+                </Typography>
+                <ResponsiveContainer width="100%" height={200}>
+                  <PieChart>
+                    <Pie
+                      data={patientsByProgram}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={100}
+                      label
+                    >
+                      {patientsByProgram.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6" sx={{ mb: 2 }}>
+                  Completed
+                </Typography>
+                <ResponsiveContainer width="100%" height={200}>
+                  <PieChart>
+                    <Pie
+                      data={completedByProgram}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={100}
+                      label
+                    >
+                      {completedByProgram.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6" sx={{ mb: 2 }}>
+                  Declined
+                </Typography>
+                <ResponsiveContainer width="100%" height={200}>
+                  <PieChart>
+                    <Pie
+                      data={declinedByProgram}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={100}
+                      label
+                    >
+                      {declinedByProgram.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
           </Grid>
         </Grid>
 
+          </Grid>
+        </Grid>
 
-        <Grid container spacing={3} mt={-35}>
-  {/* Left Column - Completed Patients Statistics */}
-  <Grid item xs={12} md={6}>
-    <Card sx={{ p: 3 }}>
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        Completed Patients Statistics
-      </Typography>
-
-      {/* Dropdown to switch views */}
-      <FormControl variant="outlined" sx={{ minWidth: 200, mb: 3 }}>
-        <InputLabel>View By</InputLabel>
-        <Select value={view} onChange={handleViewChange} label="View By">
-          <MenuItem value="year">Year</MenuItem>
-          <MenuItem value="month">Month</MenuItem>
-          <MenuItem value="week">Week</MenuItem>
-        </Select>
-      </FormControl>
-
-      {/* Line Chart */}
-      <ResponsiveContainer width="100%" height={220}>
-        <LineChart data={chartData}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Line type="monotone" dataKey="count" stroke="#8884d8" />
-        </LineChart>
-      </ResponsiveContainer>
-    </Card>
-  </Grid>
-
-  {/* Right Column - Category Comparison */}
-  <Grid item xs={12} md={3.5}>
-    <Card sx={{ p: 3 }}>
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        Category Comparison
-      </Typography>
-
-      {/* Bar Chart */}
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={barChartData}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Bar dataKey="count" fill="#8884d8" />
-        </BarChart>
-      </ResponsiveContainer>
-    </Card>
-  </Grid>
-</Grid>
-
-
-       {/* New Section: Program-Based Statistics */}
-<Box sx={{ display: 'flex', justifyContent: 'flex-start', mt: 5 }}>
-  {/* Adjusting the alignment of the grid */}
-  <Grid container spacing={3} sx={{ maxWidth: '80%' }}>
-    <Grid item xs={12} md={3}>
-      <Card>
-        <CardContent>
-          <Typography variant="h6" sx={{ mb: 2 }}>
-            Applicants
-          </Typography>
-          <ResponsiveContainer width="100%" height={200}>
-            <PieChart>
-              <Pie
-                data={applicantsByProgram}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={100}
-                label
-              >
-                {applicantsByProgram.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
-    </Grid>
-    <Grid item xs={12} md={3}>
-      <Card>
-        <CardContent>
+        {/* Right Column */}
+        <Grid item xs={12} md={3}>
+          {/* Appointments Today */}
           <Typography variant="h6" sx={{ mb: 2 }}>
             Patients
           </Typography>
-          <ResponsiveContainer width="100%" height={200}>
-            <PieChart>
-              <Pie
-                data={patientsByProgram}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={100}
-                label
-              >
-                {patientsByProgram.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          <Card sx={{ mb: 3 }}>
+            <CardContent>
+              <Typography variant="h6">Today</Typography>
+              <Typography variant="h4" color="info.main">
+                {appointmentsToday.length}
+              </Typography>
+              <List>
+                {appointmentsToday.map((appointment) => (
+                  <ListItem key={appointment.id}>
+                    <ListItemText
+                      primary={appointment.fullName}
+                      secondary={`Time: ${appointment.time}`}
+                    />
+                  </ListItem>
                 ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
-    </Grid>
-    <Grid item xs={12} md={3}>
-      <Card>
-        <CardContent>
-          <Typography variant="h6" sx={{ mb: 2 }}>
-            Completed
-          </Typography>
-          <ResponsiveContainer width="100%" height={200}>
-            <PieChart>
-              <Pie
-                data={completedByProgram}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={100}
-                label
-              >
-                {completedByProgram.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              </List>
+            </CardContent>
+          </Card>
+
+          {/* Appointments Tomorrow */}
+          <Card>
+            <CardContent>
+              <Typography variant="h6">Tomorrow</Typography>
+              <Typography variant="h4" color="warning.main">
+                {appointmentsTomorrow.length}
+              </Typography>
+              <List>
+                {appointmentsTomorrow.map((appointment) => (
+                  <ListItem key={appointment.id}>
+                    <ListItemText
+                      primary={appointment.fullName}
+                      secondary={`Time: ${appointment.time}`}
+                    />
+                  </ListItem>
                 ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
-    </Grid>
-    <Grid item xs={12} md={3}>
-      <Card>
-        <CardContent>
-          <Typography variant="h6" sx={{ mb: 2 }}>
-            Declined
-          </Typography>
-          <ResponsiveContainer width="100%" height={200}>
-            <PieChart>
-              <Pie
-                data={declinedByProgram}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={100}
-                label
-              >
-                {declinedByProgram.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
-    </Grid>
-  </Grid>
-</Box>
+              </List>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+
 
 
       </Box>

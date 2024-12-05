@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { 
-  Box, Button, Collapse, Card, CardContent, CardActions, TextField, Typography, Drawer, 
+  Box, Button, Collapse, Card, CardContent, CardActions, TextField, Typography, Drawer, DialogContentText, 
   Tabs, Tab, List, ListItem, ListItemText, Grid, Dialog, DialogTitle, DialogContent, DialogActions 
 } from '@mui/material';
 import Sidebar from '../components/DocSidebar';
@@ -12,6 +12,9 @@ const MedicalForm = () => {
   const [showForm, setShowForm] = useState(false);
   const location = useLocation();
   const applicant = location.state?.applicant || {};
+  const [intraoralRecordsFetched, setIntraoralRecordsFetched] = useState(false);
+  const [expandedDates, setExpandedDates] = useState({});
+  const navigate = useNavigate();
 
   const [formValues, setFormValues] = useState({
     bloodPressure: '',
@@ -57,6 +60,7 @@ const MedicalForm = () => {
   const [showIncompleteFieldsDialog, setShowIncompleteFieldsDialog] = useState(false);
   const [openSuccessModal, setOpenSuccessModal] = useState(false);
   const [openConfirmModal, setOpenConfirmModal] = useState(false); // State for confirmation modal
+  const [intraoralRecords, setIntraoralRecords] = useState([]); 
 
   const handleCloseSuccessModal = () => {
     setOpenSuccessModal(false);
@@ -183,6 +187,52 @@ const MedicalForm = () => {
     setSelectedRecord(record);
   };
 
+  const toggleDateExpansion = (date) => {
+    setExpandedDates(prevState => ({
+      ...prevState,
+      [date]: !prevState[date] 
+    }));
+  };
+
+  const handleAllToothStatuses = async () => {
+
+    try {
+        console.log('Fetching all tooth statuses for:', applicant.studentIdNumber);
+        const response = await fetch(`https://dentalmanagement.azurewebsites.net/student/${applicant.studentIdNumber}/tooth-statuses`);
+  
+        if (response.ok) {
+            const records = await response.json();
+            const sortedRecords = records.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt));
+            setIntraoralRecords(sortedRecords);
+            setShowMedicalRecords(true);
+        } else {
+            console.error('Failed to fetch all tooth statuses', response.status, response.statusText);
+            alert(`Failed to fetch data: ${response.status} - ${response.statusText}`);
+        }
+    } catch (error) {
+        console.error('Error fetching all tooth statuses:', error);
+        alert(`Error fetching data: ${error.message}`);
+    }
+  };
+
+  const handleNavigateToDentalRecord = () => {
+    navigate('/dental-record-drawer', {
+      state: {
+        studentData: formData, // Pass the student data as state
+        medicalRecords,        // Pass medical records
+        intraoralRecords,      // Pass intraoral records if needed
+      },
+    });
+  };
+  
+  
+  // Fetch Intraoral Examination data when the drawer opens
+  useEffect(() => {
+    if (showMedicalRecords) {
+      handleAllToothStatuses(); // Fetch intraoral records when the drawer opens
+    }
+  }, [showMedicalRecords]);
+
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh'}}>
       <Sidebar /> 
@@ -200,7 +250,7 @@ const MedicalForm = () => {
             variant="h4" 
             sx={{ fontWeight: 'bold', color: '#90343c' }} 
           >
-            Medical Checkup and Records
+            Dental Checkup and Records
           </Typography>
           </Box>
           <DocNavBar />
@@ -223,7 +273,7 @@ const MedicalForm = () => {
             Check Student
           </Button>
           <Button variant="contained" sx={{ backgroundColor: '#a52a2a', '&:hover': { backgroundColor: '#F7C301' }}} onClick={handleMedicalRecords}>
-            Medical Records
+            Dental Records
           </Button>
         </Box>
 
@@ -295,51 +345,147 @@ const MedicalForm = () => {
 
         {/* Drawer for Medical Records */}
         <Drawer anchor="right" open={showMedicalRecords} onClose={() => setShowMedicalRecords(false)}>
-        <Box sx={{ width: 400, padding: 2 }}>
-          <Typography variant="h6" gutterBottom align="center">
-            Medical Records
-          </Typography>
-          <Tabs value={activeTab} onChange={(event, newValue) => setActiveTab(newValue)} aria-label="medical records tabs">
-            <Tab label="Checkup" value="checkup" />
-            {/* <Tab label="Dental Treatment" value="dental" /> */}
-          </Tabs>
+  <Box
+    sx={{
+      width: 400,
+      padding: 2,
+      display: "flex",
+      flexDirection: "column",
+      height: "100vh", 
+      boxSizing: "border-box", 
+    }}
+  >
+    {/* Header */}
+    <Typography variant="h6" gutterBottom align="center">
+      Dental Records
+    </Typography>
+    <Tabs
+      value={activeTab}
+      onChange={(event, newValue) => {
+        setActiveTab(newValue);
+        if (newValue === "intraoral") {
+          handleAllToothStatuses(); 
+          setSelectedRecord(null);
+        }
+      }}
+      aria-label="medical records tabs"
+    >
+      <Tab label="Checkup" value="checkup" />
+      <Tab label="Intraoral Examination" value="intraoral" />
+    </Tabs>
 
-          {/* Checkup Tab */}
-          {activeTab === 'checkup' && (
-            <List>
-              {medicalRecords.map((record, index) => (
-                <ListItem key={index} button onClick={() => handleRecordClick(record)}>
-                  <ListItemText primary={`${new Date(record.date).toDateString()} - ${new Date(record.date).toLocaleTimeString()}`} />
-                </ListItem>
-              ))}
-            </List>
-          )}
-            
-            
+    {/* Content Container */}
+    <Box
+      sx={{
+        flexGrow: 1, 
+        overflowY: "auto", 
+        marginBottom: "70px", 
+      }}
+    >
+      {/* Checkup Tab */}
+      {activeTab === "checkup" && (
+        <List>
+          {medicalRecords.map((record, index) => (
+            <ListItem key={index} button onClick={() => setSelectedRecord(record)}>
+              <ListItemText
+                primary={`${new Date(record.date).toDateString()} - ${new Date(record.date).toLocaleTimeString()}`}
+              />
+            </ListItem>
+          ))}
+        </List>
+      )}
 
-            {/* Display selected record */}
-            {selectedRecord && (
-              <div>
-                <Typography variant="h6" gutterBottom>
-                  Records for {new Date(selectedRecord.date).toDateString()} - {new Date(selectedRecord.date).toLocaleTimeString()}
-                </Typography>
-                <Card sx={{ marginBottom: 2 }}>
+      {/* Intraoral Examination Tab */}
+      {activeTab === "intraoral" && (
+  <List>
+    {intraoralRecords && intraoralRecords.length > 0 ? (
+      Object.keys(
+        intraoralRecords.reduce((acc, record) => {
+          const date = new Date(record.savedAt).toLocaleDateString();
+          if (!acc[date]) acc[date] = [];
+          acc[date].push(record);
+          return acc;
+        }, {})
+      ).map((date, index) => (
+        <div key={index}>
+          <ListItem button onClick={() => toggleDateExpansion(date)}>
+            <ListItemText primary={`${date}`} />
+          </ListItem>
+          <Collapse in={expandedDates[date]} timeout="auto" unmountOnExit>
+            {intraoralRecords
+              .filter((record) => new Date(record.savedAt).toLocaleDateString() === date)
+              .map((record, i) => (
+                <Card key={i} sx={{ marginBottom: 2, marginLeft: 3 }}>
                   <CardContent>
-                    <Typography variant="body2">Blood Pressure: {selectedRecord.bloodPressure}</Typography>
-                    <Typography variant="body2">Heart Rate: {selectedRecord.heartRate}</Typography>
-                    <Typography variant="body2">Respiratory Rate: {selectedRecord.respiratoryRate}</Typography>
-                    <Typography variant="body2">Temperature: {selectedRecord.temperature}</Typography>
-                    <Typography variant="body2">Oral Health Status: {selectedRecord.oralHealthStatus}</Typography>
-                    <Typography variant="body2">Gum Health: {selectedRecord.gumHealth}</Typography>
-                    <Typography variant="body2">Cavities: {selectedRecord.presenceOfCavities}</Typography>
-                    <Typography variant="body2">General Health Condition: {selectedRecord.generalHealthCondition}</Typography>
-                    <Typography variant="body2">Specific Health Condition: {selectedRecord.specificHealthConcerns}</Typography>
+                    <Typography variant="body1">
+                      Tooth Number: <strong>{record.toothNumber}</strong>
+                    </Typography>
+                    <Typography variant="body1">Status: {record.status}</Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      Saved At: {new Date(record.savedAt).toLocaleString()}
+                    </Typography>
                   </CardContent>
                 </Card>
-              </div>
-            )}
-          </Box>
-        </Drawer>
+              ))}
+          </Collapse>
+        </div>
+      ))
+    ) : (
+      <Typography variant="body2" color="textSecondary" sx={{ textAlign: "center", marginTop: 2 }}>
+        No Intraoral Examination records available.
+      </Typography>
+    )}
+  </List>
+)}
+
+{/* Display selected record details only if in Checkup tab */}
+{activeTab === 'checkup' && selectedRecord && (
+      <div>
+        <Typography variant="h6" gutterBottom>
+          Records for {new Date(selectedRecord.date || selectedRecord.savedAt).toDateString()} - {new Date(selectedRecord.date || selectedRecord.savedAt).toLocaleTimeString()}
+        </Typography>
+        <Card sx={{ marginBottom: 2 }}>
+          <CardContent>
+            <Typography variant="body2">Blood Pressure: {selectedRecord.bloodPressure}</Typography>
+            <Typography variant="body2">Heart Rate: {selectedRecord.heartRate}</Typography>
+            <Typography variant="body2">Respiratory Rate: {selectedRecord.respiratoryRate}</Typography>
+            <Typography variant="body2">Temperature: {selectedRecord.temperature}</Typography>
+            <Typography variant="body2">Oral Health Status: {selectedRecord.oralHealthStatus}</Typography>
+            <Typography variant="body2">Gum Health: {selectedRecord.gumHealth}</Typography>
+            <Typography variant="body2">Cavities: {selectedRecord.presenceOfCavities}</Typography>
+            <Typography variant="body2">General Health Condition: {selectedRecord.generalHealthCondition}</Typography>
+            <Typography variant="body2">Specific Health Condition: {selectedRecord.specificHealthConcerns}</Typography>
+          </CardContent>
+        </Card>
+      </div>
+    )}
+
+    </Box>
+
+    {/* Print Records Button Fixed at Bottom */}
+    <Box
+      sx={{
+        position: "fixed", 
+        bottom: 10, 
+      }}
+    >
+      <Button
+        variant="contained"
+        onClick={handleNavigateToDentalRecord}
+        sx={{
+          backgroundColor: "#88343b",
+          color: "#FFFFFF",
+          width: "260%", 
+          "&:hover": {
+            backgroundColor: "#F7C301",
+          },
+        }}
+      >
+        View Records
+      </Button>
+    </Box>
+  </Box>
+</Drawer>
 
         {/* Incomplete Fields Dialog */}
         <Dialog open={showIncompleteFieldsDialog} onClose={() => setShowIncompleteFieldsDialog(false)}>

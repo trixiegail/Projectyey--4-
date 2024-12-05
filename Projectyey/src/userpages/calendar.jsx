@@ -144,7 +144,6 @@ const App = () => {
       });
   
       if (!reserveResponse.ok) {
-        const errorData = await reserveResponse.text(); // Use text() to capture full response
         console.error("Error response:", errorData);
         throw new Error("Failed to reserve slot");
       }
@@ -165,8 +164,6 @@ const App = () => {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' }
     });
-
-    window.location.reload();
 
     // Update the event list to mark the event as unavailable
     setEvents((prevEvents) =>
@@ -355,6 +352,8 @@ const App = () => {
   
         // Clear the reserved event from state
         setReservedEvent(null);
+        window.location.reload();
+        
       } catch (error) {
         console.error('Error cancelling reservation:', error);
         alert('Failed to cancel the reservation.');
@@ -364,7 +363,7 @@ const App = () => {
       alert('No reservation to cancel.');
     }
   };
-
+///////////////////////////////////////
   const CancelConfirmationModal = () => {
     if (!openCancelConfirmModal) return null;
 
@@ -377,17 +376,16 @@ const App = () => {
             <Button 
               variant="contained" 
               style={{ backgroundColor: '#88343B' }} 
-              onClick={() => setOpenCancelConfirmModal(false)} 
+              onClick={() => setOpenCancelConfirmModal(false)} // Close the modal
             >
               No, Keep Reservation
             </Button>
             <Button 
   variant="contained" 
-  style={{ backgroundColor: '#F7C301', color: '#88343B', fontWeight: 'bold' }} 
+  style={{ backgroundColor: '#F7C301', color: '#88343B', fontWeight: 'bold' }} // Set text color to maroon and make it bold
   onClick={() => {
-    handleCancelReservation(); 
-    setOpenCancelConfirmModal(false); 
-    window.location.reload();
+    handleCancelReservation(); // Call the existing cancellation function
+    setOpenCancelConfirmModal(false); // Close the modal
   }}
 >
   Yes, Cancel Reservation
