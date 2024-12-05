@@ -186,78 +186,76 @@ const ApplicantList = () => {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const handleConfirmRefusal = async () => {
-    if (isSubmitting) return; // Prevent further requests while processing
+  const handleConfirmRefusal = () => {
+    if (isSubmitting) return; // Prevent further requests while the current one is processing
     setIsSubmitting(true);
+    
+    console.log('Attempting to reject applicant ID:', selectedApplicantId);
   
-    try {
-      console.log('Attempting to reject applicant ID:', selectedApplicantId);
-  
-      // Fetch applicant details if needed
-      if (!selectedApplicant || !selectedApplicant.email) {
-        const response = await fetch(`https://dentalmanagement.azurewebsites.net/api/reservations/${selectedApplicantId}`);
-        const applicant = await response.json();
-  
-        if (!applicant || !applicant.email) {
-          console.error('Applicant email is missing or invalid.');
-          setIsSubmitting(false);
-          return;
+    // Move the reservation to the Declined Appointments History first
+    fetch(`https://dentalmanagement.azurewebsites.net/api/declined-appointments/move/${selectedApplicantId}`, {
+      method: 'POST',
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log('Successfully moved to Declined Appointments History');
+
+          // Now delete the reservation
+          fetch(`https://dentalmanagement.azurewebsites.net/api/reservations/${selectedApplicantId}`, {
+            method: 'DELETE',
+          })
+            .then((deleteResponse) => {
+              if (deleteResponse.ok) {
+                console.log('Reservation deleted successfully');
+                setOpenDeleteEventDialog(true); 
+                handleCloseConfirmDialog();
+              } else {
+                console.error('Failed to delete reservation:', deleteResponse);
+              }
+            })
+            .catch((error) => {
+              console.error('Error deleting reservation:', error);
+            })
+            .finally(() => {
+              setIsSubmitting(false); // Reset the submitting state
+            });
+        } else {
+          console.error('Failed to move to Declined Appointments History:', response);
+          setIsSubmitting(false); // Reset the submitting state in case of failure
         }
-  
-        setSelectedApplicant(applicant);
-      }
-  
-      const { email, fullName } = selectedApplicant;
-  
-      // Move the reservation to Declined Appointments History
-      const moveResponse = await fetch(
-        `https://dentalmanagement.azurewebsites.net/api/declined-appointments/move/${selectedApplicantId}`,
-        { method: 'POST' }
-      );
-  
-      if (moveResponse.ok) {
-        console.log('Successfully moved to Declined Appointments History');
-  
-        // Send email notification
-        const emailResponse = await fetch(`https://dentalmanagement.azurewebsites.net/email/send-email/${selectedApplicant.email}`, {
+      })
+      .catch((error) => {
+        console.error('Error moving to Declined Appointments History:', error);
+        setIsSubmitting(false); // Reset the submitting state in case of failure
+      });
+
+        // Send the email notification
+        fetch(`https://dentalmanagement.azurewebsites.net/email/send-email/${selectedApplicant.email}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            email: selectedApplicant.email,
+            email: selectedApplicant.email, // Ensure you have the email of the selected applicant
             subject: 'Appointment Declined',
-            message: `Dear ${selectedApplicant.fullName}, your appointment request has been declined. Please contact us for more information.`,
+            message: `Dear ${selectedApplicant.fullName},\n
+              We regret to inform you that your appointment request for ${selectedApplicant.date} at ${selectedApplicant.time} has been declined.\n
+              We sincerely apologize for any inconvenience this may have caused. Please feel free to contact us to discuss alternative options or to make a new appointment request.
+              Thank you for your understanding.\n
+              Best regards,\n
+              CITU Oral Healthcare Team`,
           }),
-        });
+        })
+          .then((emailResponse) => {
+            if (emailResponse.ok) {
+              console.log('Decline email sent successfully');
+            } else {
+              console.error('Failed to send decline email');
+            }
+          })
+          .catch((error) => {
+            console.error('Error sending decline email:', error);
+          });
   
-        if (emailResponse.ok) {
-          console.log('Decline email sent successfully');
-        } else {
-          console.error('Failed to send decline email');
-        }
-  
-        // Delete the reservation
-        const deleteResponse = await fetch(
-          `https://dentalmanagement.azurewebsites.net/api/reservations/${selectedApplicantId}`,
-          { method: 'DELETE' }
-        );
-  
-        if (deleteResponse.ok) {
-          console.log('Reservation deleted successfully');
-          setOpenDeleteEventDialog(true);
-          handleCloseConfirmDialog();
-        } else {
-          console.error('Failed to delete reservation');
-        }
-      } else {
-        console.error('Failed to move to Declined Appointments History');
-      }
-    } catch (error) {
-      console.error('Error during refusal process:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
   };
-  
   
   
   
