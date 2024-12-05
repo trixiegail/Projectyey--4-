@@ -315,7 +315,7 @@ const Dashboard = () => {
 
 
         {/* Pie Charts */}
-        <Grid container spacing={3} sx={{ mt: 3 , ml: 0.5}}>
+        <Grid container spacing={3} sx={{ mt: 1 , ml: 0.5}}>
           <Grid item xs={10} md={3}>
             <Card>
               <CardContent>
