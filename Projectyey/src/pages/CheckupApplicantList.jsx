@@ -205,7 +205,7 @@ const ApplicantList = () => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            email: selectedApplicantEmail, // Ensure you have the email of the selected applicant
+            email: selectedApplicant.email, // Ensure you have the email of the selected applicant
             subject: 'Appointment Declined',
             message: `Dear ${selectedApplicant.fullName},\n
               We regret to inform you that your appointment request for ${selectedApplicant.date} at ${selectedApplicant.time} has been declined.\n
