@@ -13,11 +13,11 @@ const Studfooter = () => {
               </a>
               <p className="mt-2">
               123 Dental St.
-              Smile City, SC 12345
+              Smile City, SC 12345</p>
 
-              (123) 456-7890
+              <p className="mt-2">(123) 456-7890</p>
 
-              dentalcapstone5@gmail.com
+              <p className="mt-2">dentalcapstone5@gmail.com
               </p>
             </div>
             <div className="w-1/3 ml-20">
