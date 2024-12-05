@@ -3,6 +3,7 @@ import { Box, Typography, Select, MenuItem, TextField, Table, TableHead, TableRo
   FormControl, InputLabel, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import DocNavBar from '../components/DocNavBar';
 import Sidebar from '../components/DocSidebar';
+import '../doctor/dashboard.css';
 
 const programsByDepartment = {
   'COLLEGE OF ENGINEERING AND ARCHITECTURE': [
@@ -69,7 +70,7 @@ const CompletedAppointments = () => {
   }, []);
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+    <Box className="dashboard-container"sx={{ display: 'flex', minHeight: '100vh', backgroundColor:'white' }}>
       <Sidebar />
       <Box sx={{ flexGrow: 1, p: 3 }}>
         <Box 
@@ -180,7 +181,7 @@ const CompletedAppointments = () => {
                 backgroundColor: 'white',
                 transition: 'background-color 0.3s ease',
                 '&:hover': {
-                  backgroundColor: 'rgba(255, 255, 255, 0.5)',
+                  backgroundColor: '#eaf6ff',
                 },
               }}
             >

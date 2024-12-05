@@ -91,6 +91,7 @@ const App = () => {
 
   const closeSuccessModal = () => {
     setSuccessModalOpen(false);
+    window.location.reload();
   };
 
   const handleReserve = async () => {
@@ -164,6 +165,8 @@ const App = () => {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' }
     });
+
+    window.location.reload();
 
     // Update the event list to mark the event as unavailable
     setEvents((prevEvents) =>
@@ -361,7 +364,7 @@ const App = () => {
       alert('No reservation to cancel.');
     }
   };
-///////////////////////////////////////
+
   const CancelConfirmationModal = () => {
     if (!openCancelConfirmModal) return null;
 
@@ -374,16 +377,17 @@ const App = () => {
             <Button 
               variant="contained" 
               style={{ backgroundColor: '#88343B' }} 
-              onClick={() => setOpenCancelConfirmModal(false)} // Close the modal
+              onClick={() => setOpenCancelConfirmModal(false)} 
             >
               No, Keep Reservation
             </Button>
             <Button 
   variant="contained" 
-  style={{ backgroundColor: '#F7C301', color: '#88343B', fontWeight: 'bold' }} // Set text color to maroon and make it bold
+  style={{ backgroundColor: '#F7C301', color: '#88343B', fontWeight: 'bold' }} 
   onClick={() => {
-    handleCancelReservation(); // Call the existing cancellation function
-    setOpenCancelConfirmModal(false); // Close the modal
+    handleCancelReservation(); 
+    setOpenCancelConfirmModal(false); 
+    window.location.reload();
   }}
 >
   Yes, Cancel Reservation

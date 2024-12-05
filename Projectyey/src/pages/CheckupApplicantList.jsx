@@ -6,6 +6,7 @@ import Sidebar from '../components/DocSidebar';
 import DocNavBar from '../components/DocNavBar';
 import Patients from '../doctor/Patients';
 import { PatientsContext } from '../doctor/PatientsContext';
+import '../doctor/dashboard.css';
 
 export const ApplicantsContext = createContext();
 
@@ -354,7 +355,7 @@ const ApplicantList = () => {
                   backgroundColor: 'white',
                   transition: 'background-color 0.3s ease',
                   '&:hover': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+                    backgroundColor: '#eaf6ff',
                   },
                 }}
               >
@@ -498,7 +499,7 @@ const CheckupApplicantList = () => {
 
   return (
     <ApplicantsContext.Provider value={{ applicants, setApplicants }}>
-      <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+      <Box className="dashboard-container"sx={{ display: 'flex', minHeight: '100vh', backgroundColor:'white' }}>
         <Sidebar /> 
         <ApplicantList />
       </Box>

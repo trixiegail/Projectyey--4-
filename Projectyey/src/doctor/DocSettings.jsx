@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Box, Typography, TextField, Button, Paper, Grid, Switch, FormControlLabel, Avatar } from '@mui/material';
 import Sidebar from '../components/DocSidebar';
 import DocNavBar from '../components/DocNavBar';
-import axios from 'axios'; // Import axios for HTTP requests
-import { useAuth } from '../contexts/AuthContext'; // Access logged-in doctor info
+import axios from 'axios'; 
+import { useAuth } from '../contexts/AuthContext'; 
+import '../doctor/dashboard.css';
  
 function Settings() {
-  const { doctor } = useAuth(); // Get logged-in doctor from context
-  const [loading, setLoading] = useState(true); // Track loading state
+  const { doctor } = useAuth(); 
+  const [loading, setLoading] = useState(true); 
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -18,8 +19,8 @@ function Settings() {
     smsNotifications: false,
   });
   const [darkMode, setDarkMode] = useState(false);
-  const [profilePicture, setProfilePicture] = useState(null); // New state for profile picture
-  const [preview, setPreview] = useState(''); // Preview image URL
+  const [profilePicture, setProfilePicture] = useState(null); 
+  const [preview, setPreview] = useState(''); 
  
   // Fetch doctor data from backend
   useEffect(() => {
@@ -108,7 +109,7 @@ function Settings() {
   if (loading) return <Typography>Loading...</Typography>;
  
   return (
-      <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+    <Box className="dashboard-container"sx={{ display: 'flex', minHeight: '100vh', backgroundColor:'white' }}>
         <Sidebar />
         <Box sx={{ flexGrow: 1, p: 3 }}>
           <Box

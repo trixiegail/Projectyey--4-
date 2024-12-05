@@ -4,6 +4,7 @@ import { Box, Typography, Select, MenuItem, TextField, Table, TableHead, TableRo
 import Sidebar from '../components/DocSidebar';
 import DocNavBar from '../components/DocNavBar';
 import { useNavigate } from 'react-router-dom';
+import '../doctor/dashboard.css';
 
 export const ApplicantsContext = createContext();
 
@@ -279,7 +280,7 @@ const PatientList = () => {
                 backgroundColor: 'white',
                 transition: 'background-color 0.3s ease',
                 '&:hover': {
-                  backgroundColor: 'rgba(255, 255, 255, 0.5)',
+                  backgroundColor: '#eaf6ff',
                 },
               }}
             >
@@ -348,7 +349,7 @@ const Patients = () => {
 
   return (
     <ApplicantsContext.Provider value={{ applicants, setApplicants }}>
-      <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+      <Box className="dashboard-container"sx={{ display: 'flex', minHeight: '100vh', backgroundColor:'white' }}>
         <Sidebar /> 
         <PatientList />
       </Box>

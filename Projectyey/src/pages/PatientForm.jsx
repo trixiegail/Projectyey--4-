@@ -12,6 +12,7 @@ import '../doctor/style.css';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
+import '../doctor/dashboard.css';
 
 
 const PatientForm = () => {
@@ -594,7 +595,7 @@ useEffect(() => {
   
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh'}}>
+    <Box className="dashboard-container"sx={{ display: 'flex', minHeight: '100vh', backgroundColor:'white' }}>
       <Sidebar /> 
       <Box sx={{ flexGrow: 1, p: 3 }}>
       <Box 
@@ -865,7 +866,7 @@ useEffect(() => {
           },
         }}
       >
-        Print Records
+        View Records
       </Button>
     </Box>
   </Box>
