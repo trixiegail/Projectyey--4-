@@ -17,6 +17,7 @@ import Contact from '../userpages/contact';
 import Home from '../userpages/home';
 import Services from '../userpages/services';
 import StudentProtectedRoute from './StudentProtectedRoute';
+import Appointments from '../userpages/appointments';
 
 export function Studnav() {
   const [isToggleOpen, setIsToggleOpen] = useState(false);
@@ -103,6 +104,7 @@ export function Studnav() {
                 <Link to="/aboutus" className="text-gray-700">About Us</Link>
                 <Link to="/services" className="text-gray-700">Services</Link>
                 <Link to="/student-calendar" className="text-gray-700">Book now</Link>
+                <Link to="/appointments" className="text-gray-700">Appointments</Link>
                 <Link to="/contact" className="text-gray-700">Contact Us</Link>
               </nav>
 
@@ -112,6 +114,7 @@ export function Studnav() {
                   <Route path="/aboutus" element={<StudentProtectedRoute><PageWrapper><AboutUs /></PageWrapper></StudentProtectedRoute>} />
                   <Route path="/services" element={<StudentProtectedRoute><PageWrapper><Services /></PageWrapper></StudentProtectedRoute>} />
                   <Route path="/student-calendar" element={<StudentProtectedRoute><PageWrapper><StudentCalendar /></PageWrapper></StudentProtectedRoute>} />
+                  <Route path="/appointments" element={<StudentProtectedRoute><PageWrapper><Appointments /></PageWrapper></StudentProtectedRoute>} />
                   <Route path="/contact" element={<StudentProtectedRoute><PageWrapper><Contact /></PageWrapper></StudentProtectedRoute>} />
                   <Route path="/login-student" element={<PageWrapper><LoginStudent /></PageWrapper>} />
                 </Routes>
