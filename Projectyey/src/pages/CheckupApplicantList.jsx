@@ -98,7 +98,7 @@ const ApplicantList = () => {
       .then(response => {
         if (response.ok) {
           // Send email notification
-          fetch(`https://dentalmanagement.azurewebsites.net/email/notify-approval`, {
+          fetch(`https://dentalmanagement.azurewebsites.net/email/send-email/${selectedApplicant.email}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: selectedApplicant.email }),
