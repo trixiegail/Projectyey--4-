@@ -91,7 +91,7 @@ function StudentsAccounts() {
   };
 
   const handleUpdate = async () => {
-    console.log('Selected User before Update:', selectedUser.id);
+    console.log('Selected User before Update:', selectedUser);
 
     if (selectedUser && selectedUser.id) {
       try {
