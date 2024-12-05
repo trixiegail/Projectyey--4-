@@ -103,7 +103,12 @@ const ApplicantList = () => {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: selectedApplicant.email, subject: "Approval Notification",
-              message: "You have been approved for your requested checkup.", }),
+              message: `Dear ${selectedApplicant.fullName},\n
+              We are pleased to inform you that your appointment request has been approved. Below are the details of your confirmed appointment:\n\n
+              Date: ${selectedApplicant.date}\n Time: ${selectedApplicant.time}\n
+              If you have any questions, please do not hesitate to contact us. We look forward to serving you.\n
+              Best regards,\n
+              CITU Oral Healthcare Team`, }),
           })
           .then(emailResponse => {
             if (emailResponse.ok) {
@@ -184,7 +189,7 @@ const ApplicantList = () => {
   const handleConfirmRefusal = () => {
     if (isSubmitting) return; // Prevent further requests while the current one is processing
     setIsSubmitting(true);
-    
+  
     console.log('Attempting to reject applicant ID:', selectedApplicantId);
   
     // Move the reservation to the Declined Appointments History first
@@ -195,6 +200,32 @@ const ApplicantList = () => {
         if (response.ok) {
           console.log('Successfully moved to Declined Appointments History');
   
+          // Send the email notification
+          fetch(`https://dentalmanagement.azurewebsites.net/email/send-email/${selectedApplicant.email}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: selectedApplicant.email, // Ensure you have the email of the selected applicant
+              subject: 'Appointment Declined',
+              message: `Dear ${selectedApplicant.fullName},\n
+              We regret to inform you that your appointment request for ${selectedApplicant.date} at ${selectedApplicant.time} has been declined.\n
+              We sincerely apologize for any inconvenience this may have caused. Please feel free to contact us to discuss alternative options or to make a new appointment request.
+              Thank you for your understanding.\n
+              Best regards,\n
+              CITU Oral Healthcare Team`,
+            }),
+          })
+            .then((emailResponse) => {
+              if (emailResponse.ok) {
+                console.log('Decline email sent successfully');
+              } else {
+                console.error('Failed to send decline email');
+              }
+            })
+            .catch((error) => {
+              console.error('Error sending decline email:', error);
+            });
+  
           // Now delete the reservation
           fetch(`https://dentalmanagement.azurewebsites.net/api/reservations/${selectedApplicantId}`, {
             method: 'DELETE',
@@ -202,7 +233,7 @@ const ApplicantList = () => {
             .then((deleteResponse) => {
               if (deleteResponse.ok) {
                 console.log('Reservation deleted successfully');
-                setOpenDeleteEventDialog(true); 
+                setOpenDeleteEventDialog(true);
                 handleCloseConfirmDialog();
               } else {
                 console.error('Failed to delete reservation:', deleteResponse);
@@ -224,6 +255,7 @@ const ApplicantList = () => {
         setIsSubmitting(false); // Reset the submitting state in case of failure
       });
   };
+  
   
   
   
