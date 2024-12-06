@@ -105,7 +105,7 @@ const ApplicantList = () => {
             body: JSON.stringify({ email: selectedApplicant.email, subject: "Approval Notification",
               message: `Dear ${selectedApplicant.fullName},\n
               We are pleased to inform you that your appointment request has been approved. Below are the details of your confirmed appointment:\n\n
-              Date: ${selectedApplicant.date}\n Time: ${selectedApplicant.time}\n
+              Date: ${selectedApplicant.date}\nTime: ${selectedApplicant.time}\n
               If you have any questions, please do not hesitate to contact us. We look forward to serving you.\n
               Best regards,\n
               CITU Oral Healthcare Team`, }),
@@ -230,6 +230,8 @@ const ApplicantList = () => {
       });
 
         // Send the email notification
+        console.log('Email to decline:', selectedApplicant?.email);
+
         fetch(`https://dentalmanagement.azurewebsites.net/email/send-email/${selectedApplicant.email}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
