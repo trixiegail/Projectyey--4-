@@ -1,202 +1,372 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Select, MenuItem, TextField, Table, TableHead, TableRow, TableCell, TableBody,
-  FormControl, InputLabel, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  Box,
+  Typography,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Drawer,
+  Tabs,
+  Tab,
+  List,
+  ListItem,
+  ListItemText,
+  Card,
+  CardContent,
+  Collapse,
+  Button,
+  IconButton,
+  InputBase,
+} from '@mui/material';
+
+import SettingsIcon from '@mui/icons-material/Settings';
+import SearchIcon from '@mui/icons-material/Search';
+
 import DocNavBar from '../components/DocNavBar';
 import Sidebar from '../components/DocSidebar';
 import '../doctor/dashboard.css';
 
-const programsByDepartment = {
-  'COLLEGE OF ENGINEERING AND ARCHITECTURE': [
-    'BS Architecture',
-    'BS Chemical Engineering',
-    'BS Civil Engineering',
-    'BS Computer Engineering',
-    'BS Electrical Engineering',
-    'BS Electronics Engineering',
-    'BS Industrial Engineering',
-    'BS Mechanical Engineering',
-    'BS Mining Engineering',
-  ],
-  'COLLEGE OF MANAGEMENT, BUSINESS & ACCOUNTANCY': [
-    'BS Accountancy',
-    'BS Accounting Information Systems',
-    'BS Management Accounting',
-    'BS Business Administration',
-    'BS Hospitality Management',
-    'BS Tourism Management',
-    'BS Office Administration',
-    'Bachelor in Public Administration',
-  ],
-  'COLLEGE OF ARTS, SCIENCES, & EDUCATION': [
-    'AB Communication',
-    'AB English with Applied Linguistics',
-    'Bachelor of Elementary Education',
-    'Bachelor of Secondary Education',
-    'Bachelor of Multimedia Arts',
-    'BS Biology',
-    'BS Math with Applied Industrial Mathematics',
-    'BS Psychology',
-  ],
-  'COLLEGE OF NURSING & ALLIED HEALTH SCIENCES': [
-    'BS Nursing',
-    'BS Pharmacy',
-  ],
-  'COLLEGE OF COMPUTER STUDIES': [
-    'BS Computer Science',
-    'BS Information Technology',
-  ],
-  'COLLEGE OF CRIMINAL JUSTICE': [
-    'BS Criminology',
-  ],
-};
-
 const CompletedAppointments = () => {
-  const [completedAppointments, setCompletedAppointments] = useState([]);
-  const [filterPriority, setFilterPriority] = useState('All');
-  const [filterDepartment, setFilterDepartment] = useState('');
-  const [filterProgram, setFilterProgram] = useState('');
-  const [filterYear, setFilterYear] = useState('');
-  const [filterDate, setFilterDate] = useState('');
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  // Fetch completed appointments on component mount
+  const [completedAppointments, setCompletedAppointments] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredAppointments, setFilteredAppointments] = useState([]);
+
+  const [showMedicalRecords, setShowMedicalRecords] = useState(false);
+  const [medicalRecords, setMedicalRecords] = useState([]);
+  const [intraoralRecords, setIntraoralRecords] = useState([]);
+  const [activeTab, setActiveTab] = useState('checkup');
+  const [expandedDates, setExpandedDates] = useState({});
+  const [selectedRecord, setSelectedRecord] = useState(null);
+
+  const appointment = location.state?.appointment || {};
+
+  const [formData, setFormData] = useState({
+    fullName: '',
+    idNumber: '',
+    department: '',
+    course: '',
+    year: '',
+    dateOfBirth: '',
+    email: '',
+    toothStatus: [], 
+    teethStatuses: [] ,
+    customCondition: ''
+  });
+
+  const isFormChanged = () => Object.values(formValues).some(value => value !== '');
+  const isFormEmpty = () => Object.values(formValues).every(value => value === '');
+
+  
+
   useEffect(() => {
-    fetch('https://dentalmanagement.azurewebsites.net/api/completed-appointments')  // Adjust API endpoint as necessary
-      .then((response) => response.json())
-      .then((data) => {
+    const fetchCompletedAppointments = async () => {
+      try {
+        const response = await fetch('https://dentalmanagement.azurewebsites.net/api/completed-appointments');
+        const data = await response.json();
         const sortedData = data.sort((a, b) => new Date(b.completedDate) - new Date(a.completedDate));
         setCompletedAppointments(sortedData);
-      })
-      .catch((error) => console.error('Error fetching completed appointments:', error));
+        setFilteredAppointments(sortedData);
+      } catch (error) {
+        console.error('Error fetching completed appointments:', error);
+      }
+    };
+
+    fetchCompletedAppointments();
   }, []);
 
+  useEffect(() => {
+    const lowercasedQuery = searchQuery.toLowerCase();
+    const filtered = completedAppointments.filter((appt) =>
+      appt.studentIdNumber.toLowerCase().includes(lowercasedQuery) ||
+      appt.fullName.toLowerCase().includes(lowercasedQuery) ||
+      appt.program.toLowerCase().includes(lowercasedQuery) ||
+      appt.yearLevel.toLowerCase().includes(lowercasedQuery) ||
+      appt.date.toLowerCase().includes(lowercasedQuery) ||
+      appt.time.toLowerCase().includes(lowercasedQuery) ||
+      new Date(appt.completedDate).toLocaleDateString().toLowerCase().includes(lowercasedQuery)
+    );
+    setFilteredAppointments(filtered);
+  }, [searchQuery, completedAppointments]);
+
+  const handleRowClick = async (studentIdNumber) => {
+    try {
+      const response = await fetch(`https://dentalmanagement.azurewebsites.net/api/checkups/student/${studentIdNumber}`);
+      const records = await response.json();
+      const sortedRecords = records.sort((a, b) => new Date(b.date) - new Date(a.date));
+      setMedicalRecords(sortedRecords);
+      setShowMedicalRecords(true);
+    } catch (error) {
+      console.error('Error fetching medical records:', error);
+    }
+  };
+
+  const handleAllToothStatuses = async () => {
+
+    try {
+        console.log('Fetching all tooth statuses for:', appointment.studentIdNumber);
+        const response = await fetch(`https://dentalmanagement.azurewebsites.net/student/${appointment.studentIdNumber}/tooth-statuses`);
+  
+        if (response.ok) {
+            const records = await response.json();
+            const sortedRecords = records.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt));
+            setIntraoralRecords(sortedRecords);
+            setShowMedicalRecords(true);
+        } else {
+            console.error('Failed to fetch all tooth statuses', response.status, response.statusText);
+            alert(`Failed to fetch data: ${response.status} - ${response.statusText}`);
+        }
+    } catch (error) {
+        console.error('Error fetching all tooth statuses:', error);
+        alert(`Error fetching data: ${error.message}`);
+    }
+  };
+  
+
+  const handleNavigateToDentalRecord = () => {
+    navigate('/dental-record-drawer', {
+      state: {
+        studentData: formData,
+        medicalRecords,
+        intraoralRecords,
+      },
+    });
+  };
+
+  
+
   return (
-    <Box className="dashboard-container"sx={{ display: 'flex', minHeight: '100vh', backgroundColor:'white' }}>
+    <Box className="dashboard-container" sx={{ display: 'flex', minHeight: '100vh', backgroundColor: 'white' }}>
       <Sidebar />
       <Box sx={{ flexGrow: 1, p: 3 }}>
-        <Box 
-          sx={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center', 
-            mb: 2 
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: 2,
           }}
         >
-          <Typography 
-            variant="h4" 
-            sx={{ fontWeight: 'bold', color: '#90343c', whiteSpace: 'nowrap' }} 
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 'bold',
+              color: '#90343c',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+            }}
           >
             Completed Appointments
           </Typography>
-          <DocNavBar />
-        </Box>
-    
-        {/* Completed Appointments Table */}
-
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={3} width="100%">
-        <FormControl variant="outlined" style={{ minWidth: 200 }}>
-          <InputLabel>List</InputLabel>
-          <Select
-            value={filterPriority}
-            onChange={(e) => setFilterPriority(e.target.value)}
-            label="List"
-          >
-            <MenuItem value="All">All</MenuItem>
-            <MenuItem value="Priority List">Priority List</MenuItem>
-          </Select>
-        </FormControl>
-
-        <FormControl variant="outlined" style={{ minWidth: 300 }}>
-          <InputLabel>Department</InputLabel>
-          <Select
-            value={filterDepartment}
-            onChange={(e) => handleDepartmentChange(e.target.value)}
-            label="Department"
-          >
-            <MenuItem value="">All</MenuItem>
-            {Object.keys(programsByDepartment).map((department) => (
-              <MenuItem key={department} value={department}>{department}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Box>
-
-      <Box display="flex" justifyContent="center" mt={3} sx={{ borderRadius: 2, overflow: 'hidden' }}>
-        <Table sx={{ width: '100%'}}>
-        <TableHead>
-            <TableRow style={{ backgroundColor: '#90242c'}}>
-              <TableCell style={{ color: '#FFFFFF', paddingLeft: '20px', width: '15%'}} >ID Number</TableCell>
-              <TableCell style={{ color: '#FFFFFF', paddingLeft: '20px' }}>Full Name</TableCell>
-              <TableCell>
-                <FormControl variant="outlined" size="small" style={{ minWidth: 150}}>
-                  <InputLabel style={{ color: '#FFFFFF' }}>Program</InputLabel>
-                  <Select
-                    value={filterProgram}
-                    onChange={(e) => setFilterProgram(e.target.value)}
-                    label="Program"
-                  >
-                    <MenuItem value="">All</MenuItem>
-                    {filterDepartment && programByDepartment[filterDepartment].map((program) => (
-                      <MenuItem key={program} value={program}>{program}</MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </TableCell>
-              <TableCell>
-                <FormControl variant="outlined" size="small" style={{ minWidth: 100 }}>
-                  <InputLabel style={{ color: '#FFFFFF' }}>Year</InputLabel>
-                  <Select
-                    value={filterYear}
-                    onChange={(e) => setFilterYear(e.target.value)}
-                    label="Year"
-                  >
-                    <MenuItem value="">All</MenuItem>
-                    <MenuItem value="1">1</MenuItem>
-                    <MenuItem value="2">2</MenuItem>
-                    <MenuItem value="3">3</MenuItem>
-                    <MenuItem value="4">4</MenuItem>
-                  </Select>
-                </FormControl>
-              </TableCell>
-              <TableCell style={{ color: '#FFFFFF', padding: '8px' }}>
-                Date & Time
-                <TextField
-                  type="date"
-                  value={filterDate}
-                  onChange={(e) => setFilterDate(e.target.value)}
-                  size="small"
-                  style={{ marginLeft: 10 }}
-                />
-              </TableCell>
-              <TableCell style={{ color: '#FFFFFF', padding: '8px' }}>Completed Date</TableCell>
-            </TableRow>
-          </TableHead>
-          
-          <TableBody>
-          {completedAppointments.map((appointment) => (
-          <TableRow
-              key={appointment.id}
-              onClick={() => handleRowClick(appointment)}
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box
               sx={{
-                cursor: 'pointer',
-                backgroundColor: 'white',
-                transition: 'background-color 0.3s ease',
-                '&:hover': {
-                  backgroundColor: '#eaf6ff',
-                },
+                display: 'flex',
+                alignItems: 'center',
+                border: '1px solid #ccc',
+                borderRadius: 2,
+                padding: '0 0.5rem',
+                width: 500,
+                marginRight: -20,
               }}
             >
-                <TableCell style={{ paddingLeft: 15}}>{appointment.studentIdNumber}</TableCell>
-                <TableCell style={{ paddingLeft: 15}}>{appointment.fullName}</TableCell>
-                <TableCell style={{ paddingLeft: 30}}>{appointment.program}</TableCell>
-                <TableCell style={{ paddingLeft: 60}}>{appointment.yearLevel}</TableCell>
-                <TableCell style={{ paddingLeft: 15}}><strong>{appointment.date}</strong> &emsp;&emsp;{appointment.time}</TableCell>
-                <TableCell style={{ paddingLeft: 15}}>{new Date(appointment.completedDate).toLocaleDateString()}</TableCell>
+              <SearchIcon sx={{ color: '#ccc', marginRight: 1 }} />
+              <InputBase
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                fullWidth
+              />
+            </Box>
+            <IconButton>
+            </IconButton>
+            <DocNavBar />
+          </Box>
+        </Box>
+
+        <Box display="flex" justifyContent="center" mt={3} sx={{ borderRadius: 2, overflow: 'hidden' }}>
+          <Table>
+            <TableHead>
+              <TableRow style={{ backgroundColor: '#90242c' }}>
+                <TableCell style={{ color: '#FFFFFF' }}>ID Number</TableCell>
+                <TableCell style={{ color: '#FFFFFF' }}>Full Name</TableCell>
+                <TableCell style={{ color: '#FFFFFF' }}>Program</TableCell>
+                <TableCell style={{ color: '#FFFFFF' }}>Year</TableCell>
+                <TableCell style={{ color: '#FFFFFF' }}>Date & Time</TableCell>
+                <TableCell style={{ color: '#FFFFFF' }}>Completed Date</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredAppointments.map((appt) => (
+                <TableRow
+                  key={appt.id}
+                  onClick={() => handleRowClick(appt.studentIdNumber)}
+                  sx={{
+                    cursor: 'pointer',
+                    '&:hover': { backgroundColor: '#eaf6ff' },
+                  }}
+                >
+                  <TableCell>{appt.studentIdNumber}</TableCell>
+                  <TableCell>{appt.fullName}</TableCell>
+                  <TableCell>{appt.program}</TableCell>
+                  <TableCell>{appt.yearLevel}</TableCell>
+                  <TableCell>{`${appt.date} ${appt.time}`}</TableCell>
+                  <TableCell>{new Date(appt.completedDate).toLocaleDateString()}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
+        </Box>
       </Box>
-      </Box>
+
+      {/* Medical Records Drawer */}
+      <Drawer anchor="right" open={showMedicalRecords} onClose={() => setShowMedicalRecords(false)}>
+  <Box
+    sx={{
+      width: 400,
+      padding: 2,
+      display: "flex",
+      flexDirection: "column",
+      height: "100vh", 
+      boxSizing: "border-box", 
+    }}
+  >
+    {/* Header */}
+    <Typography variant="h6" gutterBottom align="center">
+      Medical Records
+    </Typography>
+    <Tabs
+      value={activeTab}
+      onChange={(event, newValue) => {
+        setActiveTab(newValue);
+        if (newValue === "intraoral") {
+          handleAllToothStatuses(); 
+          setSelectedRecord(null);
+        }
+      }}
+      aria-label="medical records tabs"
+    >
+      <Tab label="Checkup" value="checkup" />
+      <Tab label="Intraoral Examination" value="intraoral" />
+    </Tabs>
+
+    {/* Content Container */}
+    <Box
+      sx={{
+        flexGrow: 1, 
+        overflowY: "auto", 
+        marginBottom: "70px", 
+      }}
+    >
+      {/* Checkup Tab */}
+      {activeTab === "checkup" && (
+        <List>
+          {medicalRecords.map((record, index) => (
+            <ListItem key={index} button onClick={() => setSelectedRecord(record)}>
+              <ListItemText
+                primary={`${new Date(record.date).toDateString()} - ${new Date(record.date).toLocaleTimeString()}`}
+              />
+            </ListItem>
+          ))}
+        </List>
+      )}
+
+      {/* Intraoral Examination Tab */}
+      {activeTab === "intraoral" && (
+  <List>
+    {intraoralRecords && intraoralRecords.length > 0 ? (
+      Object.keys(
+        intraoralRecords.reduce((acc, record) => {
+          const date = new Date(record.savedAt).toLocaleDateString();
+          if (!acc[date]) acc[date] = [];
+          acc[date].push(record);
+          return acc;
+        }, {})
+      ).map((date, index) => (
+        <div key={index}>
+          <ListItem button onClick={() => toggleDateExpansion(date)}>
+            <ListItemText primary={`${date}`} />
+          </ListItem>
+          <Collapse in={expandedDates[date]} timeout="auto" unmountOnExit>
+            {intraoralRecords
+              .filter((record) => new Date(record.savedAt).toLocaleDateString() === date)
+              .map((record, i) => (
+                <Card key={i} sx={{ marginBottom: 2, marginLeft: 3 }}>
+                  <CardContent>
+                    <Typography variant="body1">
+                      Tooth Number: <strong>{record.toothNumber}</strong>
+                    </Typography>
+                    <Typography variant="body1">Status: {record.status}</Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      Saved At: {new Date(record.savedAt).toLocaleString()}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              ))}
+          </Collapse>
+        </div>
+      ))
+    ) : (
+      <Typography variant="body2" color="textSecondary" sx={{ textAlign: "center", marginTop: 2 }}>
+        No Intraoral Examination records available.
+      </Typography>
+    )}
+  </List>
+)}
+
+{/* Display selected record details only if in Checkup tab */}
+{activeTab === 'checkup' && selectedRecord && (
+      <div>
+        <Typography variant="h6" gutterBottom>
+          Records for {new Date(selectedRecord.date || selectedRecord.savedAt).toDateString()} - {new Date(selectedRecord.date || selectedRecord.savedAt).toLocaleTimeString()}
+        </Typography>
+        <Card sx={{ marginBottom: 2 }}>
+          <CardContent>
+            <Typography variant="body2">Blood Pressure: {selectedRecord.bloodPressure}</Typography>
+            <Typography variant="body2">Heart Rate: {selectedRecord.heartRate}</Typography>
+            <Typography variant="body2">Respiratory Rate: {selectedRecord.respiratoryRate}</Typography>
+            <Typography variant="body2">Temperature: {selectedRecord.temperature}</Typography>
+            <Typography variant="body2">Oral Health Status: {selectedRecord.oralHealthStatus}</Typography>
+            <Typography variant="body2">Gum Health: {selectedRecord.gumHealth}</Typography>
+            <Typography variant="body2">Cavities: {selectedRecord.presenceOfCavities}</Typography>
+            <Typography variant="body2">General Health Condition: {selectedRecord.generalHealthCondition}</Typography>
+            <Typography variant="body2">Specific Health Condition: {selectedRecord.specificHealthConcerns}</Typography>
+          </CardContent>
+        </Card>
+      </div>
+    )}
+
+    </Box>
+
+    {/* Print Records Button Fixed at Bottom */}
+    <Box
+      sx={{
+        position: "fixed", 
+        bottom: 10, 
+      }}
+    >
+      <Button
+        variant="contained"
+        onClick={handleNavigateToDentalRecord}
+        sx={{
+          backgroundColor: "#88343b",
+          color: "#FFFFFF",
+          width: "260%", 
+          "&:hover": {
+            backgroundColor: "#F7C301",
+          },
+        }}
+      >
+        Print Records
+      </Button>
+    </Box>
+  </Box>
+</Drawer>
 
     </Box>
   );

@@ -234,7 +234,7 @@ const MedicalForm = () => {
   }, [showMedicalRecords]);
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh'}}>
+    <Box sx={{ display: 'flex', minHeight: '100vh', backgroundColor:'white' }}>
       <Sidebar /> 
       <Box sx={{ flexGrow: 1, p: 3 }}>
       <Box 
@@ -250,7 +250,7 @@ const MedicalForm = () => {
             variant="h4" 
             sx={{ fontWeight: 'bold', color: '#90343c' }} 
           >
-            Dental Checkup and Records
+            Checkup and Records
           </Typography>
           </Box>
           <DocNavBar />
