@@ -6,6 +6,7 @@ import Sidebar from '../components/DocSidebar';
 import DocNavBar from '../components/DocNavBar';
 import Patients from '../doctor/Patients';
 import { PatientsContext } from '../doctor/PatientsContext';
+import SearchIcon from '@mui/icons-material/Search';
 import '../doctor/dashboard.css';
 
 export const ApplicantsContext = createContext();
