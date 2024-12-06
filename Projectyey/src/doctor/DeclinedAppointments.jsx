@@ -95,7 +95,7 @@ const DeclinedAppointments = () => {
   useEffect(() => {
     const fetchDeclinedAppointments = async () => {
       try {
-        const response = await fetch('https://dentalmanagement.azurewebsites.net/api/declinedd-appointments');
+        const response = await fetch('https://dentalmanagement.azurewebsites.net/api/declined-appointments');
         const data = await response.json();
         const sortedData = data.sort((a, b) => new Date(b.declinedDate) - new Date(a.declinedDate));
         setDeclinedAppointments(sortedData);
