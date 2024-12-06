@@ -210,31 +210,38 @@ const ApplicantList = () => {
   const handleConfirmRefusal = () => {
     if (isSubmitting) return; // Prevent further requests while the current one is processing
     setIsSubmitting(true);
+
+    if (selectedApplicantId) {
+      const applicant = applicants.find(a => a.id === selectedApplicantId); // Get the applicant
+      if (!applicant || !applicant.email) {
+        console.error("Applicant or email is null/undefined");
+        setIsSubmitting(false);
+        return;
+      }
     
     console.log('Attempting to reject applicant ID:', selectedApplicantId);
+    console.log("Sending email for applicant:", applicant);
 
     // Send the email notification
-    if (selectedApplicant && selectedApplicant.email) {
-      fetch(`https://dentalmanagement.azurewebsites.net/email/send-email/${selectedApplicant.email}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: selectedApplicant.email,
-          subject: 'Appointment Declined',
-          message: `Dear ${selectedApplicant.fullName},\n...`,
-        }),
-      })
-      .then((response) => {
-        if (response.ok) {
-          console.log('Decline email sent successfully');
-        } else {
-          console.error('Failed to send decline email');
-        }
-      })
-      .catch((error) => console.error('Error sending decline email:', error));
-    } else {
-      console.error("Selected applicant email is null or undefined.");
-    }
+    fetch(`https://dentalmanagement.azurewebsites.net/email/send-email/${applicant.email}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: applicant.email,
+        subject: 'Appointment Declined',
+        message: `Dear ${applicant.fullName},\n...`,
+      }),
+    })
+    .then((response) => {
+      if (response.ok) {
+        console.log('Decline email sent successfully');
+      } else {
+        console.error('Failed to send decline email');
+      }
+    })
+    .catch((error) => console.error('Error sending decline email:', error))
+    .finally(() => setIsSubmitting(false));
+  } 
     
   
     // Move the reservation to the Declined Appointments History first
