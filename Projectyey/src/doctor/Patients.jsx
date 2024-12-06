@@ -37,32 +37,36 @@ const PatientList = () => {
 
   useEffect(() => {
     const lowercasedQuery = searchQuery.toLowerCase();
-
+  
     const filtered = applicants.filter((applicant) => {
+      // Safely handle null or undefined yearLevel
+      const yearLevelString = applicant.yearLevel != null ? applicant.yearLevel.toString() : '';
+  
       // Search filter
       const matchesSearch =
         applicant.studentIdNumber.toLowerCase().includes(lowercasedQuery) ||
         applicant.fullName.toLowerCase().includes(lowercasedQuery) ||
         applicant.program.toLowerCase().includes(lowercasedQuery) ||
-        applicant.yearLevel.toString().toLowerCase().includes(lowercasedQuery) ||
+        yearLevelString.toLowerCase().includes(lowercasedQuery) ||
         applicant.date.toLowerCase().includes(lowercasedQuery) ||
         applicant.time.toLowerCase().includes(lowercasedQuery);
-
+  
       // Priority filter
       const matchesPriority =
-        filterPriority === 'All' || (filterPriority === 'Priority List' && applicant.yearLevel.toString() === '4');
-
+        filterPriority === 'All' || (filterPriority === 'Priority List' && yearLevelString === '4');
+  
       // Year filter
-      const matchesYear = !filterYear || applicant.yearLevel.toString() === filterYear;
-
+      const matchesYear = !filterYear || yearLevelString === filterYear;
+  
       // Date filter
       const matchesDate = !filterDate || applicant.date === filterDate;
-
+  
       return matchesSearch && matchesPriority && matchesYear && matchesDate;
     });
-
+  
     setFilteredApplicants(filtered);
   }, [searchQuery, filterPriority, filterYear, filterDate, applicants]);
+  
 
 
   const handleRowClick = (applicant) => {
