@@ -159,7 +159,7 @@ const ApplicantList = () => {
     setSelectedApplicantId(applicantId); // Store the ID of the applicant to delete
     setSelectedEventId(eventId);
     setOpenConfirmDialog(true); // Open the dialog
-    console.log('Email to decline:', selectedApplicant?.email);
+    console.log('Email to decline:', selectedApplicant.email);
   };
 
   const handleCloseConfirmDialog = () => {
