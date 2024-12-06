@@ -123,7 +123,25 @@ const ApplicantList = () => {
   
           // Remove the applicant from the list
           setApplicants(prevApplicants => prevApplicants.filter(a => a.id !== selectedApplicant.id));
-          handleCloseAcceptDialog();
+          const eventId = selectedApplicant.event.id; 
+          fetch(`https://dentalmanagement.azurewebsites.net/api/events/${eventId}`, {
+            method: 'DELETE',
+          })
+          .then(eventResponse => {
+            if (eventResponse.ok) {
+              console.log('Event deleted successfully');
+  
+              setApplicants((prevApplicants) => prevApplicants.filter(a => a.id !== selectedApplicant.id));
+  
+              handleCloseAcceptDialog();
+            } else {
+              console.error('Failed to delete event:', eventResponse);
+            }
+          })
+          .catch((error) => {
+            console.error('Error deleting event:', error);
+          });
+
         } else {
           console.error('Failed to accept the applicant.');
         }
