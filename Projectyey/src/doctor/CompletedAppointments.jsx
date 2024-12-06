@@ -59,10 +59,38 @@ const CompletedAppointments = () => {
     customCondition: ''
   });
 
-  const isFormChanged = () => Object.values(formValues).some(value => value !== '');
-  const isFormEmpty = () => Object.values(formValues).every(value => value === '');
-
   
+  const fetchStudentData = async (studentIdNumber) => {
+  if (!studentIdNumber) {
+    console.error('No student ID provided.');
+    return;
+  }
+
+  try {
+    const response = await fetch(`https://dentalmanagement.azurewebsites.net/student/students/${studentIdNumber}`);
+
+    if (!response.ok) {
+      throw new Error(`Error fetching student data: ${response.statusText}`);
+    }
+
+    const rawResponse = await response.text();
+    console.log('Raw Response from Server:', rawResponse);
+
+    const studentData = JSON.parse(rawResponse);
+    setFormData({
+      fullName: `${studentData.firstname} ${studentData.lastname}`,
+      idNumber: studentData.idNumber || '',
+      department: studentData.department || '',
+      course: studentData.program || '',
+      year: studentData.yearLevel || '',
+      dateOfBirth: studentData.birthdate || '',
+      email: studentData.email || ''
+    });
+  } catch (error) {
+    console.error('Error fetching student data:', error);
+  }
+};
+
 
   useEffect(() => {
     const fetchCompletedAppointments = async () => {
@@ -95,40 +123,73 @@ const CompletedAppointments = () => {
     });
     setFilteredAppointments(filtered);
   }, [searchQuery, completedAppointments]);
-  
 
   const handleRowClick = async (studentIdNumber) => {
+    if (!studentIdNumber) {
+      console.error('No studentIdNumber provided for fetching records.');
+      return;
+
+      
+    }
+  
+    fetchStudentData(studentIdNumber);
+
     try {
-      const response = await fetch(`https://dentalmanagement.azurewebsites.net/api/checkups/student/${studentIdNumber}`);
-      const records = await response.json();
-      const sortedRecords = records.sort((a, b) => new Date(b.date) - new Date(a.date));
-      setMedicalRecords(sortedRecords);
+      // Fetch Checkup Records
+      const checkupResponse = await fetch(`https://dentalmanagement.azurewebsites.net/api/checkups/student/${studentIdNumber}`);
+      const checkupRecords = await checkupResponse.json();
+      const sortedCheckupRecords = checkupRecords.sort((a, b) => new Date(b.date) - new Date(a.date));
+      setMedicalRecords(sortedCheckupRecords);
+  
+      // Fetch Intraoral Records
+      const intraoralResponse = await fetch(`https://dentalmanagement.azurewebsites.net/student/${studentIdNumber}/tooth-statuses`);
+      const intraoralRecords = await intraoralResponse.json();
+      const sortedIntraoralRecords = intraoralRecords.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt));
+      setIntraoralRecords(sortedIntraoralRecords);
+  
+      // Set selected record
+      setSelectedRecord({ studentIdNumber });
+  
+      // Open drawer
       setShowMedicalRecords(true);
     } catch (error) {
-      console.error('Error fetching medical records:', error);
+      console.error('Error fetching records:', error);
     }
   };
 
-  const handleAllToothStatuses = async () => {
-
-    try {
-        console.log('Fetching all tooth statuses for:', appointment.studentIdNumber);
-        const response = await fetch(`https://dentalmanagement.azurewebsites.net/student/${appointment.studentIdNumber}/tooth-statuses`);
+  const toggleDateExpansion = (date) => {
+    setExpandedDates(prevState => ({
+      ...prevState,
+      [date]: !prevState[date] 
+    }));
+  };
   
-        if (response.ok) {
-            const records = await response.json();
-            const sortedRecords = records.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt));
-            setIntraoralRecords(sortedRecords);
-            setShowMedicalRecords(true);
-        } else {
-            console.error('Failed to fetch all tooth statuses', response.status, response.statusText);
-            alert(`Failed to fetch data: ${response.status} - ${response.statusText}`);
-        }
+
+  const handleAllToothStatuses = async (studentIdNumber) => {
+    if (!studentIdNumber) {
+      console.error('Student ID Number is not provided.');
+      return;
+    }
+  
+    try {
+      console.log('Fetching all tooth statuses for:', studentIdNumber);
+      const response = await fetch(`https://dentalmanagement.azurewebsites.net/student/${studentIdNumber}/tooth-statuses`);
+  
+      if (response.ok) {
+        const records = await response.json();
+        const sortedRecords = records.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt));
+        setIntraoralRecords(sortedRecords);
+        setShowMedicalRecords(true);
+      } else {
+        console.error('Failed to fetch all tooth statuses', response.status, response.statusText);
+        alert(`Failed to fetch data: ${response.status} - ${response.statusText}`);
+      }
     } catch (error) {
-        console.error('Error fetching all tooth statuses:', error);
-        alert(`Error fetching data: ${error.message}`);
+      console.error('Error fetching all tooth statuses:', error);
+      alert(`Error fetching data: ${error.message}`);
     }
   };
+  
   
 
   const handleNavigateToDentalRecord = () => {
@@ -141,7 +202,6 @@ const CompletedAppointments = () => {
     });
   };
 
-  
 
   return (
     <Box className="dashboard-container" sx={{ display: 'flex', minHeight: '100vh', backgroundColor: 'white' }}>
@@ -208,7 +268,7 @@ const CompletedAppointments = () => {
               {filteredAppointments.map((appt) => (
                 <TableRow
                   key={appt.id}
-                  onClick={() => handleRowClick(appt.studentIdNumber)}
+                  onClick={() => handleRowClick(appt.studentIdNumber)} // Pass studentIdNumber here
                   sx={{
                     cursor: 'pointer',
                     '&:hover': { backgroundColor: '#eaf6ff' },
@@ -223,6 +283,7 @@ const CompletedAppointments = () => {
                 </TableRow>
               ))}
             </TableBody>
+
           </Table>
         </Box>
       </Box>
@@ -244,19 +305,17 @@ const CompletedAppointments = () => {
       Medical Records
     </Typography>
     <Tabs
-      value={activeTab}
-      onChange={(event, newValue) => {
-        setActiveTab(newValue);
-        if (newValue === "intraoral") {
-          handleAllToothStatuses(); 
-          setSelectedRecord(null);
-        }
-      }}
-      aria-label="medical records tabs"
-    >
-      <Tab label="Checkup" value="checkup" />
-      <Tab label="Intraoral Examination" value="intraoral" />
-    </Tabs>
+  value={activeTab}
+  onChange={(event, newValue) => {
+    setActiveTab(newValue);
+    if (newValue === "intraoral" && selectedRecord?.studentIdNumber) {
+      handleAllToothStatuses(selectedRecord.studentIdNumber);
+    }
+  }}
+>
+  <Tab label="Checkup" value="checkup" />
+  <Tab label="Intraoral Examination" value="intraoral" />
+</Tabs>
 
     {/* Content Container */}
     <Box

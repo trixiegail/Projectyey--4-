@@ -118,7 +118,7 @@ const DeclinedAppointments = () => {
         (appt.yearLevel?.toLowerCase() || "").includes(lowercasedQuery) ||
         (appt.date?.toLowerCase() || "").includes(lowercasedQuery) ||
         (appt.time?.toLowerCase() || "").includes(lowercasedQuery) ||
-        (new Date(appt.completedDate).toLocaleDateString().toLowerCase().includes(lowercasedQuery))
+        (new Date(appt.declinedDate).toLocaleDateString().toLowerCase().includes(lowercasedQuery))
       );
     });
     setFilteredAppointments(filtered);
