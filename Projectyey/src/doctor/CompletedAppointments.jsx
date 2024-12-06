@@ -82,17 +82,20 @@ const CompletedAppointments = () => {
 
   useEffect(() => {
     const lowercasedQuery = searchQuery.toLowerCase();
-    const filtered = completedAppointments.filter((appt) =>
-      appt.studentIdNumber.toLowerCase().includes(lowercasedQuery) ||
-      appt.fullName.toLowerCase().includes(lowercasedQuery) ||
-      appt.program.toLowerCase().includes(lowercasedQuery) ||
-      appt.yearLevel.toLowerCase().includes(lowercasedQuery) ||
-      appt.date.toLowerCase().includes(lowercasedQuery) ||
-      appt.time.toLowerCase().includes(lowercasedQuery) ||
-      new Date(appt.completedDate).toLocaleDateString().toLowerCase().includes(lowercasedQuery)
-    );
+    const filtered = completedAppointments.filter((appt) => {
+      return (
+        (appt.studentIdNumber?.toLowerCase() || "").includes(lowercasedQuery) ||
+        (appt.fullName?.toLowerCase() || "").includes(lowercasedQuery) ||
+        (appt.program?.toLowerCase() || "").includes(lowercasedQuery) ||
+        (appt.yearLevel?.toLowerCase() || "").includes(lowercasedQuery) ||
+        (appt.date?.toLowerCase() || "").includes(lowercasedQuery) ||
+        (appt.time?.toLowerCase() || "").includes(lowercasedQuery) ||
+        (new Date(appt.completedDate).toLocaleDateString().toLowerCase().includes(lowercasedQuery))
+      );
+    });
     setFilteredAppointments(filtered);
   }, [searchQuery, completedAppointments]);
+  
 
   const handleRowClick = async (studentIdNumber) => {
     try {
