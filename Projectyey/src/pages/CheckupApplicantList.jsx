@@ -1,6 +1,6 @@
 import React, { useState, createContext, useContext, useEffect , useRef } from 'react';
 import { Box, Typography, Select, MenuItem, TextField, Table, TableHead, TableRow, TableCell, TableBody,
-        FormControl, InputLabel, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+        FormControl, InputLabel, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, InputBase, IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/DocSidebar';
 import DocNavBar from '../components/DocNavBar';
@@ -10,52 +10,7 @@ import '../doctor/dashboard.css';
 
 export const ApplicantsContext = createContext();
 
-const programByDepartment = {
-  'COLLEGE OF ENGINEERING AND ARCHITECTURE': [
-    'BS Architecture',
-    'BS Chemical Engineering',
-    'BS Civil Engineering',
-    'BS Computer Engineering',
-    'BS Electrical Engineering',
-    'BS Electronics Engineering',
-    'BS Industrial Engineering',
-    'BS Mechanical Engineering',
-    'BS Mining Engineering',
-  ],
-  'COLLEGE OF MANAGEMENT, BUSINESS & ACCOUNTANCY': [
-    'BS Accountancy',
-    'BS Accounting Information Systems',
-    'BS Management Accounting',
-    'BS Business Administration',
-    'BS Hospitality Management',
-    'BS Tourism Management',
-    'BS Office Administration',
-    'Bachelor in Public Administration',
-  ],
-  'COLLEGE OF ARTS, SCIENCES, & EDUCATION': [
-    'AB Communication',
-    'AB English with Applied Linguistics',
-    'Bachelor of Elementary Education',
-    'Bachelor of Secondary Education',
-    'Bachelor of Multimedia Arts',
-    'BS Biology',
-    'BS Math with Applied Industrial Mathematics',
-    'BS Psychology',
-  ],
-  'COLLEGE OF NURSING & ALLIED HEALTH SCIENCES': [
-    'BS Nursing',
-    'BS Pharmacy',
-  ],
-  'COLLEGE OF COMPUTER STUDIES': [
-    'BS Computer Science',
-    'BS Information Technology',
-  ],
-  'COLLEGE OF CRIMINAL JUSTICE': [
-    'BS Criminology',
-  ],
-};
 
-const programsByDepartment = {  };
 
 const ApplicantList = () => {
   const [filterPriority, setFilterPriority] = useState('All');
@@ -74,7 +29,8 @@ const ApplicantList = () => {
   const [selectedApplicantId, setSelectedApplicantId] = useState(null);
   const [selectedEventId, setSelectedEventId] = useState(null); // New state for tracking event ID
   const [openDeleteEventDialog, setOpenDeleteEventDialog] = useState(false); // New state for delete confirmation
-
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredApplicants, setFilteredApplicants] = useState(applicants);
 
   // Handle accept button click
   const handleOpenAcceptDialog = (event, applicant) => {
@@ -176,29 +132,35 @@ const ApplicantList = () => {
   });
 
   // Filter applicants
-  const filteredApplicants = sortedApplicants.filter((applicant) => {
-    if (filterPriority === 'Priority List' && applicant.year !== 4) {
-      return false;
-    }
-    if (filterDepartment && filterDepartment !== applicant.department) {
-      return false;
-    }
-    if (filterProgram && filterProgram !== applicant.program) {
-      return false;
-    }
-    if (filterYear && filterYear !== '' && filterYear !== applicant.year.toString()) {
-      return false;
-    }
-    if (filterDate && filterDate !== '' && filterDate !== applicant.date) {
-      return false;
-    }
-    return true;
-  });
+  useEffect(() => {
+    const lowercasedQuery = searchQuery.toLowerCase();
 
-  const handleDepartmentChange = (department) => {
-    setFilterDepartment(department);
-    setFilterProgram(''); 
-  };
+    const filtered = applicants.filter((applicant) => {
+      // Search filter
+      const matchesSearch =
+        applicant.studentIdNumber.toLowerCase().includes(lowercasedQuery) ||
+        applicant.fullName.toLowerCase().includes(lowercasedQuery) ||
+        applicant.program.toLowerCase().includes(lowercasedQuery) ||
+        applicant.yearLevel.toString().toLowerCase().includes(lowercasedQuery) ||
+        applicant.date.toLowerCase().includes(lowercasedQuery) ||
+        applicant.time.toLowerCase().includes(lowercasedQuery);
+
+      // Priority filter
+      const matchesPriority =
+        filterPriority === 'All' || (filterPriority === 'Priority List' && applicant.yearLevel.toString() === '4');
+
+      // Year filter
+      const matchesYear = !filterYear || applicant.yearLevel.toString() === filterYear;
+
+      // Date filter
+      const matchesDate = !filterDate || applicant.date === filterDate;
+
+      return matchesSearch && matchesPriority && matchesYear && matchesDate;
+    });
+
+    setFilteredApplicants(filtered);
+  }, [searchQuery, filterPriority, filterYear, filterDate, applicants]);
+
 
   const handleRowClick = (applicant) => {
     navigate(`/CheckupForm/${applicant.studentIdNumber}`, { state: { applicant } });
@@ -313,17 +275,52 @@ const ApplicantList = () => {
   
 
   return (
-    <Box sx={{ flexGrow: 1, p: 3 }}>
-      <Box 
-        sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}
-      >
-        <Typography 
-          variant="h4" 
-          sx={{ fontWeight: 'bold', color: '#90343c', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }} 
+    <Box className="dashboard-container" sx={{ display: 'flex', minHeight: '100vh', backgroundColor: 'white' }}>
+      <Sidebar />
+      <Box sx={{ flexGrow: 1, p: 3 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: 2,
+          }}
         >
-          Applicants For Check Up
-        </Typography>
-        <DocNavBar />
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 'bold',
+              color: '#90343c',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            Applicants For Check Up
+          </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              border: '1px solid #ccc',
+              borderRadius: 2,
+              padding: '0 0.5rem',
+              width: 500,
+              marginRight: -20,
+            }}
+          >
+            <SearchIcon sx={{ color: '#ccc', marginRight: 1 }} />
+            <InputBase
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              fullWidth
+            />
+          </Box>
+          <IconButton>
+            </IconButton>
+          <DocNavBar />
+        </Box>
       </Box>
 
       {/* Filter Options */}
@@ -339,20 +336,6 @@ const ApplicantList = () => {
             <MenuItem value="Priority List">Priority List</MenuItem>
           </Select>
         </FormControl>
-
-        <FormControl variant="outlined" style={{ minWidth: 300 }}>
-          <InputLabel>Department</InputLabel>
-          <Select
-            value={filterDepartment}
-            onChange={(e) => handleDepartmentChange(e.target.value)}
-            label="Department"
-          >
-            <MenuItem value="">All</MenuItem>
-            {Object.keys(programByDepartment).map((department) => (
-              <MenuItem key={department} value={department}>{department}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
       </Box>
 
       {/* Applicant Table */}
@@ -362,21 +345,7 @@ const ApplicantList = () => {
             <TableRow style={{ backgroundColor: '#90242c', color: '#FFFFFF' }}>
               <TableCell style={{ color: '#FFFFFF', paddingLeft: 20 }}>ID Number</TableCell>
               <TableCell style={{ color: '#FFFFFF', paddingLeft: 20 }}>Full Name</TableCell>
-              <TableCell>
-                <FormControl variant="outlined" size="small" style={{ minWidth: 150, marginLeft: 10 }}>
-                  <InputLabel style={{ color: '#FFFFFF' }}>Program</InputLabel>
-                  <Select
-                    value={filterProgram}
-                    onChange={(e) => setFilterProgram(e.target.value)}
-                    label="Program"
-                  >
-                    <MenuItem value="">All</MenuItem>
-                    {filterDepartment && programByDepartment[filterDepartment].map((program) => (
-                      <MenuItem key={program} value={program}>{program}</MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </TableCell>
+              <TableCell style={{ color: '#FFFFFF', paddingLeft: 35 }}>Program</TableCell>
               <TableCell>
                 <FormControl variant="outlined" size="small" style={{ minWidth: 100, marginLeft: 10 }}>
                   <InputLabel style={{ color: '#FFFFFF' }}>Year</InputLabel>
@@ -391,35 +360,54 @@ const ApplicantList = () => {
                     <MenuItem value="3">3</MenuItem>
                     <MenuItem value="4">4</MenuItem>
                   </Select>
+
                 </FormControl>
               </TableCell>
-              <TableCell style={{ color: '#FFFFFF', paddingLeft: 20 }}>
-                Date & Time
-                <TextField
-                  type="date"
-                  value={filterDate}
-                  onChange={(e) => setFilterDate(e.target.value)}
-                  size="small"
-                  style={{ marginLeft: 10 }}
-                />
-              </TableCell>
+             <TableCell style={{ color: '#FFFFFF', paddingLeft: 20 }}>
+  Date & Time
+  <TextField
+    type="date"
+    value={filterDate}
+    onChange={(e) => setFilterDate(e.target.value)}
+    size="small"
+    sx={{
+      marginLeft: 1,
+      '& .MuiInputBase-root': {
+        color: '#FFFFFF', // Text color
+      },
+      '& .MuiOutlinedInput-notchedOutline': {
+        borderColor: '#FFFFFF', // Border color
+      },
+      '& .MuiInputLabel-root': {
+        color: '#FFFFFF', // Label color
+      },
+      '& .MuiOutlinedInput-input': {
+        color: '#FFFFFF', // Input text color
+      },
+      '& .MuiSvgIcon-root': {
+        color: '#FFFFFF', // Icon color (if any)
+      },
+    }}
+  />
+</TableCell>
+
               <TableCell style={{ color: '#FFFFFF', paddingLeft: 20 }}></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {filteredApplicants.map((applicant) => (
-              <TableRow
-                key={applicant.id}
-                onClick={() => handleRowClick(applicant)}
-                sx={{
-                  cursor: 'pointer',
-                  backgroundColor: 'white',
-                  transition: 'background-color 0.3s ease',
-                  '&:hover': {
-                    backgroundColor: '#eaf6ff',
-                  },
-                }}
-              >
+               <TableRow
+               key={applicant.id}
+               onClick={() => handleRowClick(applicant)}
+               sx={{
+                 cursor: 'pointer',
+                 backgroundColor: 'white',
+                 transition: 'background-color 0.3s ease',
+                 '&:hover': {
+                   backgroundColor: '#f0f0f0', // Light gray hover color
+                 },
+               }}
+             >
                 <TableCell style={{ paddingLeft: 15, fontSize: '16px' }}>{applicant.studentIdNumber}</TableCell>
                 <TableCell style={{ paddingLeft: 15, fontSize: '16px' }}>{applicant.fullName}</TableCell>
                 <TableCell style={{ paddingLeft: 30, fontSize: '16px' }}>{applicant.program}</TableCell>
@@ -526,7 +514,7 @@ const ApplicantList = () => {
         </DialogActions>
       </Dialog>
 
-
+      </Box>
     </Box>
   );
 };
@@ -560,10 +548,7 @@ const CheckupApplicantList = () => {
 
   return (
     <ApplicantsContext.Provider value={{ applicants, setApplicants }}>
-      <Box className="dashboard-container"sx={{ display: 'flex', minHeight: '100vh', backgroundColor:'white' }}>
-        <Sidebar /> 
         <ApplicantList />
-      </Box>
     </ApplicantsContext.Provider>
   );
 };
