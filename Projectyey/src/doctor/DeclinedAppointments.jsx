@@ -302,7 +302,7 @@ const DeclinedAppointments = () => {
   >
     {/* Header */}
     <Typography variant="h6" gutterBottom align="center">
-      Medical Records
+      Dental Records
     </Typography>
     <Tabs
   value={activeTab}
@@ -328,13 +328,23 @@ const DeclinedAppointments = () => {
       {/* Checkup Tab */}
       {activeTab === "checkup" && (
         <List>
-          {medicalRecords.map((record, index) => (
-            <ListItem key={index} button onClick={() => setSelectedRecord(record)}>
-              <ListItemText
-                primary={`${new Date(record.date).toDateString()} - ${new Date(record.date).toLocaleTimeString()}`}
-              />
-            </ListItem>
-          ))}
+          {medicalRecords && medicalRecords.length > 0 ? (
+            medicalRecords.map((record, index) => (
+              <ListItem key={index} button onClick={() => setSelectedRecord(record)}>
+                <ListItemText
+                  primary={`${new Date(record.date).toDateString()} - ${new Date(record.date).toLocaleTimeString()}`}
+                />
+              </ListItem>
+            ))
+          ) : (
+            <Typography
+              variant="body2"
+              color="textSecondary"
+              sx={{ textAlign: "center", marginTop: 2 }}
+            >
+              No Checkup Records available.
+            </Typography>
+          )}
         </List>
       )}
 
@@ -382,26 +392,26 @@ const DeclinedAppointments = () => {
 )}
 
 {/* Display selected record details only if in Checkup tab */}
-{activeTab === 'checkup' && selectedRecord && (
-      <div>
-        <Typography variant="h6" gutterBottom>
-          Records for {new Date(selectedRecord.date || selectedRecord.savedAt).toDateString()} - {new Date(selectedRecord.date || selectedRecord.savedAt).toLocaleTimeString()}
-        </Typography>
-        <Card sx={{ marginBottom: 2 }}>
-          <CardContent>
-            <Typography variant="body2">Blood Pressure: {selectedRecord.bloodPressure}</Typography>
-            <Typography variant="body2">Heart Rate: {selectedRecord.heartRate}</Typography>
-            <Typography variant="body2">Respiratory Rate: {selectedRecord.respiratoryRate}</Typography>
-            <Typography variant="body2">Temperature: {selectedRecord.temperature}</Typography>
-            <Typography variant="body2">Oral Health Status: {selectedRecord.oralHealthStatus}</Typography>
-            <Typography variant="body2">Gum Health: {selectedRecord.gumHealth}</Typography>
-            <Typography variant="body2">Cavities: {selectedRecord.presenceOfCavities}</Typography>
-            <Typography variant="body2">General Health Condition: {selectedRecord.generalHealthCondition}</Typography>
-            <Typography variant="body2">Specific Health Condition: {selectedRecord.specificHealthConcerns}</Typography>
-          </CardContent>
-        </Card>
-      </div>
-    )}
+{activeTab === 'checkup' && selectedRecord && medicalRecords.length > 0 && (
+  <div>
+    <Typography variant="h6" gutterBottom>
+      Records for {new Date(selectedRecord.date || selectedRecord.savedAt).toDateString()} - {new Date(selectedRecord.date || selectedRecord.savedAt).toLocaleTimeString()}
+    </Typography>
+    <Card sx={{ marginBottom: 2 }}>
+      <CardContent>
+        <Typography variant="body2">Blood Pressure: {selectedRecord.bloodPressure}</Typography>
+        <Typography variant="body2">Heart Rate: {selectedRecord.heartRate}</Typography>
+        <Typography variant="body2">Respiratory Rate: {selectedRecord.respiratoryRate}</Typography>
+        <Typography variant="body2">Temperature: {selectedRecord.temperature}</Typography>
+        <Typography variant="body2">Oral Health Status: {selectedRecord.oralHealthStatus}</Typography>
+        <Typography variant="body2">Gum Health: {selectedRecord.gumHealth}</Typography>
+        <Typography variant="body2">Cavities: {selectedRecord.presenceOfCavities}</Typography>
+        <Typography variant="body2">General Health Condition: {selectedRecord.generalHealthCondition}</Typography>
+        <Typography variant="body2">Specific Health Condition: {selectedRecord.specificHealthConcerns}</Typography>
+      </CardContent>
+    </Card>
+  </div>
+)}
 
     </Box>
 
@@ -424,7 +434,7 @@ const DeclinedAppointments = () => {
           },
         }}
       >
-        Print Records
+        View Records
       </Button>
     </Box>
   </Box>
