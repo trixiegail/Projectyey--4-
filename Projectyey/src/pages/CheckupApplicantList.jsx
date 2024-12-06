@@ -251,12 +251,12 @@ const ApplicantList = () => {
       });
 
         // Send the email notification
-        if (selectedApplicant && selectedApplicant.email) {
-          fetch(`https://dentalmanagement.azurewebsites.net/email/send-email/${selectedApplicant.email}`, {
+        if (selectedApplicant && applicant.email) {
+          fetch(`https://dentalmanagement.azurewebsites.net/email/send-email/${applicant.email}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              email: selectedApplicant.email,
+              email: applicant.email,
               subject: 'Appointment Declined',
               message: `Dear ${selectedApplicant.fullName},\n...`,
             }),
