@@ -364,33 +364,16 @@ const ApplicantList = () => {
 
                 </FormControl>
               </TableCell>
-             <TableCell style={{ color: '#FFFFFF', paddingLeft: 20 }}>
-  Date & Time
-  <TextField
-    type="date"
-    value={filterDate}
-    onChange={(e) => setFilterDate(e.target.value)}
-    size="small"
-    sx={{
-      marginLeft: 1,
-      '& .MuiInputBase-root': {
-        color: '#FFFFFF', // Text color
-      },
-      '& .MuiOutlinedInput-notchedOutline': {
-        borderColor: '#FFFFFF', // Border color
-      },
-      '& .MuiInputLabel-root': {
-        color: '#FFFFFF', // Label color
-      },
-      '& .MuiOutlinedInput-input': {
-        color: '#FFFFFF', // Input text color
-      },
-      '& .MuiSvgIcon-root': {
-        color: '#FFFFFF', // Icon color (if any)
-      },
-    }}
-  />
-</TableCell>
+              <TableCell style={{ color: '#FFFFFF', paddingLeft: 20 }}>
+                Date & Time
+                <TextField
+                  type="date"
+                  value={filterDate}
+                  onChange={(e) => setFilterDate(e.target.value)}
+                  size="small"
+                  style={{ marginLeft: 10 }}
+                />
+              </TableCell>
 
               <TableCell style={{ color: '#FFFFFF', paddingLeft: 20 }}></TableCell>
             </TableRow>
