@@ -110,7 +110,7 @@ const DeclinedAppointments = () => {
 
   useEffect(() => {
     const lowercasedQuery = searchQuery.toLowerCase();
-    const filtered = completedAppointments.filter((appt) => {
+    const filtered = declinedAppointments.filter((appt) => {
       return (
         (appt.studentIdNumber?.toLowerCase() || "").includes(lowercasedQuery) ||
         (appt.fullName?.toLowerCase() || "").includes(lowercasedQuery) ||
@@ -122,7 +122,7 @@ const DeclinedAppointments = () => {
       );
     });
     setFilteredAppointments(filtered);
-  }, [searchQuery, completedAppointments]);
+  }, [searchQuery, declinedAppointments]);
 
   const handleRowClick = async (studentIdNumber) => {
     if (!studentIdNumber) {
