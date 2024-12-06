@@ -159,6 +159,7 @@ const ApplicantList = () => {
     setSelectedApplicantId(applicantId); // Store the ID of the applicant to delete
     setSelectedEventId(eventId);
     setOpenConfirmDialog(true); // Open the dialog
+    console.log('Email to decline:', selectedApplicant?.email);
   };
 
   const handleCloseConfirmDialog = () => {
@@ -248,8 +249,6 @@ const ApplicantList = () => {
       });
 
         // Send the email notification
-        console.log('Email to decline:', selectedApplicant?.email);
-
         fetch(`https://dentalmanagement.azurewebsites.net/email/send-email/${selectedApplicant.email}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
