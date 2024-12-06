@@ -156,6 +156,8 @@ const ApplicantList = () => {
   };
 
   const handleOpenConfirmDialog = (applicantId, eventId) => {
+    const applicant = applicants.find(a => a.id === applicantId); // Ensure this is not returning undefined
+    console.log("Applicant Found:", applicant);
     setSelectedApplicantId(applicantId); // Store the ID of the applicant to delete
     setSelectedEventId(eventId);
     setOpenConfirmDialog(true); // Open the dialog
@@ -249,30 +251,28 @@ const ApplicantList = () => {
       });
 
         // Send the email notification
-        fetch(`https://dentalmanagement.azurewebsites.net/email/send-email/${selectedApplicant.email}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email: selectedApplicant.email, // Ensure you have the email of the selected applicant
-            subject: 'Appointment Declined',
-            message: `Dear ${selectedApplicant.fullName},\n
-              We regret to inform you that your appointment request for ${selectedApplicant.date} at ${selectedApplicant.time} has been declined.\n
-              We sincerely apologize for any inconvenience this may have caused. Please feel free to contact us to discuss alternative options or to make a new appointment request.
-              Thank you for your understanding.\n
-              Best regards,\n
-              CITU Oral Healthcare Team`,
-          }),
-        })
-          .then((emailResponse) => {
-            if (emailResponse.ok) {
+        if (selectedApplicant && selectedApplicant.email) {
+          fetch(`https://dentalmanagement.azurewebsites.net/email/send-email/${selectedApplicant.email}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: selectedApplicant.email,
+              subject: 'Appointment Declined',
+              message: `Dear ${selectedApplicant.fullName},\n...`,
+            }),
+          })
+          .then((response) => {
+            if (response.ok) {
               console.log('Decline email sent successfully');
             } else {
               console.error('Failed to send decline email');
             }
           })
-          .catch((error) => {
-            console.error('Error sending decline email:', error);
-          });
+          .catch((error) => console.error('Error sending decline email:', error));
+        } else {
+          console.error("Selected applicant email is null or undefined.");
+        }
+        
   
   };
   
