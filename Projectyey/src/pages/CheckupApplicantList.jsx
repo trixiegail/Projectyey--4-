@@ -212,6 +212,30 @@ const ApplicantList = () => {
     setIsSubmitting(true);
     
     console.log('Attempting to reject applicant ID:', selectedApplicantId);
+
+    // Send the email notification
+    if (selectedApplicant && selectedApplicant.email) {
+      fetch(`https://dentalmanagement.azurewebsites.net/email/send-email/${selectedApplicant.email}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: selectedApplicant.email,
+          subject: 'Appointment Declined',
+          message: `Dear ${selectedApplicant.fullName},\n...`,
+        }),
+      })
+      .then((response) => {
+        if (response.ok) {
+          console.log('Decline email sent successfully');
+        } else {
+          console.error('Failed to send decline email');
+        }
+      })
+      .catch((error) => console.error('Error sending decline email:', error));
+    } else {
+      console.error("Selected applicant email is null or undefined.");
+    }
+    
   
     // Move the reservation to the Declined Appointments History first
     fetch(`https://dentalmanagement.azurewebsites.net/api/declined-appointments/move/${selectedApplicantId}`, {
@@ -249,31 +273,6 @@ const ApplicantList = () => {
         console.error('Error moving to Declined Appointments History:', error);
         setIsSubmitting(false); // Reset the submitting state in case of failure
       });
-
-        // Send the email notification
-        if (selectedApplicant && applicant.email) {
-          fetch(`https://dentalmanagement.azurewebsites.net/email/send-email/${applicant.email}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              email: applicant.email,
-              subject: 'Appointment Declined',
-              message: `Dear ${selectedApplicant.fullName},\n...`,
-            }),
-          })
-          .then((response) => {
-            if (response.ok) {
-              console.log('Decline email sent successfully');
-            } else {
-              console.error('Failed to send decline email');
-            }
-          })
-          .catch((error) => console.error('Error sending decline email:', error));
-        } else {
-          console.error("Selected applicant email is null or undefined.");
-        }
-        
-  
   };
   
   
