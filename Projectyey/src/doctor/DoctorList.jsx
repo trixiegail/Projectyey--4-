@@ -50,13 +50,14 @@ function DoctorList() {
     // Filter doctors based on the search query
     const lowercasedQuery = searchQuery.toLowerCase();
     const filtered = doctors.filter((doctor) =>
-      doctor.firstname.toLowerCase().includes(lowercasedQuery) ||
-      doctor.lastname.toLowerCase().includes(lowercasedQuery) ||
-      doctor.idNumber.toLowerCase().includes(lowercasedQuery) ||
-      doctor.email.toLowerCase().includes(lowercasedQuery)
+      (doctor.firstname?.toLowerCase() || '').includes(lowercasedQuery) ||
+      (doctor.lastname?.toLowerCase() || '').includes(lowercasedQuery) ||
+      (doctor.idNumber?.toLowerCase() || '').includes(lowercasedQuery) ||
+      (doctor.email?.toLowerCase() || '').includes(lowercasedQuery)
     );
     setFilteredDoctors(filtered);
   }, [searchQuery, doctors]);
+  
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', backgroundColor: '#fafafa' }}>
