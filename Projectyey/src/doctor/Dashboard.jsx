@@ -35,13 +35,13 @@ const Dashboard = () => {
       .catch((error) => console.error('Error fetching applicants:', error));
 
     // Fetch Completed Appointments
-    fetch('ttps://dentalmanagement.azurewebsites.net/api/completed-appointments')
+    fetch('https://dentalmanagement.azurewebsites.net/api/completed-appointments')
       .then((response) => response.json())
       .then((data) => setCompletedAppointments(data))
       .catch((error) => console.error('Error fetching completed appointments:', error));
 
     // Fetch Declined Appointments
-    fetch('ttps://dentalmanagement.azurewebsites.net/api/declined-appointments')
+    fetch('https://dentalmanagement.azurewebsites.net/api/declined-appointments')
       .then((response) => response.json())
       .then((data) => setDeclinedAppointments(data))
       .catch((error) => console.error('Error fetching declined appointments:', error));
