@@ -446,7 +446,7 @@ useEffect(() => {
               <Typography variant="h6" sx={{ mb: 2 }}>
                 Category Comparison
               </Typography>
-              <ResponsiveContainer width="100%" height={220}>
+              <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={barChartData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
