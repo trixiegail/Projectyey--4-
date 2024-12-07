@@ -615,19 +615,8 @@ const handleDeleteEvent = (event) => {
           
 
 
-         {/* Color Legend */}
-         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 , color: 'black' }}>
-          <Box sx={{ backgroundColor: '#FDE74C ', width: 20, height: 20, mr: 1 }} />
-          <Typography variant="body2" sx={{ mr: 2 }}>Available Slot</Typography>
-          <Box sx={{ backgroundColor: '#b8bcc4 ', width: 20, height: 20, mr: 1 }} />
-          <Typography variant="body2" sx={{ mr: 2 }}>Unavailable Slot</Typography>
-          <Box sx={{ backgroundColor: '#cc9999 ', width: 20, height: 20, mr: 1 }} />
-          <Typography variant="body2">Holiday</Typography>
-        </Box>
-
-
         <div >
-       
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={1} width="100%">
       <Button onClick={() => setShowModal(true)} color="primary" variant="contained"
       style={{marginBottom:'10px', backgroundColor:'#88343B' }}>
       Select Days and Time Slots
@@ -708,6 +697,17 @@ const handleDeleteEvent = (event) => {
           </Button> */}
         </DialogActions>
       </Dialog>
+
+       {/* Color Legend */}
+       <Box sx={{ display: 'flex', alignItems: 'center', mb: -2 , mr: 1, color: 'black' }}>
+          <Box sx={{ backgroundColor: '#FDE74C ', width: 20, height: 20, mr: 1 }} />
+          <Typography variant="body2" sx={{ mr: 2 }}>Available Slot</Typography>
+          <Box sx={{ backgroundColor: '#b8bcc4 ', width: 20, height: 20, mr: 1 }} />
+          <Typography variant="body2" sx={{ mr: 2 }}>Unavailable Slot</Typography>
+          <Box sx={{ backgroundColor: '#cc9999 ', width: 20, height: 20, mr: 1 }} />
+          <Typography variant="body2">Holiday</Typography>
+        </Box>
+        </Box>
 
       <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)} disableBackdropClick={false} >
         <DialogTitle>Confirm Event Creation</DialogTitle>
