@@ -325,7 +325,7 @@ const ApplicantList = () => {
       </Box>
 
       {/* Filter Options */}
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3} width="100%">
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={-1} width="100%">
         <FormControl variant="outlined" style={{ minWidth: 200 }}>
           <InputLabel>List</InputLabel>
           <Select
@@ -337,6 +337,15 @@ const ApplicantList = () => {
             <MenuItem value="Priority List">Priority List</MenuItem>
           </Select>
         </FormControl>
+
+         {/* Color Legend */}
+         <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '-30px', color: 'black' }}>
+          <Box sx={{ backgroundColor: '#fff59d ', width: 20, height: 20, mr: 1 }} />
+          <Typography variant="body2" sx={{ mr: 2 }}>Today</Typography>
+          <Box sx={{ backgroundColor: '#fce4ec ', width: 20, height: 20, mr: 1 }} />
+          <Typography variant="body2" sx={{ mr: 2 }} >Past Due</Typography>
+        </Box>
+
       </Box>
 
       {/* Applicant Table */}
