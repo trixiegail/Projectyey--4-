@@ -204,7 +204,7 @@ const DeclinedAppointments = () => {
 
 
   return (
-    <Box className="dashboard-container" sx={{ display: 'flex', minHeight: '100vh', backgroundColor: 'white' }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh', backgroundColor: '#fafafa' }}>
       <Sidebar />
       <Box sx={{ flexGrow: 1, p: 3 }}>
         <Box
@@ -271,7 +271,7 @@ const DeclinedAppointments = () => {
                   onClick={() => handleRowClick(appt.studentIdNumber)} // Pass studentIdNumber here
                   sx={{
                     cursor: 'pointer',
-                    '&:hover': { backgroundColor: '#eaf6ff' },
+                    '&:hover': { backgroundColor: '#f0f0f0' },
                   }}
                 >
                   <TableCell>{appt.studentIdNumber}</TableCell>

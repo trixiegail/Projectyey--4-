@@ -271,7 +271,7 @@ const CompletedAppointments = () => {
                   onClick={() => handleRowClick(appt.studentIdNumber)} // Pass studentIdNumber here
                   sx={{
                     cursor: 'pointer',
-                    '&:hover': { backgroundColor: '#eaf6ff' },
+                    '&:hover': { backgroundColor: '#f0f0f0' },
                   }}
                 >
                   <TableCell>{appt.studentIdNumber}</TableCell>

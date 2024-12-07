@@ -593,7 +593,7 @@ const handleDeleteEvent = (event) => {
 
 
   return (
-    <Box className="dashboard-container"sx={{ display: 'flex', minHeight: '100vh', backgroundColor:'white' }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh', backgroundColor:'#fafafa' }}>
       <Sidebar /> 
       <Box sx={{ flexGrow: 1, p: 3 }}>
       <Box 
