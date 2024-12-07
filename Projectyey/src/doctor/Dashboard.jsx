@@ -210,15 +210,25 @@ const Dashboard = () => {
 
 
   return (
-    <Box className="dashboard-container"sx={{ display: 'flex', minHeight: '100vh', backgroundColor:'white' }}>
-      <Sidebar />
+     <Box sx={{ display: 'flex', minHeight: '100vh', backgroundColor:'#fafafa' }}>
+      <Sidebar /> 
       <Box sx={{ flexGrow: 1, p: 3 }}>
-        <DocNavBar />
-
-        {/* Dashboard Title */}
-        <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 3 }}>
-          Dashboard
-        </Typography>
+      <Box 
+          sx={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center', 
+            mb: 2 
+          }}
+        >
+          <Typography 
+            variant="h4" 
+            sx={{ fontWeight: 'bold', color: '#90343c' }} 
+          >
+            Dashboard
+          </Typography>
+          <DocNavBar />
+        </Box>
 
         <Grid container spacing={3}>
         {/* Left Column */}
