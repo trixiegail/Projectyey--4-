@@ -237,10 +237,13 @@ const Dashboard = () => {
   const [filteredAppointments, setFilteredAppointments] = useState([]); 
   
   // Initialize Patients Section with Today's Appointments
-  useEffect(() => {
+useEffect(() => {
+  if (patients.length > 0) {
     const today = new Date();
-    setFilteredAppointments(filterAppointmentsByDate(today)); // Default to today's appointments
-  }, []);
+    setFilteredAppointments(filterAppointmentsByDate(today)); 
+  }
+}, [patients]); 
+
 
   // Helper Functions
   const filterAppointmentsByDate = (date) => {
