@@ -1,17 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Card, CardContent, Typography, CircularProgress, Grid, Box, Avatar, Divider , TextField , IconButton } from '@mui/material';
+import {
+  Card,
+  CardContent,
+  Typography,
+  CircularProgress,
+  Grid,
+  Box,
+  Avatar,
+  Divider,
+  InputBase,
+  IconButton,
+} from '@mui/material';
 import Sidebar from '../components/DocSidebar';
 import { Email, Badge, Cake } from '@mui/icons-material';
 import SearchIcon from '@mui/icons-material/Search';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import DocNavBar from '../components/DocNavBar';
 import '../doctor/dashboard.css';
 
 function DoctorList() {
   const [doctors, setDoctors] = useState([]);
+  const [filteredDoctors, setFilteredDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchDoctors();
@@ -22,6 +34,7 @@ function DoctorList() {
       const response = await axios.get('https://dentalmanagement.azurewebsites.net/doctor/getDoctors?archived=false');
       if (response.status === 200) {
         setDoctors(response.data);
+        setFilteredDoctors(response.data); 
       } else {
         throw new Error('Failed to fetch doctor accounts');
       }
@@ -33,27 +46,58 @@ function DoctorList() {
     }
   };
 
+  useEffect(() => {
+    // Filter doctors based on the search query
+    const lowercasedQuery = searchQuery.toLowerCase();
+    const filtered = doctors.filter((doctor) =>
+      doctor.firstname.toLowerCase().includes(lowercasedQuery) ||
+      doctor.lastname.toLowerCase().includes(lowercasedQuery) ||
+      doctor.idNumber.toLowerCase().includes(lowercasedQuery) ||
+      doctor.email.toLowerCase().includes(lowercasedQuery)
+    );
+    setFilteredDoctors(filtered);
+  }, [searchQuery, doctors]);
+
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh', backgroundColor:'#fafafa' }}>
-      <Sidebar /> 
+    <Box sx={{ display: 'flex', minHeight: '100vh', backgroundColor: '#fafafa' }}>
+      <Sidebar />
       <Box sx={{ flexGrow: 1, p: 3 }}>
-      <Box 
-          sx={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center', 
-            mb: 2 
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: 2,
           }}
         >
-          <Typography 
-            variant="h4" 
-            sx={{ fontWeight: 'bold', color: '#90343c' }} 
-          >
+          <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#90343c' }}>
             Doctors
           </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box
+            sx={{
+              display: 'flex',
+                alignItems: 'center',
+                border: '1px solid #ccc',
+                borderRadius: 2,
+                padding: '0 0.5rem',
+                width: 500,
+                marginRight: -20,
+            }}
+          >
+            <SearchIcon sx={{ color: '#ccc', marginRight: 1 }} />
+            <InputBase
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              fullWidth
+            />
+          </Box>
+          <IconButton>
+            </IconButton>
           <DocNavBar />
+          </Box>
         </Box>
-
 
         {loading ? (
           <Box display="flex" justifyContent="left" alignItems="left" minHeight="60vh">
@@ -65,7 +109,7 @@ function DoctorList() {
           </Typography>
         ) : (
           <Grid container spacing={3} justifyContent="left">
-            {doctors.map((doctor) => (
+            {filteredDoctors.map((doctor) => (
               <Grid item xs={12} sm={6} md={4} key={doctor.id}>
                 <Card
                   sx={{
@@ -82,7 +126,8 @@ function DoctorList() {
                   <CardContent>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                       <Avatar sx={{ bgcolor: '#90343c', marginRight: 2 }}>
-                        {doctor.firstname.charAt(0)}{doctor.lastname.charAt(0)}
+                        {doctor.firstname.charAt(0)}
+                        {doctor.lastname.charAt(0)}
                       </Avatar>
                       <Box>
                         <Typography variant="h6" gutterBottom>
