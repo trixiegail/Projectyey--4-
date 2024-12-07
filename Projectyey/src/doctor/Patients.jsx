@@ -244,38 +244,62 @@ const PatientList = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredApplicants.map((applicant) => (
-              <TableRow
-              key={applicant.id}
-              onClick={() => handleRowClick(applicant)}
-              sx={{
-                cursor: 'pointer',
-                backgroundColor: 'white',
-                transition: 'background-color 0.3s ease',
-                '&:hover': {
-                  backgroundColor: '#f0f0f0',
-                },
-              }}
+              {filteredApplicants.map((applicant) => {
+                const applicantDate = new Date(applicant.date);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0); // Reset today's time to midnight for comparison
+
+                // Determine row background color based on the date
+                let backgroundColor = 'white';
+                if (applicantDate.toDateString() === today.toDateString()) {
+                  backgroundColor = '#fff59d'; // Pale yellow for today
+                } else if (applicantDate < today) {
+                  backgroundColor = '#fce4ec'; // Pale red for past dates
+                }
+
+                return (
+                  <TableRow
+                    key={applicant.id}
+                    onClick={() => handleRowClick(applicant)}
+                    sx={{
+                      cursor: 'pointer',
+                      backgroundColor, 
+                      transition: 'background-color 0.3s ease',
+                      '&:hover': {
+                        backgroundColor: '#eaf6ff', 
+                      },
+                    }}
             >
-              <TableCell style={{ paddingLeft: 15, fontSize: '16px' }}>{applicant.studentIdNumber}</TableCell>
-              <TableCell style={{ paddingLeft: 15, fontSize: '16px' }}>{applicant.fullName}</TableCell>
-              <TableCell style={{ paddingLeft: 30, fontSize: '16px' }}>{applicant.program}</TableCell>
-              <TableCell style={{ paddingLeft: 70, fontSize: '16px' }}>{applicant.yearLevel}</TableCell>
-              <TableCell style={{ paddingLeft: 20, fontSize: '16px' }}>
+              <TableCell style={{ paddingLeft: 15, fontSize: '14px' }}>{applicant.studentIdNumber}</TableCell>
+              <TableCell style={{ paddingLeft: 15, fontSize: '14px' }}>{applicant.fullName}</TableCell>
+              <TableCell style={{ paddingLeft: 30, fontSize: '14px' }}>{applicant.program}</TableCell>
+              <TableCell style={{ paddingLeft: 70, fontSize: '14px' }}>{applicant.yearLevel}</TableCell>
+              <TableCell style={{ paddingLeft: 20, fontSize: '14px' }}>
                 {applicant.date} <strong>&emsp;&emsp;{applicant.time}</strong>
               </TableCell>
-                <TableCell>
-                  <Button
-                    variant="contained"
-                    onClick={(event) => handleDone(event, applicant.id)}
-                    style={{ backgroundColor: '#90242c', color: '#FFFFFF' }}
-                  >
-                    Done
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
+              <TableCell>
+                      <Button
+                        variant="contained"
+                        onClick={(event) => handleDone(event, applicant.id)}
+                        sx={{
+                          backgroundColor: '#9e444b', // Dark blue for Approve button
+                          color: 'white',
+                          fontWeight: 'bold',
+                          textTransform: 'none',
+                          '&:hover': {
+                            backgroundColor: '#90242c', // Even darker blue on hover
+                          },
+                          marginRight: 5,
+                          width: "50%"
+                        }}
+                      >
+                        Done
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
         </Table>
       </Box>
 

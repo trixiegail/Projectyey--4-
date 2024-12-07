@@ -379,48 +379,118 @@ const ApplicantList = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredApplicants.map((applicant) => (
-               <TableRow
-               key={applicant.id}
-               onClick={() => handleRowClick(applicant)}
-               sx={{
-                 cursor: 'pointer',
-                 backgroundColor: 'white',
-                 transition: 'background-color 0.3s ease',
-                 '&:hover': {
-                   backgroundColor: '#f0f0f0', // Light gray hover color
-                 },
-               }}
-             >
-                <TableCell style={{ paddingLeft: 15, fontSize: '16px' }}>{applicant.studentIdNumber}</TableCell>
-                <TableCell style={{ paddingLeft: 15, fontSize: '16px' }}>{applicant.fullName}</TableCell>
-                <TableCell style={{ paddingLeft: 30, fontSize: '16px' }}>{applicant.program}</TableCell>
-                <TableCell style={{ paddingLeft: 70, fontSize: '16px' }}>{applicant.yearLevel}</TableCell>
-                <TableCell style={{ paddingLeft: 20, fontSize: '16px' }}>
+          {filteredApplicants.map((applicant) => {
+            const applicantDate = new Date(applicant.date);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Reset time to midnight for comparison
+
+            // Determine row background color based on date
+            let backgroundColor = 'white';
+            if (applicantDate.toDateString() === today.toDateString()) {
+              backgroundColor = '#fff59d'; // Slightly darker pale yellow for today
+            } else if (applicantDate < today) {
+              backgroundColor = '#fce4ec'; // Pale red for past dates
+            }
+
+            return (
+              <TableRow
+                key={applicant.id}
+                onClick={() => handleRowClick(applicant)}
+                sx={{
+                  cursor: 'pointer',
+                  backgroundColor,
+                  transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
+                  '&:hover': {
+                    backgroundColor: '#f5f5f5', // Light gray for hover
+                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', // Add subtle elevation on hover
+                  },
+                }}
+              >
+                <TableCell
+                  style={{
+                    paddingLeft: 15,
+                    fontSize: '14px',
+                    fontWeight: 500,
+                  }}
+                >
+                  {applicant.studentIdNumber}
+                </TableCell>
+                <TableCell
+                  style={{
+                    paddingLeft: 15,
+                    fontSize: '14px',
+                    fontWeight: 500,
+                  }}
+                >
+                  {applicant.fullName}
+                </TableCell>
+                <TableCell
+                  style={{
+                    paddingLeft: 30,
+                    fontSize: '14px',
+                    fontWeight: 500,
+                  }}
+                >
+                  {applicant.program}
+                </TableCell>
+                <TableCell
+                  style={{
+                    paddingLeft: 70,
+                    fontSize: '14px',
+                    fontWeight: 500,
+                  }}
+                >
+                  {applicant.yearLevel}
+                </TableCell>
+                <TableCell
+                  style={{
+                    paddingLeft: 20,
+                    fontSize: '14px',
+                    fontWeight: 500,
+                  }}
+                >
                   {applicant.date} <strong>&emsp;&emsp;{applicant.time}</strong>
                 </TableCell>
                 <TableCell>
                   <Button
                     variant="contained"
-                    onClick={(event) => handleOpenAcceptDialog(event, applicant)} // Call to open the modal
-                    style={{ backgroundColor: '#90242c', color: '#FFFFFF', marginRight: 10 }}
+                    onClick={(event) => handleOpenAcceptDialog(event, applicant)}
+                    sx={{
+                      backgroundColor: '#9e444b', // Dark blue for Approve button
+                      color: 'white',
+                      fontWeight: 'bold',
+                      textTransform: 'none',
+                      '&:hover': {
+                        backgroundColor: '#90242c', // Even darker blue on hover
+                      },
+                      marginRight: 1,
+                    }}
                   >
                     Approve
                   </Button>
                   <Button
                     variant="contained"
                     onClick={(event) => {
-                      event.stopPropagation(); 
-                      handleOpenConfirmDialog(applicant.id, applicant.event.id)
+                      event.stopPropagation();
+                      handleOpenConfirmDialog(applicant.id, applicant.event.id);
                     }}
-                    style={{ backgroundColor: '#90242c', color: '#FFFFFF' }}
+                    sx={{
+                      backgroundColor: '#e57373',
+                      color: 'white',
+                      fontWeight: 'bold',
+                      textTransform: 'none',
+                      '&:hover': {
+                        backgroundColor: '#d32f2f',
+                      },
+                    }}
                   >
                     Decline
                   </Button>
                 </TableCell>
               </TableRow>
-            ))}
-          </TableBody>
+            );
+          })}
+        </TableBody>
         </Table>
       </Box>
 
