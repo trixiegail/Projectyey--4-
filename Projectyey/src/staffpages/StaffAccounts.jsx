@@ -134,7 +134,7 @@ function StaffAccounts() {
             Search
           </button>
           <a
-            href="/create-doctor-account"
+            href="/create-staff-account"
             className="ml-2 p-2 bg-[#F7C301] text-white rounded-lg shadow-md hover:bg-[#F7C301]"
           >
             <span>Create Account</span>
