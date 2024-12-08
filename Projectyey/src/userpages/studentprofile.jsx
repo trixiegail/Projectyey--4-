@@ -209,12 +209,12 @@ export function Home() {
           <div className="group relative h-full w-full">
             <img
               className="absolute top-0 h-full w-full bg-black/60 bg-cover bg-center transition-opacity duration-300 group-hover:opacity-0"
-              src="src/image/1.png"
+              src="/1.png"
               alt="Your Company"
             />
             <img
               className="absolute top-0 h-full w-full bg-black/60 bg-cover bg-center transition-opacity duration-300 opacity-0 group-hover:opacity-100"
-              src="src/image/2.png"
+              src="/2.png"
               alt="Hovered Image"
             />
           </div>
