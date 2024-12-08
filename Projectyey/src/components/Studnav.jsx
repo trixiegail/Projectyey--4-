@@ -111,8 +111,8 @@ export function Studnav() {
         <img
           src={
             isHovered
-              ? "src/image/teethLogoDesignYellow.png"
-              : "src/image/teethLogoDesign.png"
+              ? "/teethLogoDesignYellow.png"
+              : "/teethLogoDesign.png"
           }
           alt="Teeth Logo"
           className="h-14 transition-all duration-300"
