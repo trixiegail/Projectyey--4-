@@ -11,16 +11,13 @@ function Services() {
           <div className="mx-auto max-w-2xl py-10">
             <h1 className="text-4xl font-bold tracking-tight text-[#88343B] sm:text-5xl">Our Services</h1>
             <p className="mt-6 text-lg leading-8 text-black">
-            We're dedicated to providing CIT-University with convenient medical and dental consultations, ensuring your health needs are met safely.
+            We're dedicated to providing Cebu Institute of Technology - University with convenient medical and dental consultations, ensuring your health needs are met safely.
             Your well-being matters to us.
             </p>
           </div>
 
           <div className="mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="text-center bg-[#88343B] p-6 rounded-lg shadow-md">
-              <div className="flex justify-center">
-                <img src="/path-to-your-image-1.jpg" alt="General Dentistry" className="h-48 w-48 rounded-full object-cover" />
-              </div>
               <h3 className="mt-6 text-2xl font-bold text-white">General Dentistry</h3>
               <p className="mt-4 text-white">
                 Comprehensive exams, cleanings, and preventive care to keep your smile healthy and beautiful.
@@ -28,9 +25,6 @@ function Services() {
             </div>
 
             <div className="text-center bg-[#88343B] p-6 rounded-lg shadow-md">
-              <div className="flex justify-center">
-                <img src="/path-to-your-image-2.jpg" alt="Cosmetic Dentistry" className="h-48 w-48 rounded-full object-cover" />
-              </div>
               <h3 className="mt-6 text-2xl font-bold text-white">Annual Dental Exam</h3>
               <p className="mt-4 text-white">
                 Enhance your smile with our cosmetic services including teeth whitening, veneers, and more.
@@ -38,9 +32,6 @@ function Services() {
             </div>
 
             <div className="text-center bg-[#88343B] p-6 rounded-lg shadow-md">
-              <div className="flex justify-center">
-                <img src="/path-to-your-image-3.jpg" alt="Orthodontics" className="h-48 w-48 rounded-full object-cover" />
-              </div>
               <h3 className="mt-6 text-2xl font-bold text-white">Face To Face Consultation</h3>
               <p className="mt-4 text-white">
                 Straighten your teeth with our range of orthodontic treatments including braces and clear aligners.
@@ -48,9 +39,6 @@ function Services() {
             </div>
 
             <div className="text-center bg-[#88343B] p-6 rounded-lg shadow-md">
-              <div className="flex justify-center">
-                <img src="/path-to-your-image-4.jpg" alt="Pediatric Dentistry" className="h-48 w-48 rounded-full object-cover" />
-              </div>
               <h3 className="mt-6 text-2xl font-bold text-white">Issuance of Dental Certificate</h3>
               <p className="mt-4 text-white">
                 Gentle and friendly dental care for children, ensuring a positive experience for our youngest patients.
@@ -58,9 +46,6 @@ function Services() {
             </div>
 
             <div className="text-center bg-[#88343B] p-6 rounded-lg shadow-md">
-              <div className="flex justify-center">
-                <img src="/path-to-your-image-5.jpg" alt="Dental Implants" className="h-48 w-48 rounded-full object-cover" />
-              </div>
               <h3 className="mt-6 text-2xl font-bold text-white">Cleaning/Oral Prophylaxis</h3>
               <p className="mt-4 text-white">
                 Replace missing teeth with durable and natural-looking dental implants.
@@ -68,9 +53,6 @@ function Services() {
             </div>
 
             <div className="text-center bg-[#88343B] p-6 rounded-lg shadow-md">
-              <div className="flex justify-center">
-                <img src="/path-to-your-image-6.jpg" alt="Emergency Care" className="h-48 w-48 rounded-full object-cover" />
-              </div>
               <h3 className="mt-6 text-2xl font-bold text-white">Tooth Extraction</h3>
               <p className="mt-4 text-white">
                 Prompt and efficient care for dental emergencies to alleviate pain and address urgent issues.
