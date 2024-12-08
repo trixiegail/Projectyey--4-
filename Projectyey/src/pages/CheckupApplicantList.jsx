@@ -58,7 +58,7 @@ const ApplicantList = () => {
           // Send email notification
           fetch(`https://dentalmanagement.azurewebsites.net/email/send-email/${selectedApplicant.email}`, {
             method: 'POST',
-            headers: { 'Content-Type': 'text/html' },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: selectedApplicant.email, subject: "Approval Notification",
               message: `<p>Dear ${selectedApplicant.fullName},</p>
               <p>We are pleased to inform you that your appointment request has been approved. Below are the details of your confirmed appointment:</p>
