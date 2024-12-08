@@ -1,28 +1,17 @@
-import {
-  BriefcaseIcon,
-  BuildingLibraryIcon,
-  MapPinIcon,
-} from "@heroicons/react/24/solid";
+import React, { useState, useEffect } from "react";
 import { Avatar, Button, Typography } from "@material-tailwind/react";
-import {
-  Box,
-  Card,
-  CardContent,
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
-  Typography as MuiTypography,
-  Tab,
-  Tabs,
-  TextField,
-  Collapse,
-} from "@mui/material";
-import React, { useState , useEffect} from "react";
-import Studfooter from "../components/Studfooter";
-import Studnav from "../components/Studnav";
+import { Box, Card, CardContent, Collapse, Grid } from "@mui/material";
 import axios from "axios";
-import { useLocation , useNavigate  } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import Studnav from "../components/Studnav";
+import Studfooter from "../components/Studfooter";
+import {
+  LocationOn as LocationOnIcon,
+  Business as BusinessIcon,
+  CalendarToday as CalendarTodayIcon,
+  Email as EmailIcon,
+  School as SchoolIcon,
+} from "@mui/icons-material";
 
 export function Home() {
   const [isEditMode, setIsEditMode] = useState(false);
@@ -36,47 +25,31 @@ export function Home() {
     dateOfBirth: "",
     email: "",
   });
-  
 
-
-  const [imageSrc, setImageSrc] = useState("/student.png");
-  const [newImage, setNewImage] = useState(null);
-
-  const [showMedicalRecords, setShowMedicalRecords] = useState(false);
-  const [activeTab, setActiveTab] = useState("checkup");
-  const [selectedRecord, setSelectedRecord] = useState(null);
+  const [imageSrc, setImageSrc] = useState("src/image/student.png");
   const [medicalRecords, setMedicalRecords] = useState([]);
+  const [intraoralRecords, setIntraoralRecords] = useState([]);
   const navigate = useNavigate();
-  const [intraoralRecordsFetched, setIntraoralRecordsFetched] = useState(false);
-  const [intraoralRecords, setIntraoralRecords] = useState([]); 
-  const applicant = location.state?.applicant || {};
-  const [selectedApplicantId, setSelectedApplicantId] = useState(null);
-  const [applicants, setApplicants] = useState([]);
-  const [expandedDates, setExpandedDates] = useState({});
 
   useEffect(() => {
     const fetchStudentInfo = async () => {
       const studentIdNumber = localStorage.getItem("studentIdNumber");
-
       if (studentIdNumber) {
         try {
-          const response = await axios.get(`https://dentalmanagement.azurewebsites.net/student/students/${studentIdNumber}`);
+          const response = await axios.get(
+            `https://dentalmanagement.azurewebsites.net/student/students/${studentIdNumber}`
+          );
           const data = response.data;
-
-          console.log("Fetched student data:", data); // Log the data to verify
-
-          // Update state with the fetched data using the correct field names
           setPersonalInfo({
             fullName: `${data.firstname} ${data.lastname}`,
             studentId: data.idNumber,
             year: data.yearLevel || "",
             location: data.location || "",
-            course: data.program || "", 
+            course: data.program || "",
             department: data.department || "",
-            dateOfBirth: data.birthdate || "", 
-            email: data.email || "", 
+            dateOfBirth: data.birthdate || "",
+            email: data.email || "",
           });
-
           if (data.profilePicture) {
             setImageSrc(`data:image/png;base64,${data.profilePicture}`);
           }
@@ -88,55 +61,58 @@ export function Home() {
 
     const fetchMedicalRecords = async () => {
       const studentIdNumber = localStorage.getItem("studentIdNumber");
-      
       if (studentIdNumber) {
         try {
-          const response = await axios.get(`https://dentalmanagement.azurewebsites.net/api/checkups/student/${studentIdNumber}`);
+          const response = await axios.get(
+            `https://dentalmanagement.azurewebsites.net/api/checkups/student/${studentIdNumber}`
+          );
           const records = response.data;
-
-          setMedicalRecords(records.sort((a, b) => new Date(b.date) - new Date(a.date)));
+          setMedicalRecords(
+            records.sort((a, b) => new Date(b.date) - new Date(a.date))
+          );
         } catch (error) {
           console.error("Error fetching medical records:", error);
         }
       }
     };
 
+    const fetchIntraoralRecords = async () => {
+      const studentIdNumber = localStorage.getItem("studentIdNumber");
+      if (studentIdNumber) {
+        try {
+          const response = await axios.get(
+            `https://dentalmanagement.azurewebsites.net/student/${studentIdNumber}/tooth-statuses`
+          );
+          const records = response.data;
+          setIntraoralRecords(
+            records.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt))
+          );
+        } catch (error) {
+          console.error("Error fetching intraoral records:", error);
+        }
+      }
+    };
+
     fetchStudentInfo();
     fetchMedicalRecords();
+    fetchIntraoralRecords();
   }, []);
 
-
-  
-
-
-  // Toggle the medical records drawer
-  const toggleMedicalRecordsDrawer = () => {
-    setShowMedicalRecords(!showMedicalRecords);
-    if (!intraoralRecordsFetched) {
-      handleAllToothStatuses(); // Fetch records when the drawer is opened
-      setIntraoralRecordsFetched(true);
-    }
-  };
-
-  const handleRecordClick = (record) => {
-    setSelectedRecord(record);
-  };
-
-  const handleDone = () => {
-    setSelectedRecord(null); // Clear the selected record
-    setShowMedicalRecords(false); // Close the drawer
-  };
-
-  // Handle input change for personal information
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setPersonalInfo({
-      ...personalInfo,
-      [name]: value,
+  const handleNavigate = () => {
+    console.log("Navigating with data:", {
+      studentData: personalInfo,
+      medicalRecords,
+      intraoralRecords,
+    });
+    navigate("/dental-record-drawer", {
+      state: {
+        studentData: personalInfo,
+        medicalRecords: medicalRecords,
+        intraoralRecords: intraoralRecords,
+      },
     });
   };
 
-  // Handle image change
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -151,436 +127,144 @@ export function Home() {
     // You can also handle file upload to a server if needed.
   };
 
-  const [formData, setFormData] = useState({
-    fullName: '',
-    idNumber: '',
-    department: '',
-    course: '',
-    year: '',
-    dateOfBirth: '',
-    email: '',
-    toothStatus: [], 
-    teethStatuses: [] ,
-    customCondition: ''
-  });
-
-  const toggleDateExpansion = (date) => {
-    setExpandedDates(prevState => ({
-      ...prevState,
-      [date]: !prevState[date] 
-    }));
-  };
+  
   
 
-
-  const handleAllToothStatuses = async () => {
-    const studentIdNumber = localStorage.getItem("studentIdNumber");
-
-    if (!studentIdNumber) {
-      console.error("Student ID Number not found in localStorage");
-      return;
-    }
-
-    try {
-        console.log('Fetching all tooth statuses for:', studentIdNumber);
-        const response = await fetch(`https://dentalmanagement.azurewebsites.net/student/${studentIdNumber}/tooth-statuses`);
-  
-        if (response.ok) {
-            const records = await response.json();
-            const sortedRecords = records.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt));
-            setIntraoralRecords(sortedRecords);
-            setShowMedicalRecords(true);
-        } else {
-            console.error('Failed to fetch all tooth statuses', response.status, response.statusText);
-            alert(`Failed to fetch data: ${response.status} - ${response.statusText}`);
-        }
-    } catch (error) {
-        console.error('Error fetching all tooth statuses:', error);
-        alert(`Error fetching data: ${error.message}`);
-    }
-  };
 
   return (
-      <>
-        <div>
-          <Studnav />
-
-          <section className="relative block h-[100vh]">
-          <div className="group relative h-full w-full">
-            <img
-              className="absolute top-0 h-full w-full bg-black/60 bg-cover bg-center transition-opacity duration-300 group-hover:opacity-0"
-              src="/1.png"
-              alt="Your Company"
-            />
-            <img
-              className="absolute top-0 h-full w-full bg-black/60 bg-cover bg-center transition-opacity duration-300 opacity-0 group-hover:opacity-100"
-              src="/2.png"
-              alt="Hovered Image"
-            />
-          </div>
-        </section>
-
-          <section className="relative bg-white py-16">
-            <div className="relative mb-6 -mt-40 flex w-full px-4 min-w-0 flex-col break-words bg-white">
-              <div className="container mx-auto">
-                <div className="flex flex-col lg:flex-row justify-between">
-                  <div className="relative flex gap-6 items-start">
-                    <div className="-mt-20 w-40">
-                      <input
-                          type="file"
-                          accept="image/*"
-                          style={{ display: "none" }}
-                          id="image-upload"
-                          onChange={handleImageChange}
-                      />
-                      <label htmlFor="image-upload">
-                        <Avatar
-                            src={imageSrc}
-                            alt="Profile picture"
-                            variant="circular"
-                            className="h-full w-full cursor-pointer"
-                        />
-                      </label>
-                    </div>
-                    <div className="flex flex-col mt-2">
-                      <div className="text-wrapper">
-                        {isEditMode ? (
-                            <TextField
-                                name="fullName"
-                                variant="outlined"
-                                value={personalInfo.fullName}
-                                onChange={(e) => setPersonalInfo({ ...personalInfo, fullName: e.target.value })}
-                                fullWidth
-                                size="small"
-                                margin="dense"
-                            />
-                        ) : (
-                            <Typography variant="h4" color="blue-gray">
-                              {personalInfo.fullName}
-                            </Typography>
-                        )}
-                      </div>
-
-                      <div className="text-wrapper">
-                        {isEditMode ? (
-                            <TextField
-                                name="studentId"
-                                variant="outlined"
-                                value={personalInfo.studentId}
-                                onChange={handleInputChange}
-                                fullWidth
-                                size="small"
-                                margin="dense"
-                            />
-                        ) : (
-                            <Typography
-                                variant="paragraph"
-                                color="gray"
-                                className="!mt-0 font-normal"
-                            >
-                              {personalInfo.studentId}
-                            </Typography>
-                        )}
-                      </div>
-
-                      <div className="text-wrapper">
-                        {isEditMode ? (
-                            <TextField
-                                name="year"
-                                variant="outlined"
-                                value={personalInfo.year}
-                                onChange={handleInputChange}
-                                fullWidth
-                                size="small"
-                                margin="dense"
-                            />
-                        ) : (
-                            <Typography
-                                variant="paragraph"
-                                color="gray"
-                                className="!mt-0 font-normal"
-                            >
-                              Year - {personalInfo.year}
-                            </Typography>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-10 mb-10 flex lg:flex-col justify-between items-center lg:justify-end lg:mb-0 lg:px-4 flex-wrap lg:-mt-5">
-                    {/* {isEditMode ? (
-                        <Button className="bg-[#88343B] w-fit lg:ml-auto" onClick={handleSave}>
-                          Save
-                        </Button>
-                    ) : (
-                        <Button
-                            className="bg-[#88343B] w-fit lg:ml-auto"
-                            onClick={() => setIsEditMode(true)}
-                        >
-                          Edit
-                        </Button>
-                    )} */}
-                    <div className="flex justify-start py-4 pt-8 lg:pt-4">
-                      <div className="mr-4 p-3 text-center">
-                        <Button
-                            className="bg-[#88343B]"
-                            onClick={toggleMedicalRecordsDrawer}
-                        >
-                          Medical Records
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="-mt-4 container space-y-2">
-                  <h1 className="font-semibold leading-7 text-gray-900 text-xl">
-                    Personal Information
-                  </h1>
-
-                  <div className="text-wrapper">
-                    {isEditMode ? (
-                        <TextField
-                            name="location"
-                            variant="outlined"
-                            value={personalInfo.location}
-                            onChange={handleInputChange}
-                            fullWidth
-                            size="small"
-                            margin="dense"
-                        />
-                    ) : (
-                        <div className="flex items-center gap-2">
-                          <MapPinIcon className="-mt-px h-4 w-4 text-blue-gray-500" />
-                          <Typography className="font-medium text-blue-gray-500">
-                            {personalInfo.location}
-                          </Typography>
-                        </div>
-                    )}
-                  </div>
-
-                  <div className="text-wrapper">
-                    {isEditMode ? (
-                        <TextField
-                            name="course"
-                            variant="outlined"
-                            value={personalInfo.course}
-                            onChange={handleInputChange}
-                            fullWidth
-                            size="small"
-                            margin="dense"
-                        />
-                    ) : (
-                        <div className="flex items-center gap-2">
-                          <BriefcaseIcon className="-mt-px h-4 w-4 text-blue-gray-500" />
-                          <Typography className="font-medium text-blue-gray-500">
-                            {personalInfo.course}
-                          </Typography>
-                        </div>
-                    )}
-                  </div>
-
-                  <div className="text-wrapper">
-                    {isEditMode ? (
-                        <TextField
-                            name="department"
-                            variant="outlined"
-                            value={personalInfo.department}
-                            onChange={handleInputChange}
-                            fullWidth
-                            size="small"
-                            margin="dense"
-                        />
-                    ) : (
-                        <div className="flex items-center gap-2">
-                          <BuildingLibraryIcon className="-mt-px h-4 w-4 text-blue-gray-500" />
-                          <Typography className="font-medium text-blue-gray-500">
-                            {personalInfo.department}
-                          </Typography>
-                        </div>
-                    )}
-                  </div>
-
-                  <div className="text-wrapper">
-                    {isEditMode ? (
-                        <TextField
-                            name="dateOfBirth"
-                            label="Date of Birth"
-                            variant="outlined"
-                            value={personalInfo.dateOfBirth}
-                            onChange={handleInputChange}
-                            fullWidth
-                            size="small"
-                            margin="dense"
-                        />
-                    ) : (
-                        <div className="flex items-center gap-2">
-                          <BuildingLibraryIcon className="-mt-px h-4 w-4 text-blue-gray-500" />
-                          <Typography className="font-medium text-blue-gray-500">
-                            Date of Birth: {personalInfo.dateOfBirth}
-                          </Typography>
-                        </div>
-                    )}
-                  </div>
-
-                  <div className="text-wrapper">
-                    {isEditMode ? (
-                        <TextField
-                            name="email"
-                            label="Email"
-                            variant="outlined"
-                            value={personalInfo.email}
-                            onChange={handleInputChange}
-                            fullWidth
-                            size="small"
-                            margin="dense"
-                        />
-                    ) : (
-                        <div className="flex items-center gap-2">
-                          <BuildingLibraryIcon className="-mt-px h-4 w-4 text-blue-gray-500" />
-                          <Typography className="font-medium text-blue-gray-500">
-                            Email: {personalInfo.email}
-                          </Typography>
-                        </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Medical Records Drawer */}
-          <Drawer anchor="right" open={showMedicalRecords} onClose={() => setShowMedicalRecords(false)}>
-  <Box
-    sx={{
-      width: 400,
-      padding: 2,
-      display: "flex",
-      flexDirection: "column",
-      height: "100vh", 
-      boxSizing: "border-box", 
-    }}
-  >
-    {/* Header */}
-    <Typography variant="h6" gutterBottom align="center">
-      Medical Records
-    </Typography>
-    <Tabs
-      value={activeTab}
-      onChange={(event, newValue) => {
-        setActiveTab(newValue);
-        if (newValue === "intraoral") {
-          handleAllToothStatuses(); 
-          setSelectedRecord(null);
-        }
-      }}
-      aria-label="medical records tabs"
-    >
-      <Tab label="Checkup" value="checkup" />
-      <Tab label="Intraoral Examination" value="intraoral" />
-    </Tabs>
-
-    {/* Content Container */}
-    <Box
-      sx={{
-        flexGrow: 1, 
-        overflowY: "auto", 
-        marginBottom: "70px", 
-      }}
-    >
-      {/* Checkup Tab */}
-      {activeTab === "checkup" && (
-        <List>
-          {medicalRecords.map((record, index) => (
-            <ListItem key={index} button onClick={() => setSelectedRecord(record)}>
-              <ListItemText
-                primary={`${new Date(record.date).toDateString()} - ${new Date(record.date).toLocaleTimeString()}`}
-              />
-            </ListItem>
-          ))}
-        </List>
-      )}
-
-      {/* Intraoral Examination Tab */}
-      {activeTab === "intraoral" && (
-  <List>
-    {intraoralRecords && intraoralRecords.length > 0 ? (
-      Object.keys(
-        intraoralRecords.reduce((acc, record) => {
-          const date = new Date(record.savedAt).toLocaleDateString();
-          if (!acc[date]) acc[date] = [];
-          acc[date].push(record);
-          return acc;
-        }, {})
-      ).map((date, index) => (
-        <div key={index}>
-          <ListItem button onClick={() => toggleDateExpansion(date)}>
-            <ListItemText primary={`${date}`} />
-          </ListItem>
-          <Collapse in={expandedDates[date]} timeout="auto" unmountOnExit>
-            {intraoralRecords
-              .filter((record) => new Date(record.savedAt).toLocaleDateString() === date)
-              .map((record, i) => (
-                <Card key={i} sx={{ marginBottom: 2, marginLeft: 3 }}>
-                  <CardContent>
-                    <Typography variant="body1">
-                      Tooth Number: <strong>{record.toothNumber}</strong>
-                    </Typography>
-                    <Typography variant="body1">Status: {record.status}</Typography>
-                    <Typography variant="body2" color="textSecondary">
-                      Saved At: {new Date(record.savedAt).toLocaleString()}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              ))}
-          </Collapse>
-        </div>
-      ))
-    ) : (
-      <Typography variant="body2" color="textSecondary" sx={{ textAlign: "center", marginTop: 2 }}>
-        No Intraoral Examination records available.
-      </Typography>
-    )}
-  </List>
-)}
-
-{/* Display selected record details only if in Checkup tab */}
-{activeTab === 'checkup' && selectedRecord && (
-      <div>
-        <Typography variant="h6" gutterBottom>
-          Records for {new Date(selectedRecord.date || selectedRecord.savedAt).toDateString()} - {new Date(selectedRecord.date || selectedRecord.savedAt).toLocaleTimeString()}
-        </Typography>
-        <Card sx={{ marginBottom: 2 }}>
-          <CardContent>
-            <Typography variant="body2">Blood Pressure: {selectedRecord.bloodPressure}</Typography>
-            <Typography variant="body2">Heart Rate: {selectedRecord.heartRate}</Typography>
-            <Typography variant="body2">Respiratory Rate: {selectedRecord.respiratoryRate}</Typography>
-            <Typography variant="body2">Temperature: {selectedRecord.temperature}</Typography>
-            <Typography variant="body2">Oral Health Status: {selectedRecord.oralHealthStatus}</Typography>
-            <Typography variant="body2">Gum Health: {selectedRecord.gumHealth}</Typography>
-            <Typography variant="body2">Cavities: {selectedRecord.presenceOfCavities}</Typography>
-            <Typography variant="body2">General Health Condition: {selectedRecord.generalHealthCondition}</Typography>
-            <Typography variant="body2">Specific Health Condition: {selectedRecord.specificHealthConcerns}</Typography>
-          </CardContent>
-        </Card>
+    <>
+      <Studnav />
+      <section className="relative bg-gray-50 py-16">
+  <div className="container mx-auto">
+    {/* Content Wrapper */}
+    <div className="bg-white shadow-lg rounded-lg px-8 py-10 flex flex-col lg:flex-row gap-12 items-center lg:items-start">
+      {/* Left Side: Profile Picture */}
+      <div className="flex-shrink-0">
+        <input
+          type="file"
+          accept="image/*"
+          style={{ display: "none" }}
+          id="image-upload"
+          onChange={handleImageChange}
+        />
+        <label htmlFor="image-upload">
+          <Avatar
+            src={imageSrc}
+            alt="Profile picture"
+            variant="circular"
+            className="h-40 w-40 lg:h-48 lg:w-48 cursor-pointer shadow-lg transition-transform duration-200 hover:scale-105"
+          />
+        </label>
       </div>
-    )}
-    </Box>
 
-    {/* Print Records Button Fixed at Bottom */}
-    <Box
-      sx={{
-        position: "fixed", 
-        bottom: 10, 
-      }}
-    >
-    </Box>
-  </Box>
-</Drawer>
-
-          <Studfooter />
+      {/* Right Side: Student Information */}
+      <div className="flex-1 space-y-6">
+        {/* Student's Name and Basic Info */}
+        <div className="space-y-4">
+          <div>
+            {isEditMode ? (
+              <TextField
+                name="fullName"
+                variant="outlined"
+                value={personalInfo.fullName}
+                onChange={(e) =>
+                  setPersonalInfo({
+                    ...personalInfo,
+                    fullName: e.target.value,
+                  })
+                }
+                fullWidth
+                size="small"
+                margin="dense"
+              />
+            ) : (
+              <Typography
+                variant="h4"
+                className="text-gray-900 font-bold leading-tight"
+              >
+                {personalInfo.fullName || "Your Name"}
+              </Typography>
+            )}
+          </div>
+          <div>
+            {isEditMode ? (
+              <TextField
+                name="studentId"
+                variant="outlined"
+                value={personalInfo.studentId}
+                onChange={handleInputChange}
+                fullWidth
+                size="small"
+                margin="dense"
+              />
+            ) : (
+              <Typography className="text-gray-600">
+                Student ID: {personalInfo.studentId || "N/A"}
+              </Typography>
+            )}
+          </div>
+          <div>
+            {isEditMode ? (
+              <TextField
+                name="year"
+                variant="outlined"
+                value={personalInfo.year}
+                onChange={handleInputChange}
+                fullWidth
+                size="small"
+                margin="dense"
+              />
+            ) : (
+              <Typography className="text-gray-600">
+                Year: {personalInfo.year || "N/A"}
+              </Typography>
+            )}
+          </div>
         </div>
-      </>
+
+        {/* Personal Information */}
+        <div className="mt-6 space-y-4">
+          <Typography
+            variant="h5"
+            className="text-gray-900 font-semibold mb-4"
+          >
+            Personal Information
+          </Typography>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[
+              { label: "Course", value: personalInfo.course, icon: <SchoolIcon fontSize="small" /> },
+              { label: "Department", value: personalInfo.department, icon: <BusinessIcon fontSize="small" /> },
+              { label: "Date of Birth", value: personalInfo.dateOfBirth, icon: <CalendarTodayIcon fontSize="small" /> },
+              { label: "Email", value: personalInfo.email, icon: <EmailIcon fontSize="small" /> },
+            ].map(({ label, value, icon }, index) => (
+              <div
+                key={index}
+                className="flex items-center gap-4 bg-gray-100 p-4 rounded-lg shadow-sm"
+              >
+                <div className="text-gray-500">{icon}</div>
+                <Typography className="text-gray-800 font-medium">
+                  {label}: {value || "N/A"}
+                </Typography>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Action Button */}
+        <div className="mt-6">
+          <Button
+            className="bg-[#88343B] text-white font-semibold px-8 py-3 rounded-lg shadow-md hover:bg-[#761d2e] transition-colors"
+            onClick={handleNavigate}
+          >
+            View Medical Records
+          </Button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+      <Studfooter />
+    </>
   );
 }
 
