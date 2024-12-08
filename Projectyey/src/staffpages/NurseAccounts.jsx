@@ -30,7 +30,7 @@ function NurseAccounts() {
 
   const handleSearch = async () => {
     try {
-      const response = await axios.get(`https://dentalmanagement.azurewebsites.net/nurse/searchNurse?keyword=${searchTerm}`);
+      const response = await axios.get(`https://dentalmanagement.azurewebsites.net/nurse/searchNurses?keyword=${searchTerm}`);
       if (response.status === 200) {
         setData(response.data);
         console.log('Nurse accounts fetched successfully:', response.data);
