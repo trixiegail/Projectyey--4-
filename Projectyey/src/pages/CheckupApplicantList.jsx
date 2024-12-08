@@ -60,15 +60,18 @@ const ApplicantList = () => {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: selectedApplicant.email, subject: "Approval Notification",
-              message: `Dear ${selectedApplicant.fullName},\n
-              We are pleased to inform you that your appointment request has been approved. Below are the details of your confirmed appointment:\n\n
-              Date: ${selectedApplicant.date}\nTime: ${selectedApplicant.time}\n
-              If you have any questions, please do not hesitate to contact us. We look forward to serving you.\n
-              Best regards,\n
-              CITU Oral Healthcare Team`, }),
+              message: `<p>Dear ${selectedApplicant.fullName},</p>
+              <p>We are pleased to inform you that your appointment request has been approved. Below are the details of your confirmed appointment:</p>
+              <p>
+                <strong>Date:</strong> ${selectedApplicant.date}<br>
+                <strong>Time:</strong> ${selectedApplicant.time}
+              </p>
+              <p>If you have any questions, please do not hesitate to contact us. We look forward to serving you.</p>
+              <p>Best regards,</p>
+              <p><strong>CITU Oral Healthcare Team</strong></p>`, }),
           })
           .then(emailResponse => {
-            if (emailResponse.ok) {
+            if (emailResponse.ok) { 
               console.log('Approval email sent successfully');
             } else {
               console.error('Failed to send approval email');
@@ -192,7 +195,15 @@ const ApplicantList = () => {
       body: JSON.stringify({
         email: applicant.email,
         subject: 'Appointment Declined',
-        message: `Dear ${applicant.fullName},\n...`,
+        message: `<p>Dear ${applicant.fullName},</p>
+          <p>We regret to inform you that your appointment request has been declined. Below are the details of the declined appointment:</p>
+          <p>
+            <strong>Date:</strong> ${applicant.date}<br>
+            <strong>Time:</strong> ${applicant.time}
+          </p>
+          <p>If you have any questions or would like to reschedule, please do not hesitate to contact us.</p>
+          <p>Best regards,</p>
+          <p><strong>CITU Oral Healthcare Team</strong></p>`,
       }),
     })
     .then((response) => {
