@@ -1,316 +1,182 @@
-import React, { useState } from "react"
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
+import PeopleIcon from '@mui/icons-material/People';
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Divider,
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+} from '@mui/material';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
-export default function SideNavigationSearchBar() {
-  const [isSideNavOpen, setIsSideNavOpen] = useState(false)
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+const Sidebar = () => {
+  const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
-  const handleLogout = () => {
-    console.log('User logged out');
-    document.getElementById('logout_modal').close(); 
+  const handleLogoutClick = () => {
+    setLogoutConfirmOpen(true); // Open the confirmation modal
   };
 
+  const handleLogoutConfirm = () => {
+    setLogoutConfirmOpen(false);
+    // Logic to log out and navigate to the login page
+  };
+
+  const handleLogoutCancel = () => {
+    setLogoutConfirmOpen(false); // Close the confirmation modal
+  };
+
+  const menuItems = [
+    { text: 'Students', icon: <PeopleIcon />, path: '/student-accounts' },
+    { text: 'Staffs', icon: <LocalHospitalIcon />, path: '/staff-accounts' },
+    { text: 'Nurses', icon: <LocalHospitalIcon />, path: '/nurse-accounts' },
+    { text: 'Doctors', icon: <LocalHospitalIcon />, path: '/doctor-accounts' },
+  ];
+
+  const archiveItems = [
+    { text: 'Students', path: '/archived-student-accounts' },
+    { text: 'Nurses', path: '/archived-nurse-accounts' },
+    { text: 'Staff', path: '/archived-staff-accounts' },
+    { text: 'Doctors', path: '/archived-doctor-accounts' },
+  ];
+
   return (
-    <>
-      
-      {/*  <!-- Side Navigation --> */}
-      <aside
-        id="nav-menu-3"
-        aria-label="Side navigation"
-        className={`fixed top-0 bottom-0 left-0 z-40 flex w-72 flex-col border-r border-r-[#F7C301] bg-[#88343B] transition-transform lg:translate-x-0`}
+    <Drawer
+      variant="permanent"
+      anchor="left"
+      sx={{
+        width: 250,
+        flexShrink: 0,
+        '& .MuiDrawer-paper': {
+          width: 250,
+          boxSizing: 'border-box',
+          backgroundColor: '#88343b',
+          color: '#FFFFFF',
+        },
+      }}
+    >
+      <Box
+        sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
-        <a
-          className="flex flex-col items-center gap-2 whitespace-nowrap p-6 text-xl font-medium focus:outline-none justify-center"
-          href="/dashboard"
-        >
-          <img
-            className="h-20 w-auto"
-            src="/cit logo.png"
-            alt="Your Company"
-          />
-          <h1 className="text-white font-bold uppercase text-2xl tracking-wide">Admin</h1>
-        </a>
-        <div className="border-b border-[#F7C301] ">
-          
-        </div>
-        <nav
-          aria-label="side navigation"
-          className="flex-1 divide-y divide-slate-100 overflow-auto"
-        >
-          <div>
-            <ul className="flex flex-1 flex-col gap-1 py-3">
-              {/* <li className="px-3">
-                <a
-                  href="/dashboard"
-                  className="flex items-center gap-3 rounded p-3 text-[#F7C301] transition-colors hover:bg-[#F7C301] hover:text-[#88343B] focus:bg-[#F7C301] aria-[current=page]:bg-[#F7C301] aria-[current=page]:text-[#88343B] "
-                >
-                  <div className="flex items-center self-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth="1.5"
-                      stroke="currentColor"
-                      className="h-6 w-6"
-                      aria-label="Dashboard icon"
-                      role="graphics-symbol"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
-                      />
-                    </svg>
-                  </div>
-                  <div className="flex w-full flex-1 flex-col items-start justify-center gap-0 overflow-hidden truncate text-sm">
-                    Dashboard
-                  </div>
-                </a>
-              </li> */}
-              <li className="px-3">
-                <a
-                  href="/student-accounts"
-                  className="flex items-center gap-3 rounded p-3 text-[#F7C301] transition-colors hover:bg-[#F7C301] hover:text-[#88343B] focus:bg-[#F7C301] aria-[current=page]:bg-[#F7C301]  aria-[current=page]:text-[#88343B] "
-                >
-                  <div className="flex items-center self-center ">
-                  <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth="1.5"
-                      stroke="currentColor"
-                      className="h-6 w-6"
-                      aria-label="Dashboard icon"
-                      role="graphics-symbol"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"
-                      />
-                    </svg>
-                  </div>
-                  <div className="flex w-full flex-1 flex-col items-start justify-center gap-0 overflow-hidden truncate text-sm">
-                    Students
-                  </div>
-                </a>
-              </li>
-              <li className="px-3">
-                <a
-                  href="/staff-accounts"
-                  className="flex items-center gap-3 rounded p-3 text-[#F7C301] transition-colors hover:bg-[#F7C301] hover:text-[#88343B] focus:bg-[#F7C301] aria-[current=page]:bg-[#F7C301]  aria-[current=page]:text-[#88343B] "
-                >
-                  <div className="flex items-center self-center ">
-                  <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth="1.5"
-                      stroke="currentColor"
-                      className="h-6 w-6"
-                      aria-label="Dashboard icon"
-                      role="graphics-symbol"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"
-                      />
-                    </svg>
-                  </div>
-                  <div className="flex w-full flex-1 flex-col items-start justify-center gap-0 overflow-hidden truncate text-sm">
-                    Staffs
-                  </div>
-                </a>
-              </li>
-              <li className="px-3">
-                <a
-                  href="/nurse-accounts"
-                  className="flex items-center gap-3 rounded p-3 text-[#F7C301] transition-colors hover:bg-[#F7C301] hover:text-[#88343B] focus:bg-[#F7C301] aria-[current=page]:bg-[#F7C301]  aria-[current=page]:text-[#88343B] "
-                >
-                  <div className="flex items-center self-center ">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth="1.5"
-                      stroke="currentColor"
-                      className="h-6 w-6"
-                      aria-label="Dashboard icon"
-                      role="graphics-symbol"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"
-                      />
-                    </svg>
-                  </div>
-                  <div className="flex w-full flex-1 flex-col items-start justify-center gap-0 overflow-hidden truncate text-sm">
-                    Nurses
-                  </div>
-                </a>
-              </li>
-              <li className="px-3">
-                <a
-                  href="/doctor-accounts"
-                  className="flex items-center gap-3 rounded p-3 text-[#F7C301] transition-colors hover:bg-[#F7C301] hover:text-[#88343B] focus:bg-[#F7C301] aria-[current=page]:bg-[#F7C301]  aria-[current=page]:text-[#88343B] "
-                >
-                  <div className="flex items-center self-center ">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth="1.5"
-                      stroke="currentColor"
-                      className="h-6 w-6"
-                      aria-label="Dashboard icon"
-                      role="graphics-symbol"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"
-                      />
-                    </svg>
-                  </div>
-                  <div className="flex w-full flex-1 flex-col items-start justify-center gap-0 overflow-hidden truncate text-sm">
-                    Doctors
-                  </div>
-                </a>
-              </li>
-              {/* Archive Menu Item with Dropdown */}
-              <li className="relative px-3">
-                <button
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="flex items-center gap-3 rounded p-3 text-[#F7C301] transition-colors hover:bg-[#F7C301] hover:text-[#88343B] aria-[current=page]:bg-[#F7C301] aria-[current=page]:text-[#88343B] w-full text-left"
-                >
-                  <div className="flex items-center self-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth="1.5"
-                      stroke="currentColor"
-                      className="h-6 w-6"
-                      aria-label="Archive icon"
-                      role="graphics-symbol"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"
-                      />
-                    </svg>
-                  </div>
-                  <div className="flex w-full flex-1 flex-col items-start justify-center gap-0 overflow-hidden truncate text-sm">
-                    Archive
-                  </div>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth="1.5"
-                    stroke="currentColor"
-                    className={`h-4 w-4 transition-transform ${isDropdownOpen ? "rotate-180" : "rotate-0"}`}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M19.5 9l-7.5 7.5L4.5 9"
-                    />
-                  </svg>
-                </button>
-                {isDropdownOpen && (
-                  <ul className="absolute left-0 mt-2 w-full bg-[#F7C301] rounded shadow-lg text-[#88343B]">
-                    <li>
-                      <a
-                        href="/archived-student-accounts"
-                        className="block px-4 py-2 text-sm hover:bg-[#E5B708]"
-                      >
-                        Students
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="/archived-nurse-accounts"
-                        className="block px-4 py-2 text-sm hover:bg-[#E5B708]"
-                      >
-                        Nurses
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="/archived-staff-accounts"
-                        className="block px-4 py-2 text-sm hover:bg-[#E5B708]"
-                      >
-                        Staff
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="/archived-doctor-accounts"
-                        className="block px-4 py-2 text-sm hover:bg-[#E5B708]"
-                      >
-                        Doctors
-                      </a>
-                    </li>
-                  </ul>
-                )}
-              </li>
-            </ul>
-          </div>
-        </nav>
-        <footer className="border-t border-[#F7C301] p-3">
-          <button
-            onClick={() => document.getElementById('logout_modal').showModal()}
-            className="flex w-full items-center gap-3 rounded p-3 text-[#F7C301] transition-colors hover:text-[#F7C301]"
+        <img
+          src={
+            isHovered
+              ? '/teethLogoDesignYellow.png'
+              : '/teethLogoDesignWhite.png'
+          }
+          alt="Logo"
+          style={{ width: '150px', height: 'auto', transition: '0.3s' }}
+        />
+      </Box>
+
+      <Divider sx={{ borderColor: '#f8c404' }} />
+
+      <List>
+        {menuItems.map((item, index) => (
+          <ListItem
+            button
+            key={index}
+            component={Link}
+            to={item.path}
+            sx={{
+              '&:hover': {
+                backgroundColor: '#f8c404',
+                color: '#88343b',
+                '& .MuiListItemIcon-root': { color: '#88343b' },
+              },
+            }}
           >
-            <div className="flex items-center self-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="h-6 w-6"
-                aria-label="Logout icon"
-                role="graphics-symbol"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M11.25 9l-3 3m0 0l3 3m-3-3h7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            </div>
-            <div onClick={handleLogout} className="flex w-full flex-1 flex-col items-start justify-center gap-0 overflow-hidden truncate text-sm font-medium">
-              Logout
-            </div>
-          </button>
+            <ListItemIcon sx={{ color: '#FFFFFF' }}>{item.icon}</ListItemIcon>
+            <ListItemText primary={item.text} />
+          </ListItem>
+        ))}
+      </List>
 
-          <dialog id="logout_modal" className="modal">
-            <div className="modal-box">
-              <h3 className="font-bold text-lg">Confirm Logout</h3>
-              <p className="py-4">Are you sure you want to logout?</p>
-              <div className="modal-action">
-                <form method="dialog">
-                  <button className="btn mr-2">Cancel</button>
-                </form>
-                <a href="/login-admin" className="btn bg-[#F7C301] rounded hover:bg-yellow-600">Logout</a>
-              </div>
-            </div>
-          </dialog>
-        </footer>
-      </aside>
+      <Typography
+        variant="caption"
+        sx={{ p: 2, color: '#AAAAAA', textTransform: 'uppercase' }}
+      >
+        Archive
+      </Typography>
 
-      {/*  <!-- Backdrop --> */}
-      <div
-        className={`fixed top-0 bottom-0 left-0 right-0 z-30 bg-slate-900/20 transition-colors sm:hidden ${
-          isSideNavOpen ? "block" : "hidden"
-        }`}
-        onClick={() => setIsSideNavOpen(false)}
-      ></div>
-      {/*  <!-- End Side navigation menu with search bar and alert message --> */}
-    </>
+      <List>
+        {archiveItems.map((item, index) => (
+          <ListItem
+            button
+            key={index}
+            component={Link}
+            to={item.path}
+            sx={{
+              '&:hover': {
+                backgroundColor: '#f8c404',
+                color: '#88343b',
+              },
+            }}
+          >
+            <ListItemText primary={item.text} />
+          </ListItem>
+        ))}
+      </List>
+
+      <Divider sx={{ borderColor: '#f8c404', mt: 'auto' }} />
+
+      <Box sx={{ p: 2 }}>
+        <Button
+          onClick={handleLogoutClick}
+          startIcon={<ExitToAppIcon />}
+          sx={{
+            color: '#FFFFFF',
+            textTransform: 'none',
+            '&:hover': {
+              backgroundColor: '#f8c404',
+              color: '#88343b',
+            },
+          }}
+        >
+          Log Out
+        </Button>
+
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 1 }}>
+          <Typography variant="caption" sx={{ color: '#AAAAAA' }}>
+            © 2024 Capstone 2
+          </Typography>
+        </Box>
+      </Box>
+
+      <Dialog
+        open={logoutConfirmOpen}
+        onClose={handleLogoutCancel}
+      >
+        <DialogTitle>Are you sure you want to log out?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Logging out will end your current session and return you to the login page.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleLogoutCancel} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleLogoutConfirm} color="secondary">
+            Log Out
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Drawer>
   );
-}
+};
+
+export default Sidebar;
