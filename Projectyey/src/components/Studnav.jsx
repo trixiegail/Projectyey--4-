@@ -27,6 +27,7 @@ export function Studnav() {
   const [studentName, setStudentName] = useState('Sign in');
   const navigate = useNavigate();
   const notificationRef = useRef(null); 
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     const storedName = localStorage.getItem('studentName');
@@ -73,6 +74,11 @@ export function Studnav() {
     };
   }, [notificationRef]);
 
+
+  const handleLogoClick = () => {
+    navigate('/home');
+  };
+
   return (
     <>
       <div className="bg-[#fee140] bg-gradient-to-b from-[#F0E1A6] via-[#F0E1A6] to-[#E1C966] text-black py-5">
@@ -93,14 +99,23 @@ export function Studnav() {
 
 
         <header className="bg-white shadow-2xl">
-  <div className="w-full px-5 py-7">
-    <div className="flex justify-between items-center">
-      {/* Left: Logo */}
-      <a href="/home" className="flex items-center">
+    <div className="w-full px-5 py-7">
+      <div className="flex justify-between items-center">
+        {/* Left: Logo */}
+        <a
+        href="/home"
+        className="flex items-center"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
         <img
-          src="src/image/teethLogoDesign.png"
+          src={
+            isHovered
+              ? "src/image/teethLogoDesignYellow.png"
+              : "src/image/teethLogoDesign.png"
+          }
           alt="Teeth Logo"
-          className="h-14"
+          className="h-14 transition-all duration-300"
         />
       </a>
 
@@ -140,7 +155,7 @@ export function Studnav() {
             <Avatar
               variant="circular"
               alt="student avatar"
-              src="src/image/student.png"
+              src="/student.png"
             />
             <Typography
               variant="h6"
@@ -156,7 +171,7 @@ export function Studnav() {
                 <Avatar
                   variant="circular"
                   alt="student avatar"
-                  src="src/image/student.png"
+                  src="/student.png"
                 />
                 <Typography
                   variant="h6"
