@@ -78,6 +78,7 @@ import ChangePassword from "@/login/ChangePassword.jsx";
 // import Nsidebar from './components/NurseSidebarSidebar';
 import DentalRecordDrawer from './doctor/DentalRecordDrawer';
 import Appointments from './userpages/appointments';
+import DentalRecords from './doctor/DentalRecords';
 
 
 
@@ -160,6 +161,7 @@ export default function App() {
             <Route path="/declined-appointments" element={<DeclinedAppointments />} />
             <Route path="/completed-appointments" element={<CompletedAppointments />} />
             <Route path="/dental-record-drawer" element={<DentalRecordDrawer  />} />
+            <Route path="/dental-records" element={<DentalRecords  />} />
             </Route>
 
             {/* Staff */}

@@ -104,7 +104,7 @@ export function Home() {
       medicalRecords,
       intraoralRecords,
     });
-    navigate("/dental-record-drawer", {
+    navigate("/dental-records", {
       state: {
         studentData: personalInfo,
         medicalRecords: medicalRecords,
