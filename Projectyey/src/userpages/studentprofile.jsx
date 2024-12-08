@@ -26,7 +26,7 @@ export function Home() {
     email: "",
   });
 
-  const [imageSrc, setImageSrc] = useState("src/image/student.png");
+  const [imageSrc, setImageSrc] = useState("/student.png");
   const [medicalRecords, setMedicalRecords] = useState([]);
   const [intraoralRecords, setIntraoralRecords] = useState([]);
   const navigate = useNavigate();
@@ -232,10 +232,26 @@ export function Home() {
           </Typography>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[
-              { label: "Course", value: personalInfo.course, icon: <SchoolIcon fontSize="small" /> },
-              { label: "Department", value: personalInfo.department, icon: <BusinessIcon fontSize="small" /> },
-              { label: "Date of Birth", value: personalInfo.dateOfBirth, icon: <CalendarTodayIcon fontSize="small" /> },
-              { label: "Email", value: personalInfo.email, icon: <EmailIcon fontSize="small" /> },
+              {
+                label: <strong>Course</strong>, 
+                value: personalInfo.course,
+                icon: <SchoolIcon fontSize="small" />
+              },
+              {
+                label: <strong>Department</strong>, 
+                value: personalInfo.department?.toUpperCase(), 
+                icon: <BusinessIcon fontSize="small" />
+              },
+              {
+                label: <strong>Date of Birth</strong>, 
+                value: personalInfo.dateOfBirth,
+                icon: <CalendarTodayIcon fontSize="small" />
+              },
+              {
+                label: <strong>Email</strong>, 
+                value: personalInfo.email,
+                icon: <EmailIcon fontSize="small" />
+              },
             ].map(({ label, value, icon }, index) => (
               <div
                 key={index}
