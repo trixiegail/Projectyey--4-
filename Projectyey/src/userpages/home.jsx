@@ -1,4 +1,4 @@
-import { default as React } from "react";
+import { default as React, useState  } from "react";
 import Studfooter from "../components/Studfooter";
 import Studnav from "../components/Studnav";
  
@@ -12,16 +12,60 @@ export function Home() {
     { id: 2, name: 'Online Appointment', value: '560+' },
     { id: 3, name: 'Winning Award', value: '340+' },
   ]
+
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const images = [
+    "/banner1.png",
+    "/banner2.png",
+    "/banner3.png",
+    "/banner4.png",
+  ];
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
  
   return (
     <>
       <div>
           <Studnav />
-          <img
-            className="h-90 w-full items-center"
-            src="/Banner.png"
-            alt="Your Company"
-          />
+          <div className="relative w-full h-90 overflow-hidden">
+          {/* Slides */}
+          <div
+            className="flex transition-transform duration-500"
+            style={{
+              transform: `translateX(-${currentSlide * 100}%)`,
+            }}
+          >
+            {images.map((image, index) => (
+              <img
+                key={index}
+                src={image}
+                alt={`Banner ${index + 1}`}
+                className="w-full h-90 object-cover"
+              />
+            ))}
+          </div>
+
+          {/* Navigation Buttons */}
+          <button
+            className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full"
+            onClick={prevSlide}
+          >
+            &lt;
+          </button>
+          <button
+            className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full"
+            onClick={nextSlide}
+          >
+            &gt;
+          </button>
+        </div>
  
       <section className="py-16 bg-white">
         <div className="container mx-auto flex flex-col md:flex-row items-center">
