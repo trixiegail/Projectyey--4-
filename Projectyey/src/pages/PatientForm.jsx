@@ -499,20 +499,21 @@ const handleAllToothStatuses = async () => {
   
   
   const handleEditRow = (toothId) => {
-    const toothStatus = formData.teethStatuses.find(status => status.toothNumber === toothId);
+    const toothStatus = formData.teethStatuses.find(
+      (status) => status.toothNumber === toothId
+    );
   
-    setToothNumber(toothId);
-    setCustomCondition('');
-    const currentStatus = toothStatus ? toothStatus.status : [];
-    
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      toothStatus: currentStatus,  
-    }));
-  
-    setIsModalOpen(true); 
+    if (toothStatus) {
+      setCurrentTooth(toothId); // Correctly set the tooth being edited
+      setToothNumber(toothId); // For the modal
+      setCustomCondition(toothStatus.customStatus || '');
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        toothStatus: [...toothStatus.status], // Spread to avoid reference issues
+      }));
+      setIsModalOpen(true); // Open the modal for editing
+    }
   };
-
 const handleDeleteRow = (toothId) => {
   console.log("Deleting tooth status for Tooth Number:", toothId);
 
