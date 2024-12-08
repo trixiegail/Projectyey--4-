@@ -19,26 +19,26 @@ function NurseAccounts() {
       const response = await axios.get('https://dentalmanagement.azurewebsites.net/nurse/getNurses?archived=false');
       if (response.status === 200) {
         setData(response.data);
-        console.log('Staff accounts fetched successfully:', response.data);
+        console.log('Nurse accounts fetched successfully:', response.data);
       } else {
-        throw new Error('Failed to fetch staff accounts');
+        throw new Error('Failed to fetch nurse accounts');
       }
     } catch (error) {
-      console.error('Error fetching staff accounts:', error);
+      console.error('Error fetching nurse accounts:', error);
     }
   };
 
   const handleSearch = async () => {
     try {
-      const response = await axios.get(`https://dentalmanagement.azurewebsites.net/nurse/search?keyword=${searchTerm}`);
+      const response = await axios.get(`https://dentalmanagement.azurewebsites.net/nurse/searchNurse?keyword=${searchTerm}`);
       if (response.status === 200) {
         setData(response.data);
-        console.log('Staff accounts fetched successfully:', response.data);
+        console.log('Nurse accounts fetched successfully:', response.data);
       } else {
-        throw new Error('Failed to search staff accounts');
+        throw new Error('Failed to search nurse accounts');
       }
     } catch (error) {
-      console.error('Error searching staff accounts:', error);
+      console.error('Error searching nurse accounts:', error);
     }
   };
 
@@ -53,13 +53,13 @@ function NurseAccounts() {
       const response = await axios.post(`https://dentalmanagement.azurewebsites.net/nurse/archiveNurse/${selectedUser.id}`);
       console.log('Archive response:', response);
       if (response.status === 200) {
-        console.log('Staff account archived successfully');
+        console.log('Nurse account archived successfully');
         setData(prevData => prevData.filter(user => user.id !== selectedUser.id));
       } else {
-        throw new Error(`Failed to archive staff account. Status: ${response.status}`);
+        throw new Error(`Failed to archive nurse account. Status: ${response.status}`);
       }
     } catch (error) {
-      console.error('Error archiving staff account:', error);
+      console.error('Error archiving nurse account:', error);
       if (error.response) {
         console.error('Error response:', error.response.data);
       }
@@ -208,7 +208,7 @@ function NurseAccounts() {
                 <div className="sm:flex sm:items-start">
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                     <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      {isUpdate ? 'Update Staff Details' : 'Staff Details'}
+                      {isUpdate ? 'Update Nurse Details' : 'Nurse Details'}
                     </h3>
                     <div className="mt-2">
                       <p className="text-sm text-gray-500">ID Number: {selectedUser.idNumber}</p>
