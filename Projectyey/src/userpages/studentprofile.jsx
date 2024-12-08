@@ -199,8 +199,8 @@ export function Home() {
               />
             ) : (
               <Typography className="text-gray-600">
-                Student ID: {personalInfo.studentId || "N/A"}
-              </Typography>
+              <strong>Student ID:</strong> {personalInfo.studentId || "N/A"}
+            </Typography>
             )}
           </div>
           <div>
@@ -216,7 +216,7 @@ export function Home() {
               />
             ) : (
               <Typography className="text-gray-600">
-                Year: {personalInfo.year || "N/A"}
+                <strong>Year</strong>: {personalInfo.year || "N/A"}
               </Typography>
             )}
           </div>
