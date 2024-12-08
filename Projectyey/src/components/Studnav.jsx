@@ -76,116 +76,141 @@ export function Studnav() {
   return (
     <>
       <div className="bg-[#fee140] bg-gradient-to-b from-[#F0E1A6] via-[#F0E1A6] to-[#E1C966] text-black py-5">
-        <div className="container mx-auto flex justify-between items-center px-6 text-sm">
-          <div className="flex items-center space-x-4">
-            <MapPinIcon className="h-5 w-5" />
-            <span>7VVJ+QFR, Natalio B. Bacalso Ave, Cebu City, 6000 Cebu</span>
-          </div>
+      <div className="flex justify-between items-center w-full px-6 text-sm">
+        {/* Left Section */}
+        <div className="flex items-center space-x-4">
+          <MapPinIcon className="h-5 w-5" />
+          <span>7VVJ+QFR, Natalio B. Bacalso Ave, Cebu City, 6000 Cebu</span>
+        </div>
 
-          <div className="flex items-center space-x-4">
-            <PhoneIcon className="h-5 w-5" />
-            <span>(032) 261 7741</span>
-            <EnvelopeIcon className="h-5 w-5" />
-            <span>hi@happydental.com</span>
-          </div>
+        {/* Right Section */}
+        <div className="flex items-center space-x-4">
+          <EnvelopeIcon className="h-5 w-5" />
+          <span>dentalcapstone5@gmail.com</span>
         </div>
       </div>
+    </div>
 
-      <header className="bg-white shadow-2xl">
-        <div className="container mx-auto px-5 py-7">
-          <div className="flex justify-between items-center">
-            <a href="/home" className="flex items-center text-xl font-bold text-black">
-              <img src="/teethLogoDesign.png" alt="Teeth Logo" className="h-14" />
-            </a>
 
-            <div>
-              <nav className="items-center justify-center hidden lg:flex space-x-8">
-                <Link to="/home" className="text-gray-700">Home</Link>
-                <Link to="/aboutus" className="text-gray-700">About Us</Link>
-                <Link to="/services" className="text-gray-700">Services</Link>
-                <Link to="/student-calendar" className="text-gray-700">Book now</Link>
-                <Link to="/appointments" className="text-gray-700">Appointments</Link>
-                <Link to="/contact" className="text-gray-700">Contact Us</Link>
-              </nav>
+        <header className="bg-white shadow-2xl">
+  <div className="w-full px-5 py-7">
+    <div className="flex justify-between items-center">
+      {/* Left: Logo */}
+      <a href="/home" className="flex items-center">
+        <img
+          src="src/image/teethLogoDesign.png"
+          alt="Teeth Logo"
+          className="h-14"
+        />
+      </a>
 
-              <AnimatePresence mode="wait">
-                <Routes location={location} key={location.pathname}>
-                  <Route path="/home" element={<StudentProtectedRoute><PageWrapper><Home /></PageWrapper></StudentProtectedRoute>} />
-                  <Route path="/aboutus" element={<StudentProtectedRoute><PageWrapper><AboutUs /></PageWrapper></StudentProtectedRoute>} />
-                  <Route path="/services" element={<StudentProtectedRoute><PageWrapper><Services /></PageWrapper></StudentProtectedRoute>} />
-                  <Route path="/student-calendar" element={<StudentProtectedRoute><PageWrapper><StudentCalendar /></PageWrapper></StudentProtectedRoute>} />
-                  <Route path="/appointments" element={<StudentProtectedRoute><PageWrapper><Appointments /></PageWrapper></StudentProtectedRoute>} />
-                  <Route path="/contact" element={<StudentProtectedRoute><PageWrapper><Contact /></PageWrapper></StudentProtectedRoute>} />
-                  <Route path="/login-student" element={<PageWrapper><LoginStudent /></PageWrapper>} />
-                </Routes>
-              </AnimatePresence>
-            </div>
+      {/* Center: Navigation Links */}
+      <nav className="hidden lg:flex items-center space-x-8">
+      {[
+        { to: "/home", label: "Home" },
+        { to: "/aboutus", label: "About Us" },
+        { to: "/services", label: "Services" },
+        { to: "/student-calendar", label: "Book now" },
+        { to: "/appointments", label: "Appointments" },
+        { to: "/contact", label: "Contact Us" },
+      ].map((link, index) => (
+        <Link
+          key={index}
+          to={link.to}
+          className={`relative text-gray-700 font-medium transition-all duration-300 ${
+            location.pathname === link.to
+              ? "text-gray-700 after:absolute after:left-0 after:bottom-[-2px] after:bg-gray-700 after:h-[2px] after:w-full"
+              : "hover:text-[#88343B] hover:after:absolute hover:after:left-0 hover:after:bottom-[-2px] hover:after:bg-[#88343B] hover:after:h-[2px] hover:after:w-full"
+          }`}
+        >
+          {link.label}
+        </Link>
+      ))}
+    </nav>
 
-            <div className="flex items-center space-x-4">
-              <div className="relative" ref={notificationRef}>
-                <BellIcon className="h-6 w-6 text-gray-800 cursor-pointer" onClick={toggleNotification} />
-                {isNotificationOpen && (
-                  <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-300 rounded-lg shadow-lg z-50">
-                    <div className="p-2">
-                      <h2 className="text-lg font-semibold">Notifications</h2>
-                      <ul className="space-y-2">
-                        {notifications.length > 0 ? (
-                          notifications.map((notification) => (
-                            <li key={notification.id} className="border p-2 rounded cursor-pointer">
-                              <div className="flex justify-between">
-                                <span>{notification.summary}</span>
-                                <span className="text-xs text-gray-500">{notification.date}</span>
-                              </div>
-                            </li>
-                          ))
-                        ) : (
-                          <li className="text-sm text-gray-600">No new notifications</li>
-                        )}
-                      </ul>
-                    </div>
-                  </div>
-                )}
-              </div>
+      {/* Right: Sign In/Profile Section */}
+      <div className="flex items-center space-x-4">
+    
 
-              {studentName === 'Sign in' ? (
-                <div className="flex items-center space-x-2 cursor-pointer" onClick={handleAvatarClick}>
-                  <Avatar variant="circular" alt="student avatar" src="/student.png" />
-                  <Typography variant="h6" className="font-medium text-gray-800">{studentName}</Typography>
-                </div>
-              ) : (
-                <Menu className="shadow-2xl">
-                  <MenuHandler>
-                    <div className="flex items-center space-x-2 cursor-pointer">
-                      <Avatar variant="circular" alt="student avatar" src="/student.png" />
-                      <Typography variant="h6" className="font-medium text-black">{studentName}</Typography>
-                    </div>
-                  </MenuHandler>
-
-                  <MenuList className="bg-white">
-  <MenuItem className="bg-white hover:bg-gradient-to-b from-[#F0E1A6] !hover:text-black">
-    <a href="/student-profile" className="text-black font-bold">My Profile</a>
-  </MenuItem>
-  <MenuItem className="bg-white hover:bg-gradient-to-b from-[#F0E1A6] !hover:text-black">
-    <a href="/settings" className="text-black font-bold">Settings</a>
-  </MenuItem>
-  <MenuItem className="bg-white hover:bg-gradient-to-b from-[#F0E1A6] !hover:text-black">
-    <a href="/contact" className="font-bold text-black">Help</a>
-  </MenuItem>
-  <hr className="my-2 bg-[#F7C301]" />
-  <MenuItem className="bg-white hover:bg-gradient-to-b from-[#F0E1A6] !hover:text-black" onClick={handleLogout}>
-    <Typography variant="small" className="font-bold text-black">Sign Out</Typography>
-  </MenuItem>
-                  </MenuList>
-                </Menu>
-              )}
-            </div>
-
-            <button className="lg:hidden flex items-center px-3 py-2 border rounded" onClick={() => setIsToggleOpen(!isToggleOpen)}>
-              {isToggleOpen ? <XMarkIcon className="h-6 w-6" /> : <Bars3Icon className="h-6 w-6" />}
-            </button>
+        {studentName === "Sign in" ? (
+          <div
+            className="flex items-center space-x-4 cursor-pointer"
+            onClick={handleAvatarClick}
+          >
+            <Avatar
+              variant="circular"
+              alt="student avatar"
+              src="src/image/student.png"
+            />
+            <Typography
+              variant="h6"
+              className="font-medium text-gray-800"
+            >
+              {studentName}
+            </Typography>
           </div>
-        </div>
-      </header>
+        ) : (
+          <Menu className="shadow-2xl">
+            <MenuHandler>
+              <div className="flex items-center space-x-2 cursor-pointer">
+                <Avatar
+                  variant="circular"
+                  alt="student avatar"
+                  src="src/image/student.png"
+                />
+                <Typography
+                  variant="h6"
+                  className="font-medium text-black"
+                >
+                  {studentName}
+                </Typography>
+              </div>
+            </MenuHandler>
+
+            <MenuList className="bg-white">
+              <MenuItem className="bg-white hover:bg-gradient-to-b from-[#F0E1A6] !hover:text-black">
+                <a
+                  href="/student-profile"
+                  className="text-black font-bold"
+                >
+                  My Profile
+                </a>
+              </MenuItem>
+              {/* <MenuItem className="bg-white hover:bg-gradient-to-b from-[#F0E1A6] !hover:text-black">
+                <a
+                  href="/settings"
+                  className="text-black font-bold"
+                >
+                  Settings
+                </a>
+              </MenuItem> */}
+              <MenuItem className="bg-white hover:bg-gradient-to-b from-[#F0E1A6] !hover:text-black">
+                <a
+                  href="/contact"
+                  className="font-bold text-black"
+                >
+                  Help
+                </a>
+              </MenuItem>
+              <hr className="my-2 bg-[#F7C301]" />
+              <MenuItem
+                className="bg-white hover:bg-gradient-to-b from-[#F0E1A6] !hover:text-black"
+                onClick={handleLogout}
+              >
+                <Typography
+                  variant="small"
+                  className="font-bold text-black"
+                >
+                  Sign Out
+                </Typography>
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        )}
+      </div>
+    </div>
+  </div>
+</header>
     </>
   );
 }
