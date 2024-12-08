@@ -205,14 +205,20 @@ export function Home() {
         <div>
           <Studnav />
 
-          <section className="relative block h-[80vh]">
-            <div className="bg-profile-background absolute top-0 bg-[url('/img/background-3.png')] bg-cover bg-center scale-105" />
+          <section className="relative block h-[100vh]">
+          <div className="group relative h-full w-full">
             <img
-                className="absolute top-0 h-full w-full bg-black/60 bg-cover bg-center "
-                src="/Banner.png"
-                alt="Your Company"
+              className="absolute top-0 h-full w-full bg-black/60 bg-cover bg-center transition-opacity duration-300 group-hover:opacity-0"
+              src="src/image/1.png"
+              alt="Your Company"
             />
-          </section>
+            <img
+              className="absolute top-0 h-full w-full bg-black/60 bg-cover bg-center transition-opacity duration-300 opacity-0 group-hover:opacity-100"
+              src="src/image/2.png"
+              alt="Hovered Image"
+            />
+          </div>
+        </section>
 
           <section className="relative bg-white py-16">
             <div className="relative mb-6 -mt-40 flex w-full px-4 min-w-0 flex-col break-words bg-white">
