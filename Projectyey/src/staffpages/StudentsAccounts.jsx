@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import Nav from '../components/Nav';
 
-function StudentsAccounts() {
+function StudentAccounts() {
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -16,10 +16,10 @@ function StudentsAccounts() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('https://dentalmanagement.azurewebsites.net/student/getAllStudents?archived=false');
+      const response = await axios.get('https://dentalmanagement.azurewebsites.net/student/getStudents?archived=false');
       if (response.status === 200) {
         setData(response.data);
-        console.log('Student accounts fetched successfully:', response.data);
+        console.log('Doctor accounts fetched successfully:', response.data);
       } else {
         throw new Error('Failed to fetch student accounts');
       }
@@ -50,7 +50,7 @@ function StudentsAccounts() {
   const handleArchiveConfirm = async () => {
     try {
       console.log(`Attempting to archive user with ID: ${selectedUser.id}`);
-      const response = await axios.post(`https://dentalmanagement.azurewebsites.net/student/archivedStudents/${selectedUser.id}`);
+      const response = await axios.post(`https://dentalmanagement.azurewebsites.net/student/archive/${selectedUser.id}`);
       console.log('Archive response:', response);
       if (response.status === 200) {
         console.log('Student account archived successfully');
@@ -92,7 +92,6 @@ function StudentsAccounts() {
 
   const handleUpdate = async () => {
     console.log('Selected User before Update:', selectedUser);
-    console.log('Updating user with ID:', selectedUser.id);
 
     if (selectedUser && selectedUser.id) {
       try {
@@ -118,7 +117,7 @@ function StudentsAccounts() {
       <Nav />
 
       <div className="w-50 ml-10 relative pt-[50px]" >
-        <h1 className="text-2xl font-bold mb-5 ">Student Accounts</h1>
+        <h1 className="text-2xl font-bold mb-5 ">Student Account</h1>
         <div className="flex items-center mb-5 mt-5 mr-40 ml-40">
           <input
             type="text"
@@ -135,7 +134,7 @@ function StudentsAccounts() {
             Search
           </button>
           <a
-            href="/create-student-account"
+            href="/create-doctor-account"
             className="ml-2 p-2 bg-[#F7C301] text-white rounded-lg shadow-md hover:bg-[#F7C301]"
           >
             <span>Create Account</span>
@@ -321,4 +320,4 @@ function StudentsAccounts() {
   );
 }
 
-export default StudentsAccounts;
+export default StudentAccounts;
