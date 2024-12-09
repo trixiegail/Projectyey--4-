@@ -75,7 +75,7 @@ function StudentAccounts() {
   const handleUpdate = async () => {
     console.log('Selected User before Update:', selectedUser);
 
-    if (selectedUser && selectedUser.id) {
+    if (selectedUser || selectedUser.id) {
       try {
         console.log('Updating user with ID:', selectedUser.id);
         const response = await axios.put(`https://dentalmanagement.azurewebsites.net/student/updateStudent/${selectedUser.id}`, selectedUser);
