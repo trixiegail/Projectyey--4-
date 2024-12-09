@@ -596,7 +596,7 @@ useEffect(() => {
   
 
   return (
-    <Box className="dashboard-container"sx={{ display: 'flex', minHeight: '100vh', backgroundColor:'white' }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh', backgroundColor:'white' }}>
       <Sidebar /> 
       <Box sx={{ flexGrow: 1, p: 3 }}>
       <Box 

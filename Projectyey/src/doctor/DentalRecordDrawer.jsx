@@ -154,7 +154,7 @@ const DentalRecordDrawer = () => {
 
   return (
 
-    <Box className="dashboard-container"sx={{ display: 'flex', minHeight: '100vh', backgroundColor:'white' }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh', backgroundColor:'#fafafa' }}>
   
         <Sidebar />
         <Box sx={{ flexGrow: 1, p: 3 }}>
@@ -653,7 +653,7 @@ const DentalRecordDrawer = () => {
     ).map(([date, records], index) => (
       <Box key={index} sx={{ marginBottom: 4 }}>
         {/* Display Date Once */}
-        <Typography variant="h6" sx={{ color: "#90343c", marginBottom: 2 }}>
+        <Typography sx={{ color: "black", marginBottom: 2 }}>
           {date}
         </Typography>
 
@@ -676,9 +676,9 @@ const DentalRecordDrawer = () => {
           >
             <thead>
               <tr>
-                <th style={{ border: "1px solid #ddd", padding: "8px" }}>Tooth Number</th>
-                <th style={{ border: "1px solid #ddd", padding: "8px" }}>Status</th>
-                <th style={{ border: "1px solid #ddd", padding: "8px" }}>Time</th>
+                <th style={{ border: "1px solid #ddd", fontSize: "12px" }}>Tooth Number</th>
+                <th style={{ border: "1px solid #ddd", fontSize: "12px"  }}>Status</th>
+                <th style={{ border: "1px solid #ddd", fontSize: "12px"  }}>Time</th>
               </tr>
             </thead>
             <tbody>
@@ -686,13 +686,13 @@ const DentalRecordDrawer = () => {
                 .filter(record => record.toothNumber >= 11 && record.toothNumber <= 18)
                 .map((record, i) => (
                   <tr key={i}>
-                    <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                    <td style={{ border: "1px solid #ddd", fontSize: "12px" }}>
                       <strong style={{ color: "black" }}>{record.toothNumber}</strong>
                     </td>
-                    <td style={{ border: "1px solid #ddd", padding: "8px", color: "black" }}>
+                    <td style={{ border: "1px solid #ddd", fontSize: "12px", color: "black" }}>
                       {record.status}
                     </td>
-                    <td style={{ border: "1px solid #ddd", padding: "8px", color: "black" }}>
+                    <td style={{ border: "1px solid #ddd", fontSize: "12px", color: "black" }}>
                       {new Date(record.savedAt).toLocaleTimeString()}
                     </td>
                   </tr>
@@ -711,9 +711,9 @@ const DentalRecordDrawer = () => {
           >
             <thead>
               <tr>
-                <th style={{ border: "1px solid #ddd", padding: "8px" }}>Tooth Number</th>
-                <th style={{ border: "1px solid #ddd", padding: "8px" }}>Status</th>
-                <th style={{ border: "1px solid #ddd", padding: "8px" }}>Time</th>
+                <th style={{ border: "1px solid #ddd", fontSize: "12px" }}>Tooth Number</th>
+                <th style={{ border: "1px solid #ddd", fontSize: "12px" }}>Status</th>
+                <th style={{ border: "1px solid #ddd", fontSize: "12px" }}>Time</th>
               </tr>
             </thead>
             <tbody>
@@ -721,13 +721,13 @@ const DentalRecordDrawer = () => {
                 .filter(record => record.toothNumber >= 21 && record.toothNumber <= 28)
                 .map((record, i) => (
                   <tr key={i}>
-                    <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                    <td style={{ border: "1px solid #ddd", fontSize: "12px" }}>
                       <strong style={{ color: "black" }}>{record.toothNumber}</strong>
                     </td>
-                    <td style={{ border: "1px solid #ddd", padding: "8px", color: "black" }}>
+                    <td style={{ border: "1px solid #ddd", fontSize: "12px", color: "black" }}>
                       {record.status}
                     </td>
-                    <td style={{ border: "1px solid #ddd", padding: "8px", color: "black" }}>
+                    <td style={{ border: "1px solid #ddd", fontSize: "12px", color: "black" }}>
                       {new Date(record.savedAt).toLocaleTimeString()}
                     </td>
                   </tr>
@@ -756,9 +756,9 @@ const DentalRecordDrawer = () => {
           >
             <thead>
               <tr>
-                <th style={{ border: "1px solid #ddd", padding: "8px" }}>Tooth Number</th>
-                <th style={{ border: "1px solid #ddd", padding: "8px" }}>Status</th>
-                <th style={{ border: "1px solid #ddd", padding: "8px" }}>Time</th>
+                <th style={{ border: "1px solid #ddd", fontSize: "12px" }}>Tooth Number</th>
+                <th style={{ border: "1px solid #ddd", fontSize: "12px" }}>Status</th>
+                <th style={{ border: "1px solid #ddd", fontSize: "12px" }}>Time</th>
               </tr>
             </thead>
             <tbody>
@@ -766,13 +766,13 @@ const DentalRecordDrawer = () => {
                 .filter(record => record.toothNumber >= 41 && record.toothNumber <= 48)
                 .map((record, i) => (
                   <tr key={i}>
-                    <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                    <td style={{ border: "1px solid #ddd", fontSize: "12px" }}>
                       <strong style={{ color: "black" }}>{record.toothNumber}</strong>
                     </td>
-                    <td style={{ border: "1px solid #ddd", padding: "8px", color: "black" }}>
+                    <td style={{ border: "1px solid #ddd", fontSize: "12px", color: "black" }}>
                       {record.status}
                     </td>
-                    <td style={{ border: "1px solid #ddd", padding: "8px", color: "black" }}>
+                    <td style={{ border: "1px solid #ddd", fontSize: "12px", color: "black" }}>
                       {new Date(record.savedAt).toLocaleTimeString()}
                     </td>
                   </tr>
@@ -791,9 +791,9 @@ const DentalRecordDrawer = () => {
           >
             <thead>
               <tr>
-                <th style={{ border: "1px solid #ddd", padding: "8px" }}>Tooth Number</th>
-                <th style={{ border: "1px solid #ddd", padding: "8px" }}>Status</th>
-                <th style={{ border: "1px solid #ddd", padding: "8px" }}>Time</th>
+                <th style={{ border: "1px solid #ddd", fontSize: "12px" }}>Tooth Number</th>
+                <th style={{ border: "1px solid #ddd", fontSize: "12px" }}>Status</th>
+                <th style={{ border: "1px solid #ddd", fontSize: "12px" }}>Time</th>
               </tr>
             </thead>
             <tbody>
@@ -801,13 +801,13 @@ const DentalRecordDrawer = () => {
                 .filter(record => record.toothNumber >= 31 && record.toothNumber <= 38)
                 .map((record, i) => (
                   <tr key={i}>
-                    <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                    <td style={{ border: "1px solid #ddd", fontSize: "12px" }}>
                       <strong style={{ color: "black" }}>{record.toothNumber}</strong>
                     </td>
-                    <td style={{ border: "1px solid #ddd", padding: "8px", color: "black" }}>
+                    <td style={{ border: "1px solid #ddd", fontSize: "12px", color: "black" }}>
                       {record.status}
                     </td>
-                    <td style={{ border: "1px solid #ddd", padding: "8px", color: "black" }}>
+                    <td style={{ border: "1px solid #ddd", fontSize: "12px", color: "black" }}>
                       {new Date(record.savedAt).toLocaleTimeString()}
                     </td>
                   </tr>
