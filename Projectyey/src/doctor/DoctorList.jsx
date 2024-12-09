@@ -57,6 +57,11 @@ function DoctorList() {
     );
     setFilteredDoctors(filtered);
   }, [searchQuery, doctors]);
+
+  const handleCardClick = (email) => {
+    const mailtoLink = `mailto:${email}`;
+    window.location.href = mailtoLink;
+  };
   
 
   return (
@@ -113,6 +118,7 @@ function DoctorList() {
             {filteredDoctors.map((doctor) => (
               <Grid item xs={12} sm={6} md={4} key={doctor.id}>
                 <Card
+                onClick={() => handleCardClick(doctor.email)} 
                   sx={{
                     backgroundColor: 'white',
                     boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
@@ -122,6 +128,7 @@ function DoctorList() {
                       transform: 'scale(1.05)',
                       boxShadow: '0 8px 16px rgba(0,0,0,0.2)',
                     },
+                    cursor: 'pointer',
                   }}
                 >
                   <CardContent>
