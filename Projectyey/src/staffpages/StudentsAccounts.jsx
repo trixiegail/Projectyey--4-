@@ -107,9 +107,10 @@ function StudentAccounts() {
         console.error('Error updating student account:', error);
       }
       handleClose();
-    } else {
-      console.error('Selected user or user ID is undefined');
-    }
+    } 
+    // else {
+    //   console.error('Selected user or user ID is undefined');
+    // }
   };
 
   return (
