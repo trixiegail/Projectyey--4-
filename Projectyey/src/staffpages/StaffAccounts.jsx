@@ -117,7 +117,7 @@ function StaffAccounts() {
       <Nav />
 
       <div className="w-50 ml-10 relative pt-[50px]" >
-        <h1 className="text-2xl font-bold mb-5 ">Doctor Account</h1>
+        <h1 className="text-2xl font-bold mb-5 ">Staff Account</h1>
         <div className="flex items-center mb-5 mt-5 mr-40 ml-40">
           <input
             type="text"
@@ -206,7 +206,7 @@ function StaffAccounts() {
                 <div className="sm:flex sm:items-start">
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                     <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      {isUpdate ? 'Update Doctor Details' : 'Doctor Details'}
+                      {isUpdate ? 'Update Staff Details' : 'Staff Details'}
                     </h3>
                     <div className="mt-2">
                       <p className="text-sm text-gray-500">ID Number: {selectedUser.idNumber}</p>
@@ -292,7 +292,7 @@ function StaffAccounts() {
                     <h3 className="text-lg leading-6 font-medium text-gray-900">Confirm Archive</h3>
                     <div className="mt-2">
                       <p className="text-sm text-gray-500">
-                        Are you sure you want to archive the doctor account for {selectedUser.firstname} {selectedUser.lastname}?
+                        Are you sure you want to archive the staff account for {selectedUser.firstname} {selectedUser.lastname}?
                       </p>
                     </div>
                   </div>
