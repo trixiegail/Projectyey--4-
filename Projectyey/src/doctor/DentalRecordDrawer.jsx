@@ -191,6 +191,7 @@ const DentalRecordDrawer = () => {
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
+        color: 'black',
       }}
     >
       {/* Wrapping all printable content in a single ref */}
@@ -210,7 +211,7 @@ const DentalRecordDrawer = () => {
             Dental Record
           </Typography>
           <img
-            src={ '/src/image/teethLogoDesignYellow.png' }
+            src={ '/teethLogoDesignYellow.png' }
             alt="Logo"
             style={{
               height: '60px',
