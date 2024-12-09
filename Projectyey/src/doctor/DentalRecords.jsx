@@ -1,10 +1,10 @@
 import React, { useRef, useState } from "react";
 import { Box, Typography, Collapse, Button, Card, CardContent, Grid, Dialog, DialogTitle, DialogContent, DialogActions, Select, MenuItem, Checkbox, ListItemText } from "@mui/material";
 import { useLocation } from "react-router-dom";
-import DocNavBar from '../components/DocNavBar';
-import Sidebar from '../components/DocSidebar';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'; 
 import { useNavigate } from 'react-router-dom'; 
+import Studfooter from "../components/Studfooter";
+import Studnav from '../components/Studnav';
 
 const DentalRecords = () => {
   const printAllRef = useRef();
@@ -151,7 +151,7 @@ const DentalRecords = () => {
   
 
   return (
-
+  <div><Studnav />
     <Box
     sx={{
       display: 'flex',
@@ -871,6 +871,8 @@ const DentalRecords = () => {
       </Box>
       
       </Box>
+      <Studfooter />
+      </div>
   );
 };
 
