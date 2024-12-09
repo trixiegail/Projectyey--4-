@@ -72,6 +72,29 @@ function StudentAccounts() {
     setSearchTerm(event.target.value);
   };
 
+  const handleUpdate = async () => {
+    console.log('Selected User before Update:', selectedUser);
+
+    if (selectedUser && selectedUser.id) {
+      try {
+        console.log('Updating user with ID:', selectedUser.id);
+        const response = await axios.put(`https://dentalmanagement.azurewebsites.net/student/updateStudent/${selectedUser.id}`, selectedUser);
+        if (response.status === 200) {
+          console.log('Student account updated successfully');
+          fetchData();
+        } else {
+          throw new Error('Failed to update student account');
+        }
+      } catch (error) {
+        console.error('Error updating student account:', error);
+      }
+      handleClose();
+    } else {
+      console.error('Selected user or user ID is undefined');
+    }
+  };
+
+
   const handleViewClick = (user) => {
     console.log('View User:', user);
     setSelectedUser(user);
@@ -90,29 +113,7 @@ function StudentAccounts() {
     console.log('Selected User on Input Change:', { ...selectedUser, [e.target.name]: e.target.value });
   };
 
-  const handleUpdate = async () => {
-    console.log('Selected User before Update:', selectedUser);
-
-    if (selectedUser && selectedUser.id) {
-      try {
-        console.log('Updating user with ID:', selectedUser.id);
-        const response = await axios.put(`https://dentalmanagement.azurewebsites.net/student/updateStudent/${selectedUser.id}`, selectedUser);
-        if (response.status === 200) {
-          console.log('Student account updated successfully');
-          fetchData();
-        } else {
-          throw new Error('Failed to update student account');
-        }
-      } catch (error) {
-        console.error('Error updating student account:', error);
-      }
-      handleClose();
-    } 
-    // else {
-    //   console.error('Selected user or user ID is undefined');
-    // }
-  };
-
+  
   return (
     <div className='ml-[265px]' style={{ minHeight: '100vh',}}>
       <Nav />
