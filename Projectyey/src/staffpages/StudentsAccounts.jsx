@@ -49,8 +49,8 @@ function StudentAccounts() {
 
   const handleArchiveConfirm = async () => {
     try {
-      console.log(`Attempting to archive user with ID: ${selectedUser.id}`);
-      const response = await axios.post(`https://dentalmanagement.azurewebsites.net/student/archive/${selectedUser.id}`);
+      console.log(`Attempting to archive user with ID: ${user.id}`);
+      const response = await axios.post(`https://dentalmanagement.azurewebsites.net/student/archive/${user.id}`);
       console.log('Archive response:', response);
       if (response.status === 200) {
         console.log('Student account archived successfully');
@@ -75,10 +75,10 @@ function StudentAccounts() {
   const handleUpdate = async () => {
     console.log('Selected User before Update:', selectedUser);
 
-    if (selectedUser || selectedUser.id) {
+    if (selectedUser && user.id) {
       try {
         console.log('Updating user with ID:', selectedUser.id);
-        const response = await axios.put(`https://dentalmanagement.azurewebsites.net/student/updateStudent/${selectedUser.id}`, selectedUser);
+        const response = await axios.put(`https://dentalmanagement.azurewebsites.net/student/updateStudent/${user.id}`, selectedUser);
         if (response.status === 200) {
           console.log('Student account updated successfully');
           fetchData();
