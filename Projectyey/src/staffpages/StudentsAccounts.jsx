@@ -73,11 +73,11 @@ function StudentAccounts() {
   };
 
   const handleUpdate = async () => {
-    console.log('Selected User before Update:', selectedUser);
+    console.log('Selected User before Update:', user);
 
     if (selectedUser && user.id) {
       try {
-        console.log('Updating user with ID:', selectedUser.id);
+        console.log('Updating user with ID:', user.id);
         const response = await axios.put(`https://dentalmanagement.azurewebsites.net/student/updateStudent/${user.id}`, selectedUser);
         if (response.status === 200) {
           console.log('Student account updated successfully');
