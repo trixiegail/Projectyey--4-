@@ -48,7 +48,7 @@ const Sidebar = () => {
     { text: 'Calendar', icon: <CalendarTodayIcon />, path: '/doccalendar' },
     { text: 'Applicants', icon: <EventAvailableIcon />, path: '/CheckupApplicantList' },
     // { text: 'Forms', icon: <DescriptionIcon />, path: '/docforms' },
-    { text: 'Settings', icon: <SettingsIcon />, path: '/docsettings' },
+    // { text: 'Settings', icon: <SettingsIcon />, path: '/docsettings' },
   ];
 
   const history = [
