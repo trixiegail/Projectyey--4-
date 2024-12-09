@@ -79,7 +79,11 @@ function StudentAccounts() {
     setDialogOpen(true);
   };
 
-
+  const handleClose = () => {
+    setDialogOpen(false);
+    setSelectedUser(null);
+    setIsUpdateMode(false);
+  };
 
   const handleInputChange = (e) => {
     setSelectedUser({ ...selectedUser, [e.target.name]: e.target.value });
@@ -106,12 +110,6 @@ function StudentAccounts() {
     } else {
       console.error('Selected user or user ID is undefined');
     }
-  };
-
-  const handleClose = () => {
-    setDialogOpen(false);
-    setSelectedUser(null);
-    setIsUpdateMode(false);
   };
 
   return (
