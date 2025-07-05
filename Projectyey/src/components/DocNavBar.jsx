@@ -18,7 +18,7 @@ const DocNavBar = () => {
         const fetchProfilePicture = async () => {
             if (doctor && doctor.id) {
                 try {
-                    const response = await axios.get(`https://dentalmanagement.azurewebsites.net/doctor/getProfilePicture/${doctor.id}`);
+                    const response = await axios.get(`https://dentalmanagement-app.onrender.com/doctor/getProfilePicture/${doctor.id}`);
                     setProfilePicture(response.data); // if returning an accessible URL
                     console.log('Picture is fetched successfully')
                 } catch (error) {
