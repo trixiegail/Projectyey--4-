@@ -73,7 +73,7 @@ const MedicalForm = () => {
   useEffect(() => {
     const fetchStudentData = async () => {
       try {
-        const response = await fetch(`https://dentalmanagement.azurewebsites.net/student/students/${applicant.studentIdNumber}`);
+        const response = await fetch(`https://dentalmanagement-app.onrender.com/student/students/${applicant.studentIdNumber}`);
   
         if (!response.ok) {
           throw new Error(`Error fetching student data: ${response.statusText}`);
@@ -139,7 +139,7 @@ const MedicalForm = () => {
       };
 
       try {
-        const response = await fetch(`https://dentalmanagement.azurewebsites.net/api/checkups/save?idNumber=${applicant.studentIdNumber}`, {
+        const response = await fetch(`https://dentalmanagement-app.onrender.com/api/checkups/save?idNumber=${applicant.studentIdNumber}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -167,7 +167,7 @@ const MedicalForm = () => {
   // Toggle the medical records drawer
   const handleMedicalRecords = async () => {
     try {
-      const response = await fetch(`https://dentalmanagement.azurewebsites.net/api/checkups/student/${applicant.studentIdNumber}`);
+      const response = await fetch(`https://dentalmanagement-app.onrender.com/api/checkups/student/${applicant.studentIdNumber}`);
       if (response.ok) {
         const records = await response.json(); // Parse the JSON response
         // Sort the records by date (newest first)
@@ -198,7 +198,7 @@ const MedicalForm = () => {
 
     try {
         console.log('Fetching all tooth statuses for:', applicant.studentIdNumber);
-        const response = await fetch(`https://dentalmanagement.azurewebsites.net/student/${applicant.studentIdNumber}/tooth-statuses`);
+        const response = await fetch(`https://dentalmanagement-app.onrender.com/student/${applicant.studentIdNumber}/tooth-statuses`);
   
         if (response.ok) {
             const records = await response.json();

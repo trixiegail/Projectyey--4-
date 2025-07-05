@@ -59,7 +59,7 @@ const CalendarSchedule = () => {
 
   useEffect(() => {
     // Fetch events from the backend
-    fetch('https://dentalmanagement.azurewebsites.net/api/events')
+    fetch('https://dentalmanagement-app.onrender.com/api/events')
       .then(response => response.json())
       .then(data => {
         const now = new Date(); // Current date and time
@@ -135,7 +135,7 @@ const CalendarSchedule = () => {
       };
   
       if (editEvent) {
-        fetch(`https://dentalmanagement.azurewebsites.net/api/events/${editEvent.id}`, {
+        fetch(`https://dentalmanagement-app.onrender.com/api/events/${editEvent.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -151,7 +151,7 @@ const CalendarSchedule = () => {
           })
           .catch(error => console.error('Error updating event:', error));
       } else {
-        fetch('https://dentalmanagement.azurewebsites.net/api/events', {
+        fetch('https://dentalmanagement-app.onrender.com/api/events', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -204,7 +204,7 @@ const CalendarSchedule = () => {
 
   const confirmDeleteEvent = () => {
     if (eventToDelete) {
-      fetch(`https://dentalmanagement.azurewebsites.net/api/events/${eventToDelete.id}`, {
+      fetch(`https://dentalmanagement-app.onrender.com/api/events/${eventToDelete.id}`, {
         method: 'DELETE',
       })
         .then(response => {
@@ -317,7 +317,7 @@ const handleCreateMultipleEvents = () => {
   }
 
   const createEventPromises = newEvents.map(event => {
-    return fetch('https://dentalmanagement.azurewebsites.net/api/events', {
+    return fetch('https://dentalmanagement-app.onrender.com/api/events', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -382,7 +382,7 @@ const confirmEventCreation = () => {
   }
 
   const createEventPromises = newEvents.map(event => {
-    return fetch('https://dentalmanagement.azurewebsites.net/api/events', {
+    return fetch('https://dentalmanagement-app.onrender.com/api/events', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

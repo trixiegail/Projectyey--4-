@@ -50,13 +50,13 @@ const ApplicantList = () => {
    const handleConfirmAccept = () => {
     if (selectedApplicant) {
       // Accept the applicant
-      fetch(`https://dentalmanagement.azurewebsites.net/api/reservations/accept/${selectedApplicant.id}`, {
+      fetch(`https://dentalmanagement-app.onrender.com/api/reservations/accept/${selectedApplicant.id}`, {
         method: 'POST',
       })
       .then(response => {
         if (response.ok) {
           // Send email notification
-          fetch(`https://dentalmanagement.azurewebsites.net/email/send-email/${selectedApplicant.email}`, {
+          fetch(`https://dentalmanagement-app.onrender.com/email/send-email/${selectedApplicant.email}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: selectedApplicant.email, subject: "Approval Notification",
@@ -84,7 +84,7 @@ const ApplicantList = () => {
           // Remove the applicant from the list
           setApplicants(prevApplicants => prevApplicants.filter(a => a.id !== selectedApplicant.id));
           const eventId = selectedApplicant.event.id; 
-          fetch(`https://dentalmanagement.azurewebsites.net/api/events/${eventId}`, {
+          fetch(`https://dentalmanagement-app.onrender.com/api/events/${eventId}`, {
             method: 'DELETE',
           })
           .then(eventResponse => {
@@ -189,7 +189,7 @@ const ApplicantList = () => {
     console.log("Sending email for applicant:", applicant);
 
     // Send the email notification
-    fetch(`https://dentalmanagement.azurewebsites.net/email/send-email/${applicant.email}`, {
+    fetch(`https://dentalmanagement-app.onrender.com/email/send-email/${applicant.email}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -219,7 +219,7 @@ const ApplicantList = () => {
     
   
     // Move the reservation to the Declined Appointments History first
-    fetch(`https://dentalmanagement.azurewebsites.net/api/declined-appointments/move/${selectedApplicantId}`, {
+    fetch(`https://dentalmanagement-app.onrender.com/api/declined-appointments/move/${selectedApplicantId}`, {
       method: 'POST',
     })
       .then((response) => {
@@ -227,7 +227,7 @@ const ApplicantList = () => {
           console.log('Successfully moved to Declined Appointments History');
 
           // Now delete the reservation
-          fetch(`https://dentalmanagement.azurewebsites.net/api/reservations/${selectedApplicantId}`, {
+          fetch(`https://dentalmanagement-app.onrender.com/api/reservations/${selectedApplicantId}`, {
             method: 'DELETE',
           })
             .then((deleteResponse) => {
@@ -261,7 +261,7 @@ const ApplicantList = () => {
   
   const handleDeclineAndDeleteEvent = () => {
     if (selectedEventId) {
-      fetch(`https://dentalmanagement.azurewebsites.net/api/events/${selectedEventId}`, {
+      fetch(`https://dentalmanagement-app.onrender.com/api/events/${selectedEventId}`, {
         method: 'DELETE',
       })
         .then((eventResponse) => {
@@ -600,7 +600,7 @@ const CheckupApplicantList = () => {
   useEffect(() => {
     console.log("Fetching applicants...");
   
-    fetch('https://dentalmanagement.azurewebsites.net/api/reservations/reservations')
+    fetch('https://dentalmanagement-app.onrender.com/api/reservations/reservations')
       .then((response) => response.json())
       .then((data) => {
         console.log('API Response:', data);
