@@ -16,7 +16,7 @@ function StudentAccounts() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('https://dentalmanagement.azurewebsites.net/student/getAllStudents?archived=false');
+      const response = await axios.get('https://dentalmanagement-app.onrender.com/student/getAllStudents?archived=false');
       if (response.status === 200) {
         setData(response.data);
         console.log('Doctor accounts fetched successfully:', response.data);
@@ -78,7 +78,7 @@ function StudentAccounts() {
     if (selectedUser && user.id) {
       try {
         console.log('Updating user with ID:', selectedUser.id);
-        const response = await axios.put(`https://dentalmanagement.azurewebsites.net/student/updateStudent/${user.id}`, selectedUser);
+        const response = await axios.put(`https://dentalmanagement-app.onrender.com/student/updateStudent/${user.id}`, selectedUser);
         if (response.status === 200) {
           console.log('Student account updated successfully');
           fetchData();

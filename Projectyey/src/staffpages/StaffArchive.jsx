@@ -12,7 +12,7 @@ function StaffArchive() {
 
     const fetchArchivedAccounts = async () => {
         try {
-            const response = await axios.get('https://dentalmanagement.azurewebsites.net/staff/getAllArchivedStaffs');
+            const response = await axios.get('https://dentalmanagement-app.onrender.com/staff/getAllArchivedStaffs');
 
             if (response.status === 200) {
                 setArchivedAccounts(response.data);
@@ -27,7 +27,7 @@ function StaffArchive() {
 
     const handleSearch = async () => {
         try {
-            const response = await axios.get(`https://dentalmanagement.azurewebsites.net/staff/search/archivedStaffs?keyword=${searchTerm}`);
+            const response = await axios.get(`https://dentalmanagement-app.onrender.com/staff/search/archivedStaffs?keyword=${searchTerm}`);
             if (response.status === 200) {
                 setArchivedAccounts(response.data);
                 console.log('Archived accounts searched successfully:', response.data);
@@ -41,7 +41,7 @@ function StaffArchive() {
 
     const handleUnarchive = async (id) => {
         try {
-            const response = await axios.post(`https://dentalmanagement.azurewebsites.net/staff/unarchiveStaff/${id}`);
+            const response = await axios.post(`https://dentalmanagement-app.onrender.com/staff/unarchiveStaff/${id}`);
             if (response.status === 200) {
                 console.log('Account unarchived successfully');
                 fetchArchivedAccounts(); // Refresh the list

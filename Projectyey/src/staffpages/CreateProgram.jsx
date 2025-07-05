@@ -15,7 +15,7 @@ function CreateProgram() {
 
   const fetchDepartments = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/department/getAllDepartment');
+      const response = await axios.get('https://dentalmanagement-app.onrender.com/department/getAllDepartment');
       if (response.status === 200) {
         setDepartments(response.data);
         console.log("Departments fetched:", response.data);
@@ -29,7 +29,7 @@ function CreateProgram() {
 
   const fetchProgramsByDepartment = async (departmentId) => {
     try {
-      const response = await axios.get(`http://localhost:8080/program/getProgramsByDepartment?departmentId=${departmentId}`);
+      const response = await axios.get(`https://dentalmanagement-app.onrender.com/program/getProgramsByDepartment?departmentId=${departmentId}`);
       if (response.status === 200) {
         setPrograms(response.data);
         console.log("Programs fetched:", response.data);
@@ -65,7 +65,7 @@ function CreateProgram() {
     };
 
     try {
-      const response = await axios.post(`http://localhost:8080/program/insertProgram?departmentId=${selectedDepartmentId}`, prog_data, {
+      const response = await axios.post(`https://dentalmanagement-app.onrender.com/program/insertProgram?departmentId=${selectedDepartmentId}`, prog_data, {
         headers: {
           'Content-Type': 'application/json'
         }
