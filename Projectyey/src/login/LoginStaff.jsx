@@ -14,7 +14,7 @@ const LoginStaff = () => {
     event.preventDefault(); // Prevent the default form submission behavior
 
     try {
-      const endpoint = 'https://dentalmanagement.azurewebsites.net/staff/login';
+      const endpoint = 'https://dentalmanagement-app.onrender.com/staff/login';
       const response = await axios.post(endpoint, { idNumber, password });
   
       if (response.data) {
