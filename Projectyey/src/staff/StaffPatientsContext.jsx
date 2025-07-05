@@ -7,7 +7,7 @@ export const StaffPatientsProvider = ({ children }) => {
   const [patients, setPatients] = useState([]);
 
   useEffect(() => {
-    fetch('https://dentalmanagement.azurewebsites.net/api/patients/')
+    fetch('https://dentalmanagement-app.onrender.com/api/patients/')
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) {

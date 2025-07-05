@@ -24,7 +24,7 @@ function Settings() {
     const fetchStaffData = async () => {
       try {
         if (staff && staff.id) {
-          const response = await axios.get(`https://dentalmanagement.azurewebsites.net/user/profile/${staff.id}`);
+          const response = await axios.get(`https://dentalmanagement-app.onrender.com/user/profile/${staff.id}`);
           const staffData = response.data;
 
           // Populate form with fetched data
@@ -73,7 +73,7 @@ function Settings() {
         darkMode,
       };
 
-      await axios.put(`http://localhost:8080/user/profile/${staff.id}`, updatedData);
+      await axios.put(`https://dentalmanagement-app.onrender.com/user/profile/${staff.id}`, updatedData);
       alert('Profile updated successfully!');
     } catch (error) {
       console.error('Failed to update profile:', error);

@@ -18,7 +18,7 @@ function StaffList() {
 
   const fetchStaff = async () => {
     try {
-      const response = await axios.get('https://dentalmanagement.azurewebsites.net/staff/getStaff?archived=false');
+      const response = await axios.get('https://dentalmanagement-app.onrender.com/staff/getStaff?archived=false');
       if (response.status === 200) {
         setStaff(response.data);
       } else {

@@ -111,7 +111,7 @@ const StaffPatientList = () => {
   };
 
   const handleDelete = () => {
-    fetch(`https://dentalmanagement.azurewebsites.net/patients/${selectedApplicantId}`, {
+    fetch(`https://dentalmanagement-app.onrender.com/patients/${selectedApplicantId}`, {
       method: 'DELETE',
     })
       .then((response) => {
@@ -289,7 +289,7 @@ const StaffPatients = () => {
   const [applicants, setApplicants] = useState([]);
 
   useEffect(() => {
-    fetch('https://dentalmanagement.azurewebsites.net/api/patients/')
+    fetch('https://dentalmanagement-app.onrender.com/api/patients/')
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) {
