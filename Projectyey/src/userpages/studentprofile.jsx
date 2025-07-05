@@ -37,7 +37,7 @@ export function Home() {
       if (studentIdNumber) {
         try {
           const response = await axios.get(
-            `https://dentalmanagement.azurewebsites.net/student/students/${studentIdNumber}`
+            `https://dentalmanagement-app.onrender.com/student/students/${studentIdNumber}`
           );
           const data = response.data;
           setPersonalInfo({
@@ -64,7 +64,7 @@ export function Home() {
       if (studentIdNumber) {
         try {
           const response = await axios.get(
-            `https://dentalmanagement.azurewebsites.net/api/checkups/student/${studentIdNumber}`
+            `https://dentalmanagement-app.onrender.com/api/checkups/student/${studentIdNumber}`
           );
           const records = response.data;
           setMedicalRecords(
@@ -81,7 +81,7 @@ export function Home() {
       if (studentIdNumber) {
         try {
           const response = await axios.get(
-            `https://dentalmanagement.azurewebsites.net/student/${studentIdNumber}/tooth-statuses`
+            `https://dentalmanagement-app.onrender.com/student/${studentIdNumber}/tooth-statuses`
           );
           const records = response.data;
           setIntraoralRecords(

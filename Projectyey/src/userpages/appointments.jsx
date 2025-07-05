@@ -14,7 +14,7 @@ const Appointments = () => {
 
     if (studentId) {
       // Fetch all appointments from the backend
-      fetch('https://dentalmanagement.azurewebsites.net/api/patients/')
+      fetch('https://dentalmanagement-app.onrender.com/api/patients/')
         .then((response) => response.json())
         .then((data) => {
           if (Array.isArray(data)) {

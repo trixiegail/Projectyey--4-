@@ -60,7 +60,7 @@ const App = () => {
   useEffect(() => {
     const now = new Date();
 
-    fetch('https://dentalmanagement.azurewebsites.net/api/events')
+    fetch('https://dentalmanagement-app.onrender.com/api/events')
       .then((response) => response.json())
       .then((data) => {
         const formattedEvents = data.map((event) => ({
@@ -106,7 +106,7 @@ const App = () => {
   
     try {
       // Fetch student data using studentIdNumber
-      const response = await fetch(`https://dentalmanagement.azurewebsites.net/student/students/${studentIdNumber}`);
+      const response = await fetch(`https://dentalmanagement-app.onrender.com/student/students/${studentIdNumber}`);
       if (!response.ok) {
         throw new Error('Failed to fetch student data');
       }
@@ -114,7 +114,7 @@ const App = () => {
       const studentData = await response.json();
 
       // Fetch the student's existing reservations
-      const reservationCheckResponse = await fetch(`https://dentalmanagement.azurewebsites.net/api/reservations?studentId=${studentIdNumber}`);
+      const reservationCheckResponse = await fetch(`https://dentalmanagement-app.onrender.com/api/reservations?studentId=${studentIdNumber}`);
       const reservations = await reservationCheckResponse.json();
 
       if (reservations.length > 0) {
@@ -138,7 +138,7 @@ const App = () => {
       console.log('Reservation Request:', reservationRequest);
   
       // Post reservation
-      const reserveResponse = await fetch('https://dentalmanagement.azurewebsites.net/api/reservations/reserve', {
+      const reserveResponse = await fetch('https://dentalmanagement-app.onrender.com/api/reservations/reserve', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(reservationRequest),
@@ -161,7 +161,7 @@ const App = () => {
       });
   
      // Update the event status on the backend
-     await fetch(`https://dentalmanagement.azurewebsites.net/api/events/book/${selectedEvent.id}`, {
+     await fetch(`https://dentalmanagement-app.onrender.com/api/events/book/${selectedEvent.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' }
     });
@@ -305,7 +305,7 @@ const App = () => {
       if (studentIdNumber) {
         try {
           // Fetch the reservation from the backend
-          const response = await fetch(`https://dentalmanagement.azurewebsites.net/api/reservations/reservations/${studentIdNumber}`);
+          const response = await fetch(`https://dentalmanagement-app.onrender.com/api/reservations/reservations/${studentIdNumber}`);
           if (response.ok) {
             const reservationData = await response.json();
             console.log("Fetched reservation data:", reservationData); // Debugging
@@ -346,7 +346,7 @@ const App = () => {
     if (reservedEvent && reservedEvent.id) {
       try {
         // DELETE request to cancel the reservation using reservation ID
-        await fetch(`https://dentalmanagement.azurewebsites.net/api/reservations/delete/${reservedEvent.id}`, {
+        await fetch(`https://dentalmanagement-app.onrender.com/api/reservations/delete/${reservedEvent.id}`, {
           method: 'DELETE',
           headers: { 'Content-Type': 'application/json' },
         });
