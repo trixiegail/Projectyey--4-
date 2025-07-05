@@ -16,7 +16,7 @@ function StaffAccounts() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('https://dentalmanagement.azurewebsites.net/staff/getStaffs?archived=false');
+      const response = await axios.get('https://dentalmanagement-app.onrender.com/staff/getStaffs?archived=false');
       if (response.status === 200) {
         setData(response.data);
         console.log('Staff accounts fetched successfully:', response.data);
@@ -30,7 +30,7 @@ function StaffAccounts() {
 
   const handleSearch = async () => {
     try {
-      const response = await axios.get(`https://dentalmanagement.azurewebsites.net/staff/searchStaffs?keyword=${searchTerm}`);
+      const response = await axios.get(`https://dentalmanagement-app.onrender.com/staff/searchStaffs?keyword=${searchTerm}`);
       if (response.status === 200) {
         setData(response.data);
         console.log('Student accounts fetched successfully:', response.data);
@@ -50,7 +50,7 @@ function StaffAccounts() {
   const handleArchiveConfirm = async () => {
     try {
       console.log(`Attempting to archive user with ID: ${selectedUser.id}`);
-      const response = await axios.post(`https://dentalmanagement.azurewebsites.net/staff/archiveStaff/${selectedUser.id}`);
+      const response = await axios.post(`https://dentalmanagement-app.onrender.com/staff/archiveStaff/${selectedUser.id}`);
       console.log('Archive response:', response);
       if (response.status === 200) {
         console.log('Staff account archived successfully');
@@ -96,7 +96,7 @@ function StaffAccounts() {
     if (selectedUser && selectedUser.id) {
       try {
         console.log('Updating user with ID:', selectedUser.id);
-        const response = await axios.put(`https://dentalmanagement.azurewebsites.net/staff/updateStaff/${selectedUser.id}`, selectedUser);
+        const response = await axios.put(`https://dentalmanagement-app.onrender.com/staff/updateStaff/${selectedUser.id}`, selectedUser);
         if (response.status === 200) {
           console.log('Staff account updated successfully');
           fetchData();
