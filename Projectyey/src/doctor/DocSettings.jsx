@@ -85,14 +85,14 @@ function Settings() {
         darkMode,
       };
  
-      await axios.post(`https://dentalmanagement.azurewebsites.net/doctor/uploadProfilePicture/${doctor.id}`, updatedData);
+      await axios.post(`https://dentalmanagement-app.onrender.com/doctor/uploadProfilePicture/${doctor.id}`, updatedData);
  
       if (profilePicture) {
         // Handle profile picture upload
         const formData = new FormData();
         formData.append('profilePicture', profilePicture);
  
-        await axios.post(`https://dentalmanagement.azurewebsites.net/doctor/uploadProfilePicture/${doctor.id}`, formData, {
+        await axios.post(`https://dentalmanagement-app.onrender.com/doctor/uploadProfilePicture/${doctor.id}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },

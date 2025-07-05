@@ -31,7 +31,7 @@ function DoctorList() {
 
   const fetchDoctors = async () => {
     try {
-      const response = await axios.get('https://dentalmanagement.azurewebsites.net/doctor/getDoctors?archived=false');
+      const response = await axios.get('https://dentalmanagement-app.onrender.com/doctor/getDoctors?archived=false');
       if (response.status === 200) {
         setDoctors(response.data);
         setFilteredDoctors(response.data); 

@@ -29,25 +29,25 @@ const Dashboard = () => {
 
   useEffect(() => {
     // Fetch Applicants
-    fetch('https://dentalmanagement.azurewebsites.net/api/reservations/reservations')
+    fetch('https://dentalmanagement-app.onrender.com/api/reservations/reservations')
       .then((response) => response.json())
       .then((data) => setApplicants(data))
       .catch((error) => console.error('Error fetching applicants:', error));
 
     // Fetch Completed Appointments
-    fetch('https://dentalmanagement.azurewebsites.net/api/completed-appointments')
+    fetch('https://dentalmanagement-app.onrender.com/api/completed-appointments')
       .then((response) => response.json())
       .then((data) => setCompletedAppointments(data))
       .catch((error) => console.error('Error fetching completed appointments:', error));
 
     // Fetch Declined Appointments
-    fetch('https://dentalmanagement.azurewebsites.net/api/declined-appointments')
+    fetch('https://dentalmanagement-app.onrender.com/api/declined-appointments')
       .then((response) => response.json())
       .then((data) => setDeclinedAppointments(data))
       .catch((error) => console.error('Error fetching declined appointments:', error));
 
     // Fetch Patients
-    fetch('https://dentalmanagement.azurewebsites.net/api/patients/')
+    fetch('https://dentalmanagement-app.onrender.com/api/patients/')
       .then((response) => response.json())
       .then((data) => setPatients(data))
       .catch((error) => console.error('Error fetching patients:', error));
@@ -55,12 +55,12 @@ const Dashboard = () => {
 
   useEffect(() => {
     // Fetch counts
-    fetch('https://dentalmanagement.azurewebsites.net/api/reservations/reservations')
+    fetch('https://dentalmanagement-app.onrender.com/api/reservations/reservations')
       .then((response) => response.json())
       .then((data) => setApplicantsCount(data.length))
       .catch((error) => console.error('Error fetching applicants:', error));
 
-    fetch('https://dentalmanagement.azurewebsites.net/api/patients/')
+    fetch('https://dentalmanagement-app.onrender.com/api/patients/')
       .then((response) => response.json())
       .then((data) => {
         setPatientsCount(data.length);
@@ -84,12 +84,12 @@ const Dashboard = () => {
       })
       .catch((error) => console.error('Error fetching patients:', error));
 
-    fetch('https://dentalmanagement.azurewebsites.net/api/completed-appointments')
+    fetch('https://dentalmanagement-app.onrender.com/api/completed-appointments')
       .then((response) => response.json())
       .then((data) => setCompletedCount(data.length))
       .catch((error) => console.error('Error fetching completed appointments:', error));
 
-    fetch('https://dentalmanagement.azurewebsites.net/api/declined-appointments')
+    fetch('https://dentalmanagement-app.onrender.com/api/declined-appointments')
       .then((response) => response.json())
       .then((data) => setDeclinedCount(data.length))
       .catch((error) => console.error('Error fetching declined appointments:', error));
@@ -97,7 +97,7 @@ const Dashboard = () => {
   
   useEffect(() => {
     // Fetch completed appointments
-    fetch('https://dentalmanagement.azurewebsites.net/api/completed-appointments')
+    fetch('https://dentalmanagement-app.onrender.com/api/completed-appointments')
       .then((response) => response.json())
       .then((data) => {
         setCompletedAppointments(data);
@@ -110,7 +110,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const response = await axios.get('https://dentalmanagement.azurewebsites.net/doctor/getDoctors?archived=false');
+        const response = await axios.get('https://dentalmanagement-app.onrender.com/sdoctor/getDoctors?archived=false');
         if (response.status === 200) {
           setDoctorCount(response.data.length); // Update count based on doctors array length
         } else {

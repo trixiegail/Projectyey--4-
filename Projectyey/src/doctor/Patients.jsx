@@ -84,14 +84,14 @@ const PatientList = () => {
   const handleDelete = () => {
     console.log('Attempting to completed applicant ID:', selectedApplicantId);
   
-    fetch(`https://dentalmanagement.azurewebsites.net/api/completed-appointments/move/${selectedApplicantId}`, {
+    fetch(`https://dentalmanagement-app.onrender.com/api/completed-appointments/move/${selectedApplicantId}`, {
       method: 'POST',
     })
       .then((response) => {
         if (response.ok) {
           console.log('Successfully moved to Completed Appointments History');
   
-          return fetch(`https://dentalmanagement.azurewebsites.net/api/patients/${selectedApplicantId}`, {
+          return fetch(`https://dentalmanagement-app.onrender.com/api/patients/${selectedApplicantId}`, {
             method: 'DELETE',
           });
         } else {
@@ -126,7 +126,7 @@ const PatientList = () => {
 
   const handleDeleteEvent = () => {
     if (selectedApplicantId) {
-      fetch(`https://dentalmanagement.azurewebsites.net/api/events/${selectedApplicantId}`, {
+      fetch(`https://dentalmanagement-app.onrender.com/api/events/${selectedApplicantId}`, {
         method: 'DELETE',
       })
         .then((eventResponse) => {
@@ -339,7 +339,7 @@ const Patients = () => {
   const [applicants, setApplicants] = useState([]);
 
   useEffect(() => {
-    fetch('https://dentalmanagement.azurewebsites.net/api/patients/')
+    fetch('https://dentalmanagement-app.onrender.com/api/patients/')
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) {

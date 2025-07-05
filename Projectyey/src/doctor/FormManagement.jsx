@@ -36,7 +36,7 @@ const FormManagement = () => {
 
     const fetchForms = async () => {
       try {
-          const response = await axios.get('https://dentalmanagement.azurewebsites.net/api/forms');
+          const response = await axios.get('https://dentalmanagement-app.onrender.com/api/forms');
           console.log('Fetched forms:', response.data); // Log the fetched data to verify it's correct
           if (Array.isArray(response.data)) {
               setForms(response.data); // Set the state with all forms from the response
@@ -70,7 +70,7 @@ const FormManagement = () => {
 
     const createForm = async () => {
         const form = { name: formName, fields: fields };
-        await axios.post('https://dentalmanagement.azurewebsites.net/api/forms', form);
+        await axios.post('https://dentalmanagement-app.onrender.com/api/forms', form);
         fetchForms();
         setFormName('');
         setFields([{ fieldName: '', fieldType: 'text', label: '', required: false }]);
@@ -92,7 +92,7 @@ const FormManagement = () => {
 
     const deleteForm = async (id) => {
       try {
-          await axios.delete(`https://dentalmanagement.azurewebsites.net/api/forms/${id}`);
+          await axios.delete(`https://dentalmanagement-app.onrender.com/api/forms/${id}`);
           fetchForms(); // Refresh the list after deletion
       } catch (error) {
           console.error('Error deleting form:', error);
@@ -101,7 +101,7 @@ const FormManagement = () => {
 
   const deleteAllForms = async () => {
       try {
-          await axios.delete('https://dentalmanagement.azurewebsites.net/api/forms');
+          await axios.delete('https://dentalmanagement-app.onrender.com/api/forms');
           setForms([]); // Clear the state after deleting all forms
       } catch (error) {
           console.error('Error deleting all forms:', error);

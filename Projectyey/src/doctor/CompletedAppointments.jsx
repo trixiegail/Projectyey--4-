@@ -67,7 +67,7 @@ const CompletedAppointments = () => {
   }
 
   try {
-    const response = await fetch(`https://dentalmanagement.azurewebsites.net/student/students/${studentIdNumber}`);
+    const response = await fetch(`https://dentalmanagement-app.onrender.com/student/students/${studentIdNumber}`);
 
     if (!response.ok) {
       throw new Error(`Error fetching student data: ${response.statusText}`);
@@ -95,7 +95,7 @@ const CompletedAppointments = () => {
   useEffect(() => {
     const fetchCompletedAppointments = async () => {
       try {
-        const response = await fetch('https://dentalmanagement.azurewebsites.net/api/completed-appointments');
+        const response = await fetch('https://dentalmanagement-app.onrender.com/api/completed-appointments');
         const data = await response.json();
         const sortedData = data.sort((a, b) => new Date(b.completedDate) - new Date(a.completedDate));
         setCompletedAppointments(sortedData);
@@ -136,13 +136,13 @@ const CompletedAppointments = () => {
 
     try {
       // Fetch Checkup Records
-      const checkupResponse = await fetch(`https://dentalmanagement.azurewebsites.net/api/checkups/student/${studentIdNumber}`);
+      const checkupResponse = await fetch(`https://dentalmanagement-app.onrender.com/api/checkups/student/${studentIdNumber}`);
       const checkupRecords = await checkupResponse.json();
       const sortedCheckupRecords = checkupRecords.sort((a, b) => new Date(b.date) - new Date(a.date));
       setMedicalRecords(sortedCheckupRecords);
   
       // Fetch Intraoral Records
-      const intraoralResponse = await fetch(`https://dentalmanagement.azurewebsites.net/student/${studentIdNumber}/tooth-statuses`);
+      const intraoralResponse = await fetch(`https://dentalmanagement-app.onrender.com/student/${studentIdNumber}/tooth-statuses`);
       const intraoralRecords = await intraoralResponse.json();
       const sortedIntraoralRecords = intraoralRecords.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt));
       setIntraoralRecords(sortedIntraoralRecords);
@@ -173,7 +173,7 @@ const CompletedAppointments = () => {
   
     try {
       console.log('Fetching all tooth statuses for:', studentIdNumber);
-      const response = await fetch(`https://dentalmanagement.azurewebsites.net/student/${studentIdNumber}/tooth-statuses`);
+      const response = await fetch(`https://dentalmanagement-app.onrender.com/student/${studentIdNumber}/tooth-statuses`);
   
       if (response.ok) {
         const records = await response.json();

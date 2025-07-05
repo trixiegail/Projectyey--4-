@@ -69,14 +69,14 @@ const DocCalendar = () => {
   useEffect(() => {
     const now = new Date(); 
 
-    fetch('https://dentalmanagement.azurewebsites.net/api/events')
+    fetch('https://dentalmanagement-app.onrender.com/api/events')
       .then(response => response.json())
       .then(data => {
         const pastEvents = data.filter(event => new Date(event.end) < now); 
         const upcomingEvents = data.filter(event => new Date(event.end) >= now); 
 
         pastEvents.forEach(event => {
-          fetch(`https://dentalmanagement.azurewebsites.net/api/events/${event.id}`, {
+          fetch(`https://dentalmanagement-app.onrender.com/api/events/${event.id}`, {
             method: 'DELETE',
           })
             .then(response => {
@@ -223,7 +223,7 @@ const DocCalendar = () => {
       };
   
       if (editEvent) {
-        fetch(`https://dentalmanagement.azurewebsites.net/api/events/${editEvent.id}`, {
+        fetch(`https://dentalmanagement-app.onrender.com/api/events/${editEvent.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newEvent),
@@ -235,7 +235,7 @@ const DocCalendar = () => {
           })
           .catch(error => console.error('Error updating event:', error));
       } else {
-        fetch('https://dentalmanagement.azurewebsites.net/api/events', {
+        fetch('https://dentalmanagement-app.onrender.com/api/events', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newEvent),
@@ -278,7 +278,7 @@ const DocCalendar = () => {
 
   const confirmDeleteEvent = () => {
     if (eventToDelete) {
-      fetch(`https://dentalmanagement.azurewebsites.net/api/events/${eventToDelete.id}`, {
+      fetch(`https://dentalmanagement-app.onrender.com/api/events/${eventToDelete.id}`, {
         method: 'DELETE',
       })
         .then(response => {
@@ -405,7 +405,7 @@ const handleCreateMultipleEvents = () => {
   }
 
   const createEventPromises = newEvents.map(event => {
-    return fetch('https://dentalmanagement.azurewebsites.net/api/events', {
+    return fetch('https://dentalmanagement-app.onrender.com/api/events', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -473,7 +473,7 @@ const confirmEventCreation = () => {
   }
 
   const createEventPromises = newEvents.map(event => {
-    return fetch('https://dentalmanagement.azurewebsites.net/api/events', {
+    return fetch('https://dentalmanagement-app.onrender.com/api/events', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
